@@ -9,8 +9,8 @@ import androidx.compose.ui.unit.sp
 // Set of Material typography styles to start with
 val HCWTypo = Typography(
     displaySmall = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 36.sp
+        fontWeight = FontWeight.Bold,
+        fontSize = 30.sp,
     ),
     headlineLarge = TextStyle(
         fontWeight = FontWeight.Bold,
@@ -36,6 +36,6 @@ val HCWTypo = Typography(
     ),
     titleLarge = TextStyle(
         fontWeight = FontWeight.Normal,
-        fontSize = 24.sp
+        fontSize = 23.sp
     ),
 )

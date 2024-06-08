@@ -1,5 +1,10 @@
 package com.polly.housecowork
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.polly.housecowork.compose.HouseCoworkApp
 import com.polly.housecowork.ui.theme.HouseCoworkTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +25,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HouseCoworkTheme {
-
+                HouseCoworkApp()
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.polly.housecowork.compose.utils
+package com.polly.housecowork.ui.utils
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ButtonDefaults
@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.polly.housecowork.ui.theme.HCWShapes
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
@@ -28,7 +29,8 @@ fun StandardButton(
     ) {
         Text(
             text = text,
-            style = LocalTypography.current.titleSmall
+            style = LocalTypography.current.titleSmall,
+            color = LocalColorScheme.current.onBackground
         )
     }
 }
