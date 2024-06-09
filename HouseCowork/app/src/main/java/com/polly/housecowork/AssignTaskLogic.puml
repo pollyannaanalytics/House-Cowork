@@ -1,0 +1,39 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+: assign Task;
+if (有明確指定任務接收者) then (true)
+  if (可公開給其他人) then (true)
+    :對指派者發出任務通知;
+    :可以在群組看到任務內容，但不會通知;
+    if (被指定者接收) then (true)
+    :執行任務;
+      stop
+    else(被指定者拒接)
+    :通知群組;
+
+    if (有人接) then (yes)
+      :執行任務;
+    else if(大家都拒接)
+      :通知 reporter 重新指派;
+    endif
+    :task closed;
+    endif
+else (false)
+: 對指派者發出任務通知;
+if(當事人接收) then (true)
+  :執行任務;
+else (false)
+  :通知 reporter 重新指派;
+endif
+
+endif
+else (false)
+:通知群組;
+if(有人接) then (true)
+  :執行任務;
+else if(大家都拒接)
+  :通知 reporter 重新指派;
+stop
+@enduml

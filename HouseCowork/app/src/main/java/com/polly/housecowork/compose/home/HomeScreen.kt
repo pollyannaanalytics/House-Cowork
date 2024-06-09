@@ -13,25 +13,30 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+
 import com.polly.housecowork.dataclass.Categories
 import com.polly.housecowork.dataclass.Task
-import com.polly.housecowork.dataclass.TaskStatus
 import com.polly.housecowork.ui.theme.HCWTypo
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.utils.Avatar
 import com.polly.housecowork.ui.utils.StandardButton
+import com.polly.housecowork.viewmodel.HomeViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     taskList: List<Task> = listOf(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
     categoryList: List<Categories> = listOf()
 ) {
     val pagerState = rememberPagerState(pageCount = { taskList.size })
@@ -139,9 +144,10 @@ fun HomeAppBar(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
     ) {
-        Text(
-            text = "Home",
-            style = HCWTypo.titleMedium
+        Icon(
+            modifier = Modifier.fillMaxSize(),
+            imageVector = Icons.Default.Menu,
+            contentDescription = "Menu"
         )
 
         Avatar(
@@ -153,86 +159,12 @@ fun HomeAppBar(modifier: Modifier = Modifier) {
 }
 
 
-@Preview
-@Composable
-fun HomeScreenPreview() {
-    val taskList = listOf(
-        Task(
-            taskName = "倒垃圾",
-            taskAssigneeId = 0L,
-            taskReporterId = 0L,
-            taskDescription = "今天晚上 9:00 ，要倒回收",
-            deadline = 0L,
-            taskStatus = TaskStatus.PENDING,
-            cost = 0
-        ),
-        Task(
-            taskName = "倒垃圾",
-            taskAssigneeId = 0L,
-            taskReporterId = 0L,
-            taskDescription = "今天晚上 9:00 ，要倒回收",
-            deadline = 0L,
-            taskStatus = TaskStatus.PENDING,
-            cost = 0
-        ),
-        Task(
-            taskName = "倒垃圾",
-            taskAssigneeId = 0L,
-            taskReporterId = 0L,
-            taskDescription = "今天晚上 9:00 ，要倒回收",
-            deadline = 0L,
-            taskStatus = TaskStatus.PENDING,
-            cost = 0
-        ),
-        Task(
-            taskName = "倒垃圾",
-            taskAssigneeId = 0L,
-            taskReporterId = 0L,
-            taskDescription = "今天晚上 9:00 ，要倒回收",
-            deadline = 0L,
-            taskStatus = TaskStatus.PENDING,
-            cost = 0
-        ),
-        Task(
-            taskName = "倒垃圾",
-            taskAssigneeId = 0L,
-            taskReporterId = 0L,
-            taskDescription = "今天晚上 9:00 ，要倒回收",
-            deadline = 0L,
-            taskStatus = TaskStatus.PENDING,
-            cost = 0
-        ),
-        Task(
-            taskName = "倒垃圾",
-            taskAssigneeId = 0L,
-            taskReporterId = 0L,
-            taskDescription = "今天晚上 9:00 ，要倒回收",
-            deadline = 0L,
-            taskStatus = TaskStatus.PENDING,
-            cost = 0
-        )
-    )
-    val categories = listOf(
-        Categories(
-            taskNumber = 10,
-            categoryDescription = "Cleaning",
-
-            ),
-        Categories(
-            taskNumber = 5,
-            categoryDescription = "Cooking"
-        ),
-        Categories(
-            taskNumber = 3,
-            categoryDescription = "Shopping"
-        ),
-        Categories(
-            taskNumber = 2,
-            categoryDescription = "Laundry"
-        )
-    )
-    HomeScreen(
-        taskList = taskList,
-        categoryList = categories
-    )
-}
+//@Preview
+//@Composable
+//fun HomeScreenPreview() {
+//
+//    HomeScreen(
+//        taskList = taskList,
+//        categoryList = categories
+//    )
+//}

@@ -10,14 +10,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.polly.housecowork.compose.home.HomeScreen
-import com.polly.housecowork.utils.Route
 import com.polly.housecowork.utils.Screen
 
 
 @Composable
 fun HouseCoworkApp() {
     val navController = rememberNavController()
-    HouseCoworkNavHost(navController = navController)
+    HouseCoworkNavHost(
+        navController = navController
+    )
 
 }
 
