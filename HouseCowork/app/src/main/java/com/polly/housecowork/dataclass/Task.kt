@@ -11,11 +11,13 @@ data class Task (
     val deadline: Long,
     val taskStatus: TaskStatus,
     val cost: Int,
+    val isFinished: Boolean,
     val isClosed: Boolean
 )
 
 enum class TaskStatus {
     PENDING,
     IN_PROGRESS,
-    COMPLETED
+    COMPLETED,
+    CANCELLED
 }

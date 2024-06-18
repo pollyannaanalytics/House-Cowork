@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -19,7 +19,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.polly.housecowork.dataclass.Categories
@@ -30,6 +32,8 @@ import com.polly.housecowork.ui.utils.Avatar
 import com.polly.housecowork.ui.utils.StandardButton
 import com.polly.housecowork.viewmodel.HomeViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.polly.housecowork.ui.theme.LocalTypography
+import com.polly.housecowork.ui.utils.DinosaurType
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -46,8 +50,10 @@ fun HomeScreen(
         topBar = {
             HomeAppBar(
                 modifier = Modifier
-                    .padding(16.dp)
                     .fillMaxWidth()
+                    .fillMaxHeight(0.1f)
+                    .background(LocalColorScheme.current.background)
+                    .padding(16.dp)
             )
         }
     ) { innerPadding ->
@@ -60,38 +66,55 @@ fun HomeScreen(
             HomeScreenTitle(
                 Modifier.padding(16.dp)
             )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ) {
-                TaskButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 16.dp, end = 16.dp),
-                    onClick = {}
-                )
-                CalendarButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 16.dp, end = 16.dp),
-                    onClick = {}
-                )
-            }
+
             RecentTaskView(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 16.dp),
+                    .padding(bottom = 16.dp),
                 pagerState = pagerState,
                 pages = taskList.toTypedArray()
             )
-            TaskCategories(
+
+            TaskButton(
                 modifier = Modifier
-                    .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
-                    .fillMaxWidth(),
-                categoryList = categoryList
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                onClick = {}
+            )
+
+            TaskStats(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.5f),
+                dinosaurType = DinosaurType.Dinosaur,
+                taskStats = 0
             )
         }
+    }
+}
+
+@Composable
+fun HomeAppBar(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            modifier = Modifier
+                .fillMaxHeight()
+                .aspectRatio(1f),
+            imageVector = Icons.Default.Menu,
+            contentDescription = "Menu"
+        )
+
+        Avatar(
+            modifier = Modifier
+                .fillMaxHeight()
+                .aspectRatio(1f)
+
+        )
     }
 }
 
@@ -102,21 +125,13 @@ fun TaskButton(
 ) {
     StandardButton(
         modifier = modifier,
-        text = "Tasks",
+        text = "Start a task!",
         onClick = { /*TODO*/ },
-        contentPaddingValues = PaddingValues(16.dp)
+        contentPaddingValues = PaddingValues(16.dp),
+        textStyle = LocalTypography.current.displaySmall
     )
 }
 
-@Composable
-fun CalendarButton(modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
-    StandardButton(
-        modifier = modifier,
-        text = "Calendar",
-        onClick = { /*TODO*/ },
-        contentPaddingValues = PaddingValues(16.dp)
-    )
-}
 
 @Composable
 fun HomeScreenTitle(modifier: Modifier = Modifier) {
@@ -137,34 +152,11 @@ fun HomeScreenTitle(modifier: Modifier = Modifier) {
     }
 }
 
+@Preview
 @Composable
-fun HomeAppBar(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-    ) {
-        Icon(
-            modifier = Modifier.fillMaxSize(),
-            imageVector = Icons.Default.Menu,
-            contentDescription = "Menu"
-        )
-
-        Avatar(
-            modifier = Modifier
-                .fillMaxWidth(0.2f)
-                .aspectRatio(1f)
-        )
-    }
+fun HomeScreenPreview() {
+    HomeScreen(
+        taskList = listOf(),
+    )
 }
 
-
-//@Preview
-//@Composable
-//fun HomeScreenPreview() {
-//
-//    HomeScreen(
-//        taskList = taskList,
-//        categoryList = categories
-//    )
-//}

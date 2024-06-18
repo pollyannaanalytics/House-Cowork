@@ -11,9 +11,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.polly.housecowork.compose.HouseCoworkApp
 import com.polly.housecowork.ui.theme.HouseCoworkTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity @Inject constructor() : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +24,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+
 }
 
 @Composable
