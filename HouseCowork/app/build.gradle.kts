@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.retrofit)
     implementation(libs.hilt.android)
+    implementation(libs.google.font)
     ksp(libs.hilt.compiler)
    implementation(libs.hilt.navigation.compose)
     testImplementation(libs.junit)

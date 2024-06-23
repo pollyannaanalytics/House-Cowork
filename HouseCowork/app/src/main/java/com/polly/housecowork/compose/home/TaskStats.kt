@@ -48,7 +48,7 @@ fun TaskStats(
         ) {
             Text(
                 "Task Count",
-                style = LocalTypography.current.titleLarge
+                style = LocalTypography.current.headlineSmall
             )
             Row(
                 Modifier
@@ -100,10 +100,15 @@ fun TaskStats(
                 ) {
                     Text(
                         text = taskStatsState.toString(),
-                        style = LocalTypography.current.displaySmall
+                        style = LocalTypography.current.displayLarge
                     )
-                    Text(text = " / month")
+                    Text(
+                        modifier = Modifier.padding(start = 4.dp),
+                        text = " / month",
+                        style = LocalTypography.current.titleMedium
+                    )
                 }
+
 
             }
         }

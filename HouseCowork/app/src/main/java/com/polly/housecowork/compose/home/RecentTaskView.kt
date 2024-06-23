@@ -35,6 +35,7 @@ import androidx.compose.ui.util.lerp
 import com.polly.housecowork.R
 import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.ui.theme.LocalColorScheme
+import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.ui.utils.SingleTaskCard
 import com.polly.housecowork.ui.utils.dashBorder
 import kotlin.math.absoluteValue
@@ -129,6 +130,7 @@ fun EmptyTaskCard(modifier: Modifier) {
             Text(
                 modifier = Modifier.padding(8.dp),
                 text = "Wanna start a task?",
+                style = LocalTypography.current.labelMedium,
                 color = LocalColorScheme.current.tertiary
             )
         }

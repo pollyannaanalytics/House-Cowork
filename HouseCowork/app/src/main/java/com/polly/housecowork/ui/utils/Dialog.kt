@@ -69,7 +69,7 @@ fun SingleTaskCard(
             ) {
                 Text(
                     text = title,
-                    style = LocalTypography.current.titleMedium,
+                    style = LocalTypography.current.titleSmall,
                 )
                 if (imageURL.isNotEmpty()) {
                     Avatar(
@@ -96,7 +96,7 @@ fun SingleTaskCard(
             }
             Text(
                 text = description,
-                style = LocalTypography.current.bodyLarge,
+                style = LocalTypography.current.bodyMedium,
                 modifier = Modifier
                     .padding(
                         top = 16.dp,
@@ -133,7 +133,7 @@ fun SeeMoreButton(
             verticalAlignment = Alignment.CenterVertically){
             Text(
                 text = "See more",
-                style = LocalTypography.current.titleSmall,
+                style = LocalTypography.current.bodySmall,
                 color = LocalColorScheme.current.onBackground
             )
           Icon(
@@ -150,45 +150,6 @@ fun SeeMoreButton(
 
 }
 
-@Composable
-fun SummaryCard(
-    modifier: Modifier = Modifier,
-    number: Int,
-    description: String
-) {
-    Card(
-        modifier = modifier
-            .fillMaxSize()
-            .clip(RoundedCornerShape(16.dp))
-
-
-    ) {
-        Column(
-            modifier = Modifier
-                .background(LocalColorScheme.current.tertiary)
-                .fillMaxSize()
-                .padding(16.dp)
-            ,
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "${number}",
-                style = LocalTypography.current.displaySmall,
-                textAlign = TextAlign.Center,
-                color = Color.White
-            )
-            Text(
-                text = description,
-                style = LocalTypography.current.bodyLarge,
-                textAlign = TextAlign.Center,
-                color = Color.White
-            )
-
-        }
-
-    }
-}
 
 
 

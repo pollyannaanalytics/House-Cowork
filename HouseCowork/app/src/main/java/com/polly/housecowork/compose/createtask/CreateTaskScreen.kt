@@ -1,10 +1,12 @@
-package com.polly.housecowork.compose.addtask
+package com.polly.housecowork.compose.createtask
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,17 +15,21 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
+import com.polly.housecowork.ui.utils.Avatar
 
 
 @Composable
@@ -34,14 +40,11 @@ fun CreateTaskScreen(
         modifier
             .fillMaxSize(),
         topBar = {
-            Text(
-                text = "Create a Task",
-                style = LocalTypography.current.labelLarge,
+            CreateTaskAppBar(
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.1f)
                     .padding(16.dp)
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Center
-
             )
         }
     ) { innerPadding ->
@@ -52,12 +55,9 @@ fun CreateTaskScreen(
                 .padding(innerPadding),
             verticalArrangement = Arrangement.Top,
         ) {
-            CreateTextField(
+            CreateTaskTextField(
                 modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-
-
             )
 
         }
@@ -65,34 +65,9 @@ fun CreateTaskScreen(
     }
 }
 
-@Composable
-fun CreateTextField(
-    modifier: Modifier = Modifier
-) {
-    var taskName = remember { "" }
-    Row(modifier) {
-        BasicTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .clip(RoundedCornerShape(25.dp))
-                .background(LocalColorScheme.current.surface)
-                .padding(16.dp),
-            value = taskName, onValueChange = { input ->
-                taskName = input
-            },
-            maxLines = 1,
-            decorationBox = { innerTextField ->
-                if (taskName.isEmpty()) {
-                    Text(
-                        text = "Create a Task",
-                        color = LocalColorScheme.current.secondary
-                    )
-                }
-            }
-        )
-    }
-    }
+
+
+
 
 
 @Composable
@@ -118,6 +93,30 @@ fun SelectDate(
 
     }
 }
+
+@Composable
+fun CreateTaskAppBar(
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = "Close",
+            modifier = Modifier.fillMaxHeight()
+
+        )
+        Avatar(
+            modifier = Modifier
+                .fillMaxHeight()
+                .aspectRatio(1f).padding(8.dp)
+        )
+    }
+}
+
 
 @Preview
 @Composable

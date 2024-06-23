@@ -12,14 +12,14 @@ class HomeViewModel @Inject constructor(): ViewModel() {
     private val _clickEvent = MutableStateFlow<OnClickEvent>(OnClickEvent.OnTaskListClick)
     val clickEvent: StateFlow<OnClickEvent> = _clickEvent
 
-    private val _dinosaurType = MutableStateFlow<DinosaurType>(DinosaurType.DinosaurEgg)
+    private val _dinosaurType = MutableStateFlow<DinosaurType>(DinosaurType.Egg)
     val dinosaurType: StateFlow<DinosaurType> = _dinosaurType
     fun transferToDinosaur(taskCount: Int){
         when(taskCount){
-            in 0..5 -> _dinosaurType.value = DinosaurType.DinosaurEgg
-            in 6..10 -> _dinosaurType.value = DinosaurType.DinosaurBaby
-            in 11..15 -> _dinosaurType.value = DinosaurType.DinosaurAdult
-            else -> _dinosaurType.value = DinosaurType.DinosaurWithWings
+            in 0..5 -> _dinosaurType.value = DinosaurType.Egg
+            in 6..10 -> _dinosaurType.value = DinosaurType.EggOut
+            in 11..15 -> _dinosaurType.value = DinosaurType.Dinosaur
+            else -> _dinosaurType.value = DinosaurType.DinosaurKing
         }
     }
 

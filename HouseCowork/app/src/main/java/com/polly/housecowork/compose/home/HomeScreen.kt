@@ -128,7 +128,7 @@ fun TaskButton(
         text = "Start a task!",
         onClick = { /*TODO*/ },
         contentPaddingValues = PaddingValues(16.dp),
-        textStyle = LocalTypography.current.displaySmall
+        textStyle = LocalTypography.current.headlineLarge
     )
 }
 
@@ -140,12 +140,12 @@ fun HomeScreenTitle(modifier: Modifier = Modifier) {
     ) {
         Text(
             text = "Let's",
-            style = HCWTypo.displaySmall,
+            style = LocalTypography.current.titleSmall,
             color = LocalColorScheme.current.onBackground
         )
         Text(
             text = "House Cowork",
-            style = HCWTypo.headlineLarge,
+            style = LocalTypography.current.headlineMedium,
             modifier = Modifier.padding(top = 4.dp),
             color = LocalColorScheme.current.onBackground
         )
