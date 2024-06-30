@@ -8,6 +8,7 @@ val Gray90 = Color(0xFFD9D9D9)
 val Green90 = Color(0xFF809783)
 val Dim87 = Color(0xfffafafa)
 val Black = Color(0xff3A3636)
+val colorLightOnBackground = Color(0x99FFFFFF)
 
 val Yellow80 = Color(0xffe1ca72)
 val Brown30 = Color(0xffa4903e)

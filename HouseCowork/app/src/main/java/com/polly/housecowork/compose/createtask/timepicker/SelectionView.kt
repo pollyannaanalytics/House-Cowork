@@ -22,14 +22,16 @@ import com.polly.housecowork.ui.theme.LocalColorScheme
 fun SelectionView(
     modifier: Modifier = Modifier,
     selectorOptions: SelectorOptions,
-    rowOffset: Int
+    rowOffset: Int,
 ) {
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        Box(modifier = Modifier
-            .weight(rowOffset.toFloat())
-            .fillMaxWidth()
+
+        Box(
+            modifier = Modifier
+                .weight(rowOffset.toFloat())
+                .fillMaxWidth(),
         )
 
 
@@ -66,16 +68,3 @@ fun SelectionView(
     }
 }
 
-
-@Preview
-@Composable
-fun PreviewSelectionView() {
-    SelectionView(
-        selectorOptions = SelectorOptions(
-            width = 80f.dp,
-            alpha = 0.5f,
-            color = androidx.compose.ui.graphics.Color.White
-        ),
-        rowOffset = 1
-    )
-}

@@ -15,44 +15,53 @@ import com.polly.housecowork.ui.theme.LocalColorScheme
 
 
 @Composable
-fun SelectorView(modifier: Modifier = Modifier, offset: Int){
+fun SelectorView(modifier: Modifier = Modifier, offset: Int) {
     Column(
         modifier.fillMaxSize()
-    ){
+    ) {
+
         Box(
             modifier = Modifier
                 .weight(offset.toFloat())
                 .fillMaxWidth()
+                .alpha(0.7f)
                 .background(LocalColorScheme.current.background),
         )
+
+
         Column(
-            modifier = Modifier.weight(1.13f)
+            modifier = Modifier
+                .weight(1.13f)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            Box(
+                modifier = Modifier
+                    .height(0.5.dp)
+                    .alpha(0.5f)
+                    .background(LocalColorScheme.current.onBackground)
+                    .fillMaxWidth()
+            )
+            Box(
+                modifier = Modifier
+                    .height(0.5.dp)
+                    .alpha(0.5f)
+                    .background(LocalColorScheme.current.onBackground)
+                    .fillMaxWidth()
+            )
 
-            Box(
-                modifier = Modifier
-                    .height(0.5.dp)
-                    .alpha(0.5f)
-                    .background(LocalColorScheme.current.onSurface)
-                    .fillMaxWidth()
-            )
-            Box(
-                modifier = Modifier
-                    .height(0.5.dp)
-                    .alpha(0.5f)
-                    .background(LocalColorScheme.current.onSurface)
-                    .fillMaxWidth()
-            )
         }
+
 
 
         Box(
             modifier = Modifier
                 .weight(offset.toFloat())
                 .fillMaxWidth()
-                .background(LocalColorScheme.current.background),
+                .alpha(0.7f)
+                .background(LocalColorScheme.current.background)
+
+        ,
         )
     }
 }
