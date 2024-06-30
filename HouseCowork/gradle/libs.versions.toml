@@ -15,6 +15,10 @@ ksp = "1.9.23-1.0.20"
 hilt-version = "2.51.1"
 hiltNavigationCompose = "1.2.0"
 googleFont = "1.6.8"
+firebaseBom = "32.4.0"
+gson = "2.8.6"
+gmsPlugin = "4.4.1"
+googleMaterial = "1.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,10 +43,18 @@ hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", ve
 retrofit = { module = "com.squareup.retrofit2:retrofit", version = "2.9.0" }
 google-font = {module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "googleFont"}
 
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-remoteConfig = { group = "com.google.firebase", name = "firebase-config-ktx" }
+google-material = { group = "com.google.android.material", name = "material", version.ref = "googleMaterial" }
+
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-version" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
 
 
