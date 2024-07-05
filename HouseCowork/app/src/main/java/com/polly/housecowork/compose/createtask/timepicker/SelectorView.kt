@@ -39,14 +39,12 @@ fun SelectorView(modifier: Modifier = Modifier, offset: Int) {
                 modifier = Modifier
                     .height(0.5.dp)
                     .alpha(0.5f)
-                    .background(LocalColorScheme.current.onBackground)
                     .fillMaxWidth()
             )
             Box(
                 modifier = Modifier
                     .height(0.5.dp)
                     .alpha(0.5f)
-                    .background(LocalColorScheme.current.onBackground)
                     .fillMaxWidth()
             )
 

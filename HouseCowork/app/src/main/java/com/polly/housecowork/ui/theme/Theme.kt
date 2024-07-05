@@ -19,8 +19,9 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val LightColorScheme = lightColorScheme(
+    onPrimary = DeepYellow,
     primary = Yellow,
-    secondary = Gray90,
+    secondary = DeepGrey,
     tertiary = Green90,
     background = YellowWhite,
     onBackground = Black,

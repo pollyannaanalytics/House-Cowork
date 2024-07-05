@@ -7,3 +7,5 @@ data class UserInfo(
     val email: String,
     val imageURL: String
 )
+
+

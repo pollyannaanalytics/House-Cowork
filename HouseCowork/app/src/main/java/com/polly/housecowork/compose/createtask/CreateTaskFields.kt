@@ -2,14 +2,12 @@ package com.polly.housecowork.compose.createtask
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -49,16 +47,3 @@ fun CreateTaskTextField(
     }
 }
 
-
-@Composable
-fun AssignTextField(modifier: Modifier, userList: List<String>){
-    Row(modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
-        ){
-        Text(text = "Assign to:")
-        DropdownMenu(expanded = userList.isNotEmpty(), onDismissRequest = { /*TODO*/ }) {
-            
-        }
-    }
-
-}
