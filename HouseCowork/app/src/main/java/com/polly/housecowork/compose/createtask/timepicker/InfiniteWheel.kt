@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.polly.housecowork.dataclass.SelectorOptions
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @Composable
 fun InfiniteWheel(
@@ -43,7 +44,7 @@ fun InfiniteWheel(
     val haptic = LocalHapticFeedback.current
 
     val count = if (isEndless) itemCount else itemCount + 2 * rowOffset
-    val rowOffsetCount = maxOf(1, minOf(rowOffset, 4))
+    val rowOffsetCount = maxOf(1, minOf(rowOffset, 3))
     val rowCount = ((rowOffsetCount * 2) + 1)
     val startIndex =
         if (isEndless) currentSelect + (itemCount * 1000) - rowOffset else currentSelect

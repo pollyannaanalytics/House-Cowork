@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -23,17 +22,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
 import com.polly.housecowork.dataclass.Categories
 import com.polly.housecowork.dataclass.Task
-import com.polly.housecowork.ui.theme.HCWTypo
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.utils.Avatar
-import com.polly.housecowork.ui.utils.StandardButton
 import com.polly.housecowork.viewmodel.HomeViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.ui.utils.DinosaurType
+import com.polly.housecowork.ui.utils.PrimaryMediumButton
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -123,11 +120,10 @@ fun TaskButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
-    StandardButton(
+    PrimaryMediumButton(
         modifier = modifier,
         text = "Start a task!",
         onClick = { /*TODO*/ },
-        contentPaddingValues = PaddingValues(16.dp),
         textStyle = LocalTypography.current.headlineLarge
     )
 }

@@ -44,9 +44,14 @@ val HCWTypo = Typography(
         fontSize = 20.sp,
         fontFamily = fontFamily
     ),
+    labelSmall = TextStyle(
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 18.sp,
+        fontFamily = fontFamily
+    ),
     titleSmall = TextStyle(
         fontWeight = FontWeight.SemiBold,
-        fontSize = 18.sp,
+        fontSize = 16.sp,
         fontFamily = fontFamily
 
     ),

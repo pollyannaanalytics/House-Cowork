@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.polly.housecowork.ui.theme.LocalColorScheme
 
@@ -25,7 +26,6 @@ fun SelectorView(modifier: Modifier = Modifier, offset: Int) {
                 .weight(offset.toFloat())
                 .fillMaxWidth()
                 .alpha(0.7f)
-                .background(LocalColorScheme.current.background),
         )
 
 
@@ -56,10 +56,7 @@ fun SelectorView(modifier: Modifier = Modifier, offset: Int) {
             modifier = Modifier
                 .weight(offset.toFloat())
                 .fillMaxWidth()
-                .alpha(0.7f)
-                .background(LocalColorScheme.current.background)
-
-        ,
+                .alpha(0.7f),
         )
     }
 }

@@ -2,56 +2,95 @@ package com.polly.housecowork.ui.utils
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.polly.housecowork.ui.theme.HCWShapes
 import com.polly.housecowork.ui.theme.LocalColorScheme
+import com.polly.housecowork.ui.theme.LocalShapes
 import com.polly.housecowork.ui.theme.LocalTypography
 
 @Composable
 fun StandardButton(
     modifier: Modifier = Modifier,
-    contentPaddingValues: PaddingValues,
     enabled: Boolean = true,
+    buttonColor: Color = LocalColorScheme.current.primary,
+    buttonShape: Shape = LocalShapes.current.medium,
     text: String,
     textStyle: TextStyle,
+    textColor: Color = LocalColorScheme.current.onBackground,
     onClick: () -> Unit = {}
 ) {
     TextButton(
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-        ,
-        contentPadding = contentPaddingValues,
-        shape = HCWShapes.medium,
+        modifier = modifier,
+        shape = buttonShape,
         enabled = enabled,
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(LocalColorScheme.current.primary),
+        colors = ButtonDefaults.buttonColors(buttonColor),
     ) {
         Text(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(4.dp),
             text = text,
             style = textStyle,
-            color = LocalColorScheme.current.onBackground
+            color = textColor
         )
     }
 }
 
 @Composable
-@Preview
-fun StandardButtonPreview() {
+fun PrimaryMediumButton(
+    modifier: Modifier,
+    text: String,
+    onClick: () -> Unit,
+    textStyle: TextStyle
+) {
     StandardButton(
-        text = "Button",
-        onClick = {},
-        contentPaddingValues = PaddingValues(16.dp),
-        textStyle = LocalTypography.current.titleMedium
+        modifier = modifier,
+        text = text,
+        textStyle = textStyle,
+        onClick = onClick,
+        buttonShape = LocalShapes.current.medium
+    )
+}
+
+@Composable
+fun PositiveButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    textStyle: TextStyle,
+    onClick: () -> Unit,
+) {
+    StandardButton(
+        modifier,
+        text = text,
+        textStyle = textStyle,
+        textColor = Color.White,
+        onClick = onClick,
+        buttonShape = LocalShapes.current.small,
+        buttonColor = LocalColorScheme.current.onPrimary
+    )
+}
+
+@Composable
+fun NegativeButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    textStyle: TextStyle,
+    onClick: () -> Unit,
+) {
+    StandardButton(
+        modifier,
+        text = text,
+        textStyle = textStyle,
+        textColor = LocalColorScheme.current.onBackground,
+        onClick = onClick,
+        buttonShape = LocalShapes.current.small,
+        buttonColor = LocalColorScheme.current.secondary
     )
 }

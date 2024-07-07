@@ -26,6 +26,7 @@ private val LightColorScheme = lightColorScheme(
     background = YellowWhite,
     onBackground = Black,
     surface = Dim87,
+    surfaceTint = SlightGrey,
     onSurface = colorLightOnBackground
 )
 
@@ -42,7 +43,7 @@ private val DarkColorScheme = darkColorScheme(
 private val defaultTypography = HCWTypo
 val LocalTypography = compositionLocalOf { defaultTypography }
 
-private val defaultShapes = Shapes()
+private val defaultShapes = HCWShapes
 val LocalShapes = compositionLocalOf { defaultShapes }
 
 private val defaultColorScheme = LightColorScheme

@@ -20,11 +20,10 @@ import com.polly.housecowork.ui.theme.LocalColorScheme
 @ExperimentalMaterial3Api
 fun HCWDatePicker(
     modifier: Modifier = Modifier,
-    state: DatePickerState
+    datePickerState: DatePickerState
 ) {
     Card(
         modifier
-            .padding(16.dp)
             .shadow(16.dp),
         shape = RoundedCornerShape(16.dp),
     ) {
@@ -37,11 +36,11 @@ fun HCWDatePicker(
                 modifier = Modifier
                     .background(LocalColorScheme.current.surface)
                     .fillMaxWidth(),
-                state = state,
+                state = datePickerState,
                 colors = DatePickerDefaults.colors(
                     selectedDayContainerColor = LocalColorScheme.current.onPrimary,
 
-                )
+                ),
             )
         }
 
