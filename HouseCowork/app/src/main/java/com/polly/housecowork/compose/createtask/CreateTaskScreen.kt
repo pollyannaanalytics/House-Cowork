@@ -24,6 +24,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -35,9 +36,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.polly.housecowork.compose.createtask.datepicker.HCWDatePicker
 import com.polly.housecowork.compose.createtask.timepicker.TimePickerBottomSheet
-import com.polly.housecowork.dataclass.UserInfo
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.ui.utils.NegativeButton
@@ -48,12 +49,10 @@ import java.time.Instant
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateTaskScreen(modifier: Modifier = Modifier) {
-    val testUsers = listOf(
-        UserInfo(0L, "User 1", "email", "url"),
-        UserInfo(1L, "User 2", "email", "url"),
-        UserInfo(2L, "User 3", "email", "url"),
-    )
+fun CreateTaskScreen(
+    modifier: Modifier = Modifier,
+    viewModel: CreateTaskViewModel = hiltViewModel()
+) {
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = Instant.now().toEpochMilli()
     )
@@ -66,6 +65,10 @@ fun CreateTaskScreen(modifier: Modifier = Modifier) {
     var scheduleTime by remember {
         mutableLongStateOf(0L)
     }
+    val taskTitleState by viewModel.taskTitle.collectAsState()
+    val assignedUser by viewModel.assignedUser.collectAsState()
+    val assignedUsers by viewModel.assignedUsers.collectAsState()
+    var dueDate = viewModel.dueTime.collectAsState()
 
     Scaffold(
         modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -110,13 +113,19 @@ fun CreateTaskScreen(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CreateTaskTextField()
+            CreateTaskTextField(
+                taskTitle = { taskTitleState },
+                titleChange = { viewModel.setTaskTitle(it) }
+            )
             AssignDrawer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                itemList = testUsers.map { it.name },
-                onItemClick = {}
+                itemList = { assignedUsers },
+                selectedUserName = { assignedUser?.name },
+                onAssigneeClick = {
+                    viewModel.setAssignedUser(it)
+                }
             )
             HCWDatePicker(
                 modifier = Modifier
@@ -139,7 +148,8 @@ fun CreateTaskScreen(modifier: Modifier = Modifier) {
             ) {
                 NegativeButton(
                     text = "Cancel",
-                    textStyle = LocalTypography.current.labelSmall) {
+                    textStyle = LocalTypography.current.labelSmall
+                ) {
                 }
                 Spacer(
                     modifier = Modifier
@@ -147,7 +157,8 @@ fun CreateTaskScreen(modifier: Modifier = Modifier) {
                 )
                 PositiveButton(
                     text = "Done",
-                    textStyle = LocalTypography.current.labelSmall) {
+                    textStyle = LocalTypography.current.labelSmall
+                ) {
 
                 }
             }

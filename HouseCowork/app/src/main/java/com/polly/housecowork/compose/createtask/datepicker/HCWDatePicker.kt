@@ -39,7 +39,6 @@ fun HCWDatePicker(
                 state = datePickerState,
                 colors = DatePickerDefaults.colors(
                     selectedDayContainerColor = LocalColorScheme.current.onPrimary,
-
                 ),
             )
         }

@@ -31,9 +31,13 @@ import com.polly.housecowork.ui.theme.LocalTypography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AssignDrawer(modifier: Modifier, itemList: List<String>, onItemClick: (Int) -> Unit) {
+fun AssignDrawer(
+    modifier: Modifier,
+    itemList: () -> List<String>,
+    selectedUserName: () -> String?,
+    onAssigneeClick: (String) -> Unit
+) {
     var shouldExpanded by remember { mutableStateOf(false) }
-    val (selectedUser, setSelectedUser) = remember { mutableStateOf("") }
 
     Row(
         modifier = modifier
@@ -60,7 +64,7 @@ fun AssignDrawer(modifier: Modifier, itemList: List<String>, onItemClick: (Int) 
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
-                selectedUserName = selectedUser,
+                selectedUserName = { selectedUserName() },
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = shouldExpanded)
                 }
@@ -70,12 +74,12 @@ fun AssignDrawer(modifier: Modifier, itemList: List<String>, onItemClick: (Int) 
                     .background(LocalColorScheme.current.surface),
                 expanded = shouldExpanded,
                 onDismissRequest = { shouldExpanded = false }) {
-                itemList.forEachIndexed { index, user ->
+                itemList().forEachIndexed { index, user ->
                     DropdownMenuItem(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(LocalColorScheme.current.surface),
-                        text = { Text(text = user) },
+                        text = { Text(text = "everyone") },
                         leadingIcon = {
                             Icon(
                                 Icons.Default.AccountCircle,
@@ -83,8 +87,8 @@ fun AssignDrawer(modifier: Modifier, itemList: List<String>, onItemClick: (Int) 
                             )
                         },
                         onClick = {
-                            setSelectedUser(user)
-                            onItemClick(index)
+                            val selectedUser = itemList()[index]
+                            onAssigneeClick(selectedUser)
                             shouldExpanded = false
                         }
                     )
@@ -97,7 +101,7 @@ fun AssignDrawer(modifier: Modifier, itemList: List<String>, onItemClick: (Int) 
 @Composable
 fun DefaultAssignItem(
     modifier: Modifier = Modifier,
-    selectedUserName: String,
+    selectedUserName: () -> String?,
     trailingIcon: @Composable () -> Unit
 ) {
     Box(
@@ -112,11 +116,11 @@ fun DefaultAssignItem(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
 
-            if (selectedUserName.isEmpty()) {
-                Text(modifier = Modifier.padding(start = 4.dp), text = "everyone")
-            } else {
-                Text(modifier = Modifier.padding(start = 4.dp), text = selectedUserName)
-            }
+            Text(
+                modifier = Modifier.padding(start = 4.dp),
+                text = selectedUserName() ?: "everyone"
+            )
+
             trailingIcon()
         }
     }

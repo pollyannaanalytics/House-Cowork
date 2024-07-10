@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -18,9 +17,10 @@ import com.polly.housecowork.ui.theme.LocalColorScheme
 
 @Composable
 fun CreateTaskTextField(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    taskTitle: () -> String,
+    titleChange: (String) -> Unit
 ) {
-    var taskName = remember { "" }
     Row(modifier) {
         BasicTextField(
             modifier = Modifier
@@ -31,12 +31,11 @@ fun CreateTaskTextField(
                 .background(LocalColorScheme.current.surface)
                 .border(1.dp, LocalColorScheme.current.secondary, RoundedCornerShape(16.dp))
                 .padding(16.dp),
-            value = taskName, onValueChange = { input ->
-                taskName = input
-            },
+            value = taskTitle(),
+            onValueChange = { input -> titleChange(input) },
             maxLines = 1,
-            decorationBox = { innerTextField ->
-                if (taskName.isEmpty()) {
+            decorationBox = {
+                if (taskTitle().isEmpty()) {
                     Text(
                         text = "Create a Task",
                         color = LocalColorScheme.current.secondary
