@@ -3,6 +3,7 @@ package com.polly.housecowork.compose.createtask
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,8 +55,11 @@ import java.time.Instant
 @Composable
 fun CreateTaskScreen(
     modifier: Modifier = Modifier,
-    viewModel: CreateTaskViewModel = hiltViewModel()
+    viewModel: CreateTaskViewModel = hiltViewModel(),
+    navigateOnClick: () -> Unit = {}
 ) {
+    val haptic = LocalHapticFeedback.current
+    val focusManager = LocalFocusManager.current
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = Instant.now().toEpochMilli()
     )
@@ -67,11 +74,15 @@ fun CreateTaskScreen(
     }
     val taskTitleState by viewModel.taskTitle.collectAsState()
     val assignedUser by viewModel.assignedUser.collectAsState()
-    val assignedUsers by viewModel.assignedUsers.collectAsState()
-    var dueDate = viewModel.dueTime.collectAsState()
+    val allUsers by viewModel.allUsers.collectAsState()
+    val dueTime by viewModel.dueTime.collectAsState()
+
+    var errorState by remember {
+        mutableStateOf<ErrorState>(ErrorState.None)
+    }
 
     Scaffold(
-        modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier.nestedScroll(scrollBehavior.nestedScrollConnection).clickable { focusManager.clearFocus() },
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -82,8 +93,8 @@ fun CreateTaskScreen(
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Close",
-                        modifier = Modifier.fillMaxHeight()
-
+                        modifier = Modifier.fillMaxHeight(),
+                        tint = LocalColorScheme.current.onBackground
                     )
                 },
                 title = {
@@ -111,22 +122,32 @@ fun CreateTaskScreen(
                 .padding(top = innerPadding.calculateTopPadding())
                 .background(LocalColorScheme.current.background),
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.Start
         ) {
             CreateTaskTextField(
-                taskTitle = { taskTitleState },
-                titleChange = { viewModel.setTaskTitle(it) }
+                onTextChange = { titleChange -> viewModel.setTaskTitle(titleChange) },
+                errorState = { errorState },
+                clearFocus = { focusManager.clearFocus()}
             )
+            if (errorState is ErrorState.TaskTitleEmpty) {
+                Text(
+                    text = "Task title cannot be empty",
+                    style = LocalTypography.current.bodyMedium,
+                    color = LocalColorScheme.current.error,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                )
+            }
             AssignDrawer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                itemList = { assignedUsers },
+                itemList = { allUsers },
                 selectedUserName = { assignedUser?.name },
                 onAssigneeClick = {
                     viewModel.setAssignedUser(it)
                 }
             )
+
             HCWDatePicker(
                 modifier = Modifier
                     .padding(top = 16.dp, start = 16.dp, end = 16.dp)
@@ -135,9 +156,11 @@ fun CreateTaskScreen(
             )
 
             TaskDueTime(
-                modifier = Modifier.padding(16.dp)
-            ) { showTimePicker ->
-                showTickPickerBottomSheet = showTimePicker
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                showTickPickerBottomSheet = enableTimePicker(showTickPickerBottomSheet)
             }
 
             Row(
@@ -150,6 +173,7 @@ fun CreateTaskScreen(
                     text = "Cancel",
                     textStyle = LocalTypography.current.labelSmall
                 ) {
+                    navigateOnClick()
                 }
                 Spacer(
                     modifier = Modifier
@@ -159,7 +183,16 @@ fun CreateTaskScreen(
                     text = "Done",
                     textStyle = LocalTypography.current.labelSmall
                 ) {
-
+                    if (taskTitleState.isNotEmpty() && dueTime < System.currentTimeMillis()) {
+                        navigateOnClick()
+                        return@PositiveButton
+                    }
+                    if (taskTitleState.isEmpty()) {
+                        errorState = ErrorState.TaskTitleEmpty
+                    } else if (dueTime < System.currentTimeMillis()) {
+                        errorState = ErrorState.DueTimeExpired
+                    }
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 }
             }
 
@@ -177,6 +210,17 @@ fun CreateTaskScreen(
             }
         }
     }
+}
+
+
+sealed class ErrorState {
+    data object None : ErrorState()
+    data object TaskTitleEmpty : ErrorState()
+    data object DueTimeExpired : ErrorState()
+}
+
+private fun enableTimePicker(showTickPickerBottomSheet: Boolean): Boolean {
+    return !showTickPickerBottomSheet
 }
 
 

@@ -6,11 +6,15 @@ sealed class Screen(
     val pageTitle: String,
     val route: String,
     val navArgument: List<NamedNavArgument> = emptyList()
-    ){
-    data object Home: Screen(
+) {
+    data object Home : Screen(
         pageTitle = "",
-        route = Route.HOME)
-    data object AddTask: Screen(
+        route = Route.HOME
+    )
+
+    data object CreateTask : Screen(
         pageTitle = "Create a Task",
         route = Route.ADD_TASK)
+
+
 }

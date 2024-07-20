@@ -3,6 +3,7 @@ package com.polly.housecowork.compose.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.draggable2D
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,7 +39,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     taskList: List<Task> = listOf(),
     homeViewModel: HomeViewModel = hiltViewModel(),
-    categoryList: List<Categories> = listOf()
+    categoryList: List<Categories> = listOf(),
+    onTaskClick: () -> Unit = {}
 ) {
     val pagerState = rememberPagerState(pageCount = { taskList.size })
     Scaffold(
@@ -58,33 +60,36 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(LocalColorScheme.current.background)
-                .padding(innerPadding),
+                .padding(innerPadding)
+            ,
         ) {
             HomeScreenTitle(
-                Modifier.padding(16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             )
 
             RecentTaskView(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .weight(1f)
+                    .fillMaxWidth(),
                 pagerState = pagerState,
                 pages = taskList.toTypedArray()
             )
 
             TaskButton(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp),
-                onClick = {}
+                    .weight(1f)
+                    .fillMaxWidth(),
+                onClick = { onTaskClick() }
             )
 
             TaskStats(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .weight(1f)
                     .fillMaxWidth()
-                    .fillMaxHeight(0.5f),
-                dinosaurType = DinosaurType.Dinosaur,
+                ,
+                dinosaurType = DinosaurType.Egg,
                 taskStats = 0
             )
         }
@@ -121,9 +126,9 @@ fun TaskButton(
     onClick: () -> Unit = {}
 ) {
     PrimaryMediumButton(
-        modifier = modifier,
+        modifier = modifier.padding(16.dp),
         text = "Start a task!",
-        onClick = { /*TODO*/ },
+        onClick = { onClick() },
         textStyle = LocalTypography.current.headlineLarge
     )
 }

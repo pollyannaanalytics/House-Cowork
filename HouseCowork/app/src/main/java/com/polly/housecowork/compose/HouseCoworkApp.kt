@@ -1,6 +1,8 @@
 package com.polly.housecowork.compose
 
 import android.app.Activity
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -16,6 +18,7 @@ import com.polly.housecowork.compose.home.HomeScreen
 import com.polly.housecowork.utils.Screen
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HouseCoworkApp() {
     val navController = rememberNavController()
@@ -31,7 +34,7 @@ fun HouseCoworkApp() {
 }
 
 
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HouseCoworkNavHost(
     modifier: Modifier,
@@ -46,11 +49,17 @@ fun HouseCoworkNavHost(
         composable(Screen.Home.route) {
             HomeScreen(
                 modifier = Modifier.fillMaxSize(),
+                onTaskClick = {
+                    navController.navigate(Screen.CreateTask.route)
+                }
             )
         }
-        composable(Screen.AddTask.route) {
+        composable(Screen.CreateTask.route) {
             CreateTaskScreen(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                navigateOnClick = {
+                    navController.popBackStack()
+                }
             )
         }
     }

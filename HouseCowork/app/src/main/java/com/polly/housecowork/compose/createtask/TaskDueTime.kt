@@ -24,7 +24,7 @@ import java.util.Date
 fun TaskDueTime(
     modifier: Modifier = Modifier,
     scheduledDueTime: Long = 0L,
-    showTimePicker: (Boolean) -> Unit = {}
+    showTimePicker: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var dueTimeState by remember {
@@ -36,9 +36,8 @@ fun TaskDueTime(
     var dueMinuteState by remember {
         mutableLongStateOf(0L)
     }
-    var enableTimePicker by remember {
-        mutableStateOf(false)
-    }
+
+
 
     val simpleHourFormat = SimpleDateFormat("HH")
 
@@ -54,10 +53,10 @@ fun TaskDueTime(
     }
     Row(
         modifier = modifier.clickable {
-            enableTimePicker = !enableTimePicker
-            showTimePicker(enableTimePicker)
+            showTimePicker()
         },
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center
     ) {
         Text(
             modifier = Modifier

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,15 +50,16 @@ fun RecentTaskView(
     pagerState: PagerState,
     pages: Array<Task>,
 ) {
-    var currentPage by remember {
-        mutableStateOf(0)
+    val currentPage by remember {
+        mutableIntStateOf(0)
     }
     Column(
-        modifier,
-        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+        modifier
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if (currentPage == 0) {
-            EmptyTaskCard(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+            EmptyTaskCard()
             return
         }
         HorizontalPager(
@@ -66,10 +69,6 @@ fun RecentTaskView(
             SingleTaskCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(
-                        start = 16.dp,
-                        end = 16.dp,
-                    )
                     .graphicsLayer {
                         val pageOffset = (
                                 (pagerState.currentPage - task) + pagerState
@@ -108,7 +107,7 @@ fun RecentTaskView(
 }
 
 @Composable
-fun EmptyTaskCard(modifier: Modifier) {
+fun EmptyTaskCard(modifier: Modifier = Modifier) {
     Card(
         modifier
             .dashBorder(width = 4.dp)
@@ -117,14 +116,14 @@ fun EmptyTaskCard(modifier: Modifier) {
         Row(
             Modifier
                 .background(LocalColorScheme.current.background)
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(16.dp),
             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 modifier = Modifier.wrapContentHeight().fillMaxWidth(0.4f),
-                painter = painterResource(id = R.drawable.dinosaur),
+                painter = painterResource(id = R.drawable.dinasaur_out_of_the_door),
                 contentDescription = "dinosaurs"
             )
             Text(

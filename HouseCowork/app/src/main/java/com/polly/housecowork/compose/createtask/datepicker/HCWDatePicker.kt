@@ -13,6 +13,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.polly.housecowork.ui.theme.LocalColorScheme
 
@@ -39,6 +40,8 @@ fun HCWDatePicker(
                 state = datePickerState,
                 colors = DatePickerDefaults.colors(
                     selectedDayContainerColor = LocalColorScheme.current.onPrimary,
+                    dayContentColor = LocalColorScheme.current.onBackground,
+                    selectedDayContentColor = Color.White,
                 ),
             )
         }

@@ -38,6 +38,7 @@ fun TaskStats(
     }
     Card(
         modifier
+            .padding(16.dp)
             .border(1.dp, LocalColorScheme.current.tertiary, RoundedCornerShape(16.dp))
     ) {
         Column(
@@ -47,15 +48,15 @@ fun TaskStats(
                 .padding(16.dp)
         ) {
             Text(
-                "Task Count",
+                modifier = Modifier.padding(bottom = 8.dp),
+                text = "Task Count",
                 style = LocalTypography.current.headlineSmall
             )
             Row(
                 Modifier
-                    .padding(8.dp)
                     .fillMaxWidth(),
                 verticalAlignment = androidx.compose.ui.Alignment.Bottom,
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center
             ) {
                 when (dinosaurTypeState) {
                     is DinosaurType.Egg -> {
@@ -94,11 +95,8 @@ fun TaskStats(
                         )
                     }
                 }
-                Row(
-                    Modifier.padding(start = 8.dp),
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-                ) {
                     Text(
+                        modifier = Modifier.padding(start = 16.dp),
                         text = taskStatsState.toString(),
                         style = LocalTypography.current.displayLarge
                     )
@@ -107,8 +105,6 @@ fun TaskStats(
                         text = " / month",
                         style = LocalTypography.current.titleMedium
                     )
-                }
-
 
             }
         }

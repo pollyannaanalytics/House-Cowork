@@ -27,7 +27,8 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Black,
     surface = Dim87,
     surfaceTint = SlightGrey,
-    onSurface = colorLightOnBackground
+    onSurface = colorLightOnBackground,
+    error = Red
 )
 
 private val DarkColorScheme = darkColorScheme(
