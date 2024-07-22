@@ -3,6 +3,7 @@ package com.polly.housecowork.compose.createtask.timepicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -48,9 +49,8 @@ import java.util.Date
 @Composable
 fun TimePickerBottomSheet(
     modifier: Modifier = Modifier,
-    selectedDate: () -> Long?,
-    onTimeSelected: (Long) -> Unit,
-    showBottomSheet: (Boolean) -> Unit
+    showBottomSheet: (Boolean) -> Unit,
+    onTimeSelected: (Int, Int) -> Unit
 ) {
     val modalBottomSheetState = rememberModalBottomSheetState()
 
@@ -63,13 +63,26 @@ fun TimePickerBottomSheet(
         },
         content = {
             Column {
-
-                Text(
+                Row(
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(16.dp),
-                    text = "Select time",
-                    style = LocalTypography.current.labelSmall
-                )
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Select time",
+                        style = LocalTypography.current.labelSmall
+                    )
+                    Text(
+                        modifier = Modifier.clickable {
+                            showBottomSheet(false)
+                        },
+                        text = "Done",
+                        style = LocalTypography.current.labelSmall,
+                        color = LocalColorScheme.current.secondary
+                    )
+                }
+
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -77,15 +90,10 @@ fun TimePickerBottomSheet(
                 )
                 WheelTimePicker(
                     onTimeChanged = { hour, minute ->
-                        selectedDate()?.let {
-                            val timestamp = generateTimestamp(it, hour, minute)
-                            onTimeSelected(timestamp)
-                        }
+                        onTimeSelected(hour, minute)
                     }
                 )
             }
-
-
         }
     )
 }
@@ -183,17 +191,6 @@ fun WheelTimePicker(
         ) {}
         SelectorView(offset = offset)
     }
-}
-
-fun generateTimestamp(selectedDate: Long, selectedHour: Int, selectedMinute: Int): Long {
-   val calendar = Calendar.getInstance().apply {
-       timeInMillis = selectedDate
-       set(Calendar.HOUR_OF_DAY, selectedHour)
-       set(Calendar.MINUTE, selectedMinute)
-
-   }
-    return calendar.timeInMillis
-
 }
 
 @Composable

@@ -1,5 +1,6 @@
 package com.polly.housecowork.ui.utils
 
+import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -124,19 +126,20 @@ fun SeeMoreButton(
             .background(LocalColorScheme.current.primary),
         onClick = onClick,
     ) {
-        Row (
+        Row(
             modifier = Modifier
                 .wrapContentHeight()
                 .fillMaxWidth()
                 .padding(end = 16.dp),
             horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically){
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = "See more",
                 style = LocalTypography.current.bodySmall,
                 color = LocalColorScheme.current.onBackground
             )
-          Icon(
+            Icon(
                 painter = painterResource(id = R.drawable.down_arrow_svgrepo_com__3_),
                 contentDescription = "see more",
                 tint = LocalColorScheme.current.onBackground,
@@ -150,15 +153,37 @@ fun SeeMoreButton(
 
 }
 
+@Composable
+fun HCWAlertDialog(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit = {},
+    titleText: String,
+    contentText: String
+) {
+    AlertDialog(
+        modifier = modifier,
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(
+                onClick = onDismissRequest
+            ) {
+                Text(
+                    text = "Confirm", color = LocalColorScheme.current.onPrimary)
+            }
+        },
+        title = {
+            Text(
+                text = titleText,
+                style = LocalTypography.current.headlineSmall,
+                color = LocalColorScheme.current.onBackground
+            )
+        },
+        text = {
+            Text(text = contentText, style = LocalTypography.current.bodyLarge)
+        }
+    )
+}
 
-
-
-
-//@Composable
-//@Preview
-//fun SummaryCardPreview() {
-//    SummaryCard(number = 12, description = "Task this week")
-//}
 
 @Composable
 @Preview

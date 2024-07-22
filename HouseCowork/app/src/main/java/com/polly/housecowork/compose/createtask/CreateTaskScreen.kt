@@ -1,6 +1,9 @@
 package com.polly.housecowork.compose.createtask
 
+import android.content.Context
 import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,24 +22,24 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,9 +48,9 @@ import com.polly.housecowork.compose.createtask.datepicker.HCWDatePicker
 import com.polly.housecowork.compose.createtask.timepicker.TimePickerBottomSheet
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
+import com.polly.housecowork.ui.utils.HCWAlertDialog
 import com.polly.housecowork.ui.utils.NegativeButton
 import com.polly.housecowork.ui.utils.PositiveButton
-import java.time.Instant
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -58,10 +61,10 @@ fun CreateTaskScreen(
     viewModel: CreateTaskViewModel = hiltViewModel(),
     navigateOnClick: () -> Unit = {}
 ) {
-    val haptic = LocalHapticFeedback.current
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = Instant.now().toEpochMilli()
+        initialSelectedDateMillis = viewModel.dueTime.collectAsState().value
     )
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(
         rememberTopAppBarState()
@@ -69,20 +72,41 @@ fun CreateTaskScreen(
     var showTickPickerBottomSheet by remember {
         mutableStateOf(false)
     }
-    var scheduleTime by remember {
-        mutableLongStateOf(0L)
-    }
-    val taskTitleState by viewModel.taskTitle.collectAsState()
+    val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+
+    val scrollState = rememberScrollState()
+    val shouldScrollTop by viewModel.shouldScrollTop.collectAsState()
     val assignedUser by viewModel.assignedUser.collectAsState()
     val allUsers by viewModel.allUsers.collectAsState()
-    val dueTime by viewModel.dueTime.collectAsState()
+    val isTitleEmpty by viewModel.isTitleEmpty.collectAsState()
+    val isDueTimeExpired by viewModel.isDueTimeExpired.collectAsState()
 
-    var errorState by remember {
-        mutableStateOf<ErrorState>(ErrorState.None)
+    val dueHour by viewModel.dueHour.collectAsState()
+    val dueMinute by viewModel.dueMinute.collectAsState()
+
+    LaunchedEffect(shouldScrollTop) {
+        if (shouldScrollTop) {
+            scrollState.animateScrollTo(0)
+        }
+    }
+
+    LaunchedEffect(isTitleEmpty) {
+        if (isTitleEmpty) {
+            vibrator.cancel()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val effect = VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_TICK)
+                vibrator.vibrate(effect)
+            } else {
+                vibrator.vibrate(100)
+            }
+        }
     }
 
     Scaffold(
-        modifier.nestedScroll(scrollBehavior.nestedScrollConnection).clickable { focusManager.clearFocus() },
+        modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .clickable { focusManager.clearFocus() },
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -90,12 +114,15 @@ fun CreateTaskScreen(
                     titleContentColor = LocalColorScheme.current.onBackground
                 ),
                 navigationIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
-                        modifier = Modifier.fillMaxHeight(),
-                        tint = LocalColorScheme.current.onBackground
-                    )
+                    IconButton(onClick = { navigateOnClick() }) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            modifier = Modifier.fillMaxHeight(),
+                            tint = LocalColorScheme.current.onBackground,
+                        )
+                    }
+
                 },
                 title = {
                     Text(
@@ -106,30 +133,36 @@ fun CreateTaskScreen(
 
                 },
                 actions = {
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = "Close",
-                        modifier = Modifier.fillMaxHeight()
-                    )
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Profile",
+                            modifier = Modifier.fillMaxHeight()
+                        )
+                    }
+
                 },
-                scrollBehavior = scrollBehavior,
+                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
             )
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .padding(top = innerPadding.calculateTopPadding())
                 .background(LocalColorScheme.current.background),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
             CreateTaskTextField(
-                onTextChange = { titleChange -> viewModel.setTaskTitle(titleChange) },
-                errorState = { errorState },
-                clearFocus = { focusManager.clearFocus()}
+                onTextChange = { titleChange ->
+                    viewModel.clearTaskEmptyError()
+                    viewModel.setTaskTitle(titleChange)
+                },
+                isTaskEmptyError = { isTitleEmpty },
+                clearFocus = { focusManager.clearFocus() }
             )
-            if (errorState is ErrorState.TaskTitleEmpty) {
+            if (isTitleEmpty) {
                 Text(
                     text = "Task title cannot be empty",
                     style = LocalTypography.current.bodyMedium,
@@ -147,18 +180,19 @@ fun CreateTaskScreen(
                     viewModel.setAssignedUser(it)
                 }
             )
-
             HCWDatePicker(
                 modifier = Modifier
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                    .padding(16.dp)
                     .fillMaxWidth(),
-                datePickerState = datePickerState,
+                datePickerState = { datePickerState },
             )
 
             TaskDueTime(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(16.dp),
+                dueHour = { dueHour },
+                dueMinute = { dueMinute }
             ) {
                 showTickPickerBottomSheet = enableTimePicker(showTickPickerBottomSheet)
             }
@@ -183,40 +217,35 @@ fun CreateTaskScreen(
                     text = "Done",
                     textStyle = LocalTypography.current.labelSmall
                 ) {
-                    if (taskTitleState.isNotEmpty() && dueTime < System.currentTimeMillis()) {
-                        navigateOnClick()
-                        return@PositiveButton
-                    }
-                    if (taskTitleState.isEmpty()) {
-                        errorState = ErrorState.TaskTitleEmpty
-                    } else if (dueTime < System.currentTimeMillis()) {
-                        errorState = ErrorState.DueTimeExpired
-                    }
-                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    datePickerState.selectedDateMillis?.let { viewModel.setDueDate(it) }
+                    viewModel.checkFinish()
                 }
             }
 
             if (showTickPickerBottomSheet) {
                 TimePickerBottomSheet(
                     modifier = Modifier.fillMaxWidth(),
-                    selectedDate = { datePickerState.selectedDateMillis },
-                    onTimeSelected = {
-                        scheduleTime = it
+                    onTimeSelected = { hour, minute ->
+                        viewModel.setDueClock(hour, minute)
                     },
                     showBottomSheet = {
                         showTickPickerBottomSheet = it
                     }
                 )
             }
+            if (isDueTimeExpired) {
+                HCWAlertDialog(
+                    titleText = "Oops",
+                    contentText = "You are choosing a past date,\n" +
+                            "still wanna continue?",
+                    onDismissRequest = {
+                        viewModel.clearDueTimeError()
+                    }
+                )
+            }
+
         }
     }
-}
-
-
-sealed class ErrorState {
-    data object None : ErrorState()
-    data object TaskTitleEmpty : ErrorState()
-    data object DueTimeExpired : ErrorState()
 }
 
 private fun enableTimePicker(showTickPickerBottomSheet: Boolean): Boolean {

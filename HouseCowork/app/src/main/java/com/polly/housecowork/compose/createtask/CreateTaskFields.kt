@@ -26,12 +26,12 @@ import com.polly.housecowork.ui.theme.LocalColorScheme
 fun CreateTaskTextField(
     modifier: Modifier = Modifier,
     onTextChange: (String) -> Unit,
-    errorState: () -> ErrorState,
+    isTaskEmptyError: (Boolean) -> Boolean,
     clearFocus: () -> Unit
 ) {
 
     val borderColor =
-        if (errorState() is ErrorState.None) LocalColorScheme.current.secondary else LocalColorScheme.current.error
+        if (isTaskEmptyError(true)) LocalColorScheme.current.error else LocalColorScheme.current.secondary
     var textState by remember {
         mutableStateOf(TextFieldValue())
     }

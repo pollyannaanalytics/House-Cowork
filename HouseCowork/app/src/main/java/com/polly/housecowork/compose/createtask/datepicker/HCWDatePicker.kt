@@ -21,7 +21,7 @@ import com.polly.housecowork.ui.theme.LocalColorScheme
 @ExperimentalMaterial3Api
 fun HCWDatePicker(
     modifier: Modifier = Modifier,
-    datePickerState: DatePickerState
+    datePickerState: () -> DatePickerState,
 ) {
     Card(
         modifier
@@ -37,7 +37,7 @@ fun HCWDatePicker(
                 modifier = Modifier
                     .background(LocalColorScheme.current.surface)
                     .fillMaxWidth(),
-                state = datePickerState,
+                state = datePickerState(),
                 colors = DatePickerDefaults.colors(
                     selectedDayContainerColor = LocalColorScheme.current.onPrimary,
                     dayContentColor = LocalColorScheme.current.onBackground,
