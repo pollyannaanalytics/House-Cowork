@@ -25,8 +25,8 @@ val fontFamily = FontFamily(
 // Set of Material typography styles to start with
 val HCWTypo = Typography(
     headlineLarge = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 32.sp,
+        fontWeight = FontWeight.W900,
+        fontSize = 40.sp,
         fontFamily = fontFamily
     ),
     headlineMedium = TextStyle(
@@ -58,6 +58,11 @@ val HCWTypo = Typography(
     titleMedium = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
+        fontFamily = fontFamily
+    ),
+    bodyLarge = TextStyle(
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp,
         fontFamily = fontFamily
     ),
     bodyMedium = TextStyle(

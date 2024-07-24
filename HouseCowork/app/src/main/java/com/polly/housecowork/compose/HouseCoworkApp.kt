@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.polly.housecowork.compose.createtask.CreateTaskScreen
 import com.polly.housecowork.compose.home.HomeScreen
+import com.polly.housecowork.compose.signup.SignUpScreen
 import com.polly.housecowork.utils.Screen
 
 
@@ -44,8 +45,16 @@ fun HouseCoworkNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.SignUp.route
     ) {
+        composable(Screen.SignUp.route){
+            SignUpScreen(
+                modifier = Modifier.fillMaxSize(),
+                joinOnClick = {
+                    navController.navigate(Screen.Home.route)
+                }
+            )
+        }
         composable(Screen.Home.route) {
             HomeScreen(
                 modifier = Modifier.fillMaxSize(),

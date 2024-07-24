@@ -14,7 +14,15 @@ sealed class Screen(
 
     data object CreateTask : Screen(
         pageTitle = "Create a Task",
-        route = Route.ADD_TASK)
+        route = Route.ADD_TASK
+    )
+
+    data object SignUp : Screen(
+        pageTitle = "Sign Up",
+        route = Route.SIGN_UP
+    )
+
+
 
 
 }
