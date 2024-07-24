@@ -10,7 +10,7 @@ import com.polly.housecowork.ui.utils.HCWTextField
 fun CreateTaskTextField(
     modifier: Modifier = Modifier,
     onTextChange: (String) -> Unit,
-    isTaskEmptyError: (Boolean) -> Boolean,
+    isTaskEmptyError: Boolean,
     clearFocus: () -> Unit
 ) {
     Row(

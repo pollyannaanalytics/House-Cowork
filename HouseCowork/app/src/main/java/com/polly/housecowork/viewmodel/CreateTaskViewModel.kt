@@ -1,10 +1,9 @@
-package com.polly.housecowork.compose.createtask
+package com.polly.housecowork.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.polly.housecowork.dataclass.UserInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -14,8 +13,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateTaskViewModel @Inject constructor() : ViewModel() {
+
+    data class ErrorState(
+        var titleError: Boolean = false,
+        var dueTimeError: Boolean = false
+    )
+
     private val _taskTitle: MutableStateFlow<String> = MutableStateFlow("")
-    val taskTitle = _taskTitle.asStateFlow()
 
     private var _assignedUser: MutableStateFlow<UserInfo?> = MutableStateFlow(null)
     val assignedUser = _assignedUser.asStateFlow()
@@ -26,11 +30,8 @@ class CreateTaskViewModel @Inject constructor() : ViewModel() {
     private var _dueTime: MutableStateFlow<Long> = MutableStateFlow(System.currentTimeMillis())
     val dueTime = _dueTime.asStateFlow()
 
-    private var _isTitleEmpty = MutableStateFlow(false)
-    val isTitleEmpty = _isTitleEmpty.asStateFlow()
-
-    private var _isDueTimeExpired = MutableStateFlow(false)
-    val isDueTimeExpired = _isDueTimeExpired.asStateFlow()
+    private var _errorState = MutableStateFlow(ErrorState())
+    val errorState = _errorState.asStateFlow()
 
     private var _shouldScrollTop = MutableStateFlow(false)
     val shouldScrollTop = _shouldScrollTop.asStateFlow()
@@ -79,10 +80,10 @@ class CreateTaskViewModel @Inject constructor() : ViewModel() {
 
 
     fun checkFinish() {
-        _isTitleEmpty.value = _taskTitle.value.isEmpty()
-        _isDueTimeExpired.value = _dueTime.value < System.currentTimeMillis()
+        _errorState.value.titleError = _taskTitle.value.isEmpty()
+        _errorState.value.dueTimeError = _dueTime.value < System.currentTimeMillis()
 
-        if (!_isTitleEmpty.value && !_isDueTimeExpired.value) {
+        if (_errorState.value.titleError || _errorState.value.dueTimeError) {
             // save task
             return
         }
@@ -90,15 +91,15 @@ class CreateTaskViewModel @Inject constructor() : ViewModel() {
     }
 
     fun clearTaskEmptyError() {
-        _isTitleEmpty.value = false
+       _errorState.value.titleError = false
     }
 
     fun clearDueTimeError() {
-        _isDueTimeExpired.value = false
+        _errorState.value.dueTimeError = false
     }
 
     fun checkDueTime(){
-        _isDueTimeExpired.value = _dueTime.value < System.currentTimeMillis()
+        _errorState.value.dueTimeError = _dueTime.value < System.currentTimeMillis()
     }
 
 }

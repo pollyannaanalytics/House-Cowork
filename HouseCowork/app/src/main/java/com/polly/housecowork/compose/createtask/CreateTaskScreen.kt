@@ -51,6 +51,7 @@ import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.ui.utils.HCWAlertDialog
 import com.polly.housecowork.ui.utils.NegativeButton
 import com.polly.housecowork.ui.utils.PositiveButton
+import com.polly.housecowork.viewmodel.CreateTaskViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -79,8 +80,7 @@ fun CreateTaskScreen(
     val shouldScrollTop by viewModel.shouldScrollTop.collectAsState()
     val assignedUser by viewModel.assignedUser.collectAsState()
     val allUsers by viewModel.allUsers.collectAsState()
-    val isTitleEmpty by viewModel.isTitleEmpty.collectAsState()
-    val isDueTimeExpired by viewModel.isDueTimeExpired.collectAsState()
+    val errorState by viewModel.errorState.collectAsState()
 
     val dueHour by viewModel.dueHour.collectAsState()
     val dueMinute by viewModel.dueMinute.collectAsState()
@@ -91,8 +91,8 @@ fun CreateTaskScreen(
         }
     }
 
-    LaunchedEffect(isTitleEmpty) {
-        if (isTitleEmpty) {
+    LaunchedEffect(errorState.titleError) {
+        if (errorState.titleError) {
             vibrator.cancel()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val effect = VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_TICK)
@@ -159,10 +159,10 @@ fun CreateTaskScreen(
                     viewModel.clearTaskEmptyError()
                     viewModel.setTaskTitle(titleChange)
                 },
-                isTaskEmptyError = { isTitleEmpty },
+                isTaskEmptyError = errorState.titleError ,
                 clearFocus = { focusManager.clearFocus() }
             )
-            if (isTitleEmpty) {
+            if (errorState.titleError) {
                 Text(
                     text = "Task title cannot be empty",
                     style = LocalTypography.current.bodyMedium,
@@ -233,7 +233,7 @@ fun CreateTaskScreen(
                     }
                 )
             }
-            if (isDueTimeExpired) {
+            if (errorState.dueTimeError) {
                 HCWAlertDialog(
                     titleText = "Oops",
                     contentText = "You are choosing a past date,\n" +

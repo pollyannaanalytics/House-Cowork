@@ -50,7 +50,7 @@ fun HouseCoworkNavHost(
         composable(Screen.SignUp.route){
             SignUpScreen(
                 modifier = Modifier.fillMaxSize(),
-                joinOnClick = {
+                navigateOnClick = {
                     navController.navigate(Screen.Home.route)
                 }
             )
