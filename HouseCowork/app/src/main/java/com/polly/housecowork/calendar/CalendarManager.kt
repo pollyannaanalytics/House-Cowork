@@ -10,12 +10,16 @@ import com.polly.housecowork.permission.PermissionUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 
-class CalendarManager {
+class CalendarManager(private val permissionUtils: PermissionUtils) {
+
+    private val requiredPermissions = permissionUtils.getFeatureRequiredPermissions(
+        PermissionUtils.RequiredPermissions.CalendarPermissions
+    )
 
     fun syncUpCalendarContract(
         context: Context,
     ): Flow<Calendar>  = flow{
-        context.checkUserPermission(context, PermissionUtils.RequiredPermissions.CalendarPermissions)
+        context.checkSelfPermission(requiredPermissions)
 
         val uri = CalendarContract.Calendars.CONTENT_URI
 

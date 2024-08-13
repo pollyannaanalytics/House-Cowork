@@ -12,7 +12,7 @@ class PermissionUtils {
 
     fun getAllRequiredPermissions() = allRequiredPermissions
 
-    private fun getFeatureRequiredPermissions(permission: RequiredPermissions) : String {
+    fun getFeatureRequiredPermissions(permission: RequiredPermissions) : String {
         return when (permission) {
             is RequiredPermissions.CalendarPermissions -> CALENDAR_PERMISSION
             else -> ""
