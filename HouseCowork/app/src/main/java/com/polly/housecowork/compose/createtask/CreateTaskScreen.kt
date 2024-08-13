@@ -18,7 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,7 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.polly.housecowork.compose.createtask.datepicker.HCWDatePicker
+import com.polly.housecowork.ui.utils.HCWDatePicker
 import com.polly.housecowork.compose.createtask.timepicker.TimePickerBottomSheet
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
@@ -116,7 +116,7 @@ fun CreateTaskScreen(
                 navigationIcon = {
                     IconButton(onClick = { navigateOnClick() }) {
                         Icon(
-                            imageVector = Icons.Default.Close,
+                            imageVector = Icons.Default.KeyboardArrowLeft,
                             contentDescription = "Close",
                             modifier = Modifier.fillMaxHeight(),
                             tint = LocalColorScheme.current.onBackground,

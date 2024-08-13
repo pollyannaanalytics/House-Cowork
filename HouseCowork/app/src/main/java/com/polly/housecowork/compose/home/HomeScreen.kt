@@ -129,7 +129,6 @@ fun TaskButton(
         modifier = modifier.padding(16.dp),
         text = "Start a task!",
         onClick = { onClick() },
-        textStyle = LocalTypography.current.headlineLarge
     )
 }
 
@@ -146,7 +145,6 @@ fun HomeScreenTitle(modifier: Modifier = Modifier) {
         )
         Text(
             text = "House Cowork",
-            style = LocalTypography.current.headlineMedium,
             modifier = Modifier.padding(top = 4.dp),
             color = LocalColorScheme.current.onBackground
         )

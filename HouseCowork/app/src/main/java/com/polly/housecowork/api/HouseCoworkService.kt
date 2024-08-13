@@ -6,8 +6,6 @@ import retrofit2.Retrofit
 
 interface HouseCoworkService {
 
-    suspend fun test(): Response
-
     companion object{
         const val BASE_URL = "https://api.housecowork.com"
         fun create(): HouseCoworkService {
