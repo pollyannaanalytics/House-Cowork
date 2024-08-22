@@ -2,7 +2,6 @@ package com.polly.housecowork.permission
 
 import android.content.Context
 import android.content.pm.PackageManager
-import com.polly.housecowork.dataclass.HCWOperationException
 
 class PermissionUtils {
 

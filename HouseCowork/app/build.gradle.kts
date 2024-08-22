@@ -54,8 +54,14 @@ android {
 
 dependencies {
 
+    // network
+    ksp(libs.moshi)
+    implementation(libs.retrofit)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // compose
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.navigation)
@@ -64,12 +70,15 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.retrofit)
     implementation(libs.hilt.android)
     implementation(libs.google.font)
     implementation(libs.google.material)
+
+    // hilt
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+
+    // test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
