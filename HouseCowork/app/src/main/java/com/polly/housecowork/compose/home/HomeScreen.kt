@@ -3,7 +3,6 @@ package com.polly.housecowork.compose.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.draggable2D
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,49 +18,39 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.polly.housecowork.dataclass.Categories
-import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.utils.Avatar
 import com.polly.housecowork.viewmodel.HomeViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.polly.housecowork.dataclass.ProfileInfo
 import com.polly.housecowork.ui.theme.LocalTypography
-import com.polly.housecowork.ui.utils.DinosaurType
 import com.polly.housecowork.ui.utils.PrimaryMediumButton
+import com.polly.housecowork.utils.Screen
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    taskList: List<Task> = listOf(),
     homeViewModel: HomeViewModel = hiltViewModel(),
-    categoryList: List<Categories> = listOf(),
-    onTaskClick: () -> Unit = {}
+    navigateTo: (Screen) -> Unit
 ) {
-    val pagerState = rememberPagerState(pageCount = { taskList.size })
+    val dinosaurTypeState by homeViewModel.dinosaurType.collectAsState()
+    val progressTasks by homeViewModel.progressTasks.collectAsState()
+
+    val pagerState = rememberPagerState(pageCount = { progressTasks.size })
     Scaffold(
-        modifier = modifier
-            .fillMaxSize(),
-        topBar = {
-            HomeAppBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.1f)
-                    .background(LocalColorScheme.current.background)
-                    .padding(16.dp)
-            )
-        }
+        modifier = modifier.fillMaxSize()
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(LocalColorScheme.current.background)
-                .padding(innerPadding)
-            ,
+                .padding(innerPadding),
         ) {
             HomeScreenTitle(
                 modifier = Modifier
@@ -74,22 +63,26 @@ fun HomeScreen(
                     .weight(1f)
                     .fillMaxWidth(),
                 pagerState = pagerState,
-                pages = taskList.toTypedArray()
+                pages = progressTasks,
+                onTaskClick = { task ->
+                    navigateTo(Screen.TaskDetail(task.id))
+                }
             )
 
             TaskButton(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                onClick = { onTaskClick() }
+                onClick = {
+                    navigateTo(Screen.CreateTask)
+                }
             )
 
             TaskStats(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
-                ,
-                dinosaurType = DinosaurType.Egg,
+                    .fillMaxWidth(),
+                dinosaurType = dinosaurTypeState,
                 taskStats = 0
             )
         }
@@ -97,33 +90,8 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeAppBar(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            modifier = Modifier
-                .fillMaxHeight()
-                .aspectRatio(1f),
-            imageVector = Icons.Default.Menu,
-            contentDescription = "Menu"
-        )
-
-        Avatar(
-            modifier = Modifier
-                .fillMaxHeight()
-                .aspectRatio(1f)
-
-        )
-    }
-}
-
-@Composable
 fun TaskButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    modifier: Modifier = Modifier, onClick: () -> Unit = {}
 ) {
     PrimaryMediumButton(
         modifier = modifier.padding(16.dp),
@@ -151,11 +119,17 @@ fun HomeScreenTitle(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(
-        taskList = listOf(),
-    )
-}
+//sealed class NavigateEvent {
+//    data object NavigateToCreateTask: NavigateEvent()
+//    data class NavigateToTaskDetail(val taskId: Int) : NavigateEvent()
+//    data object NavigateToTaskList: NavigateEvent()
+//    data object NavigateToProfile: NavigateEvent()
+//}
+
+//@Preview
+//@Composable
+//fun HomeScreenPreview() {
+//    HomeScreen(
+//    )
+//}
 

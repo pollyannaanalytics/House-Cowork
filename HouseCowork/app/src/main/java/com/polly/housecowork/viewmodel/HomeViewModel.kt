@@ -1,45 +1,69 @@
 package com.polly.housecowork.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.polly.housecowork.dataclass.AssigneeStatus
+import com.polly.housecowork.dataclass.Task
+import com.polly.housecowork.dataclass.TaskDto
+import com.polly.housecowork.model.task.TaskRepository
 import com.polly.housecowork.ui.utils.DinosaurType
+import com.polly.housecowork.model.task.usecase.GenerateDinosaurGrowthUseCase
+import com.polly.housecowork.model.task.usecase.TransformTaskUseCase
+import com.polly.housecowork.ui.utils.AssigneeStatusType
+import com.polly.housecowork.ui.utils.TaskStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(): ViewModel() {
-    private val _clickEvent = MutableStateFlow<OnClickEvent>(OnClickEvent.OnTaskListClick)
-    val clickEvent: StateFlow<OnClickEvent> = _clickEvent
+class HomeViewModel @Inject constructor(
+    private val generateDinosaurGrowthUseCase: GenerateDinosaurGrowthUseCase,
+    private val transformTaskUseCase: TransformTaskUseCase,
+    private val taskRepository: TaskRepository
+): ViewModel() {
 
     private val _dinosaurType = MutableStateFlow<DinosaurType>(DinosaurType.Egg)
     val dinosaurType: StateFlow<DinosaurType> = _dinosaurType
-    fun transferToDinosaur(taskCount: Int){
-        when(taskCount){
-            in 0..5 -> _dinosaurType.value = DinosaurType.Egg
-            in 6..10 -> _dinosaurType.value = DinosaurType.EggOut
-            in 11..15 -> _dinosaurType.value = DinosaurType.Dinosaur
-            else -> _dinosaurType.value = DinosaurType.DinosaurKing
+
+    private val _progressTasks = MutableStateFlow<MutableList<Task>>(emptyList().toMutableList())
+    val progressTasks: StateFlow<List<Task>> = _progressTasks
+
+    private val _doneTasks = MutableStateFlow<MutableList<Task>>(emptyList().toMutableList())
+    val doneTasks: StateFlow<List<Task>> = _doneTasks
+
+    init {
+
+    }
+
+    fun getAssignedTasks(isRefresh: Boolean = false) {
+        viewModelScope.launch {
+            transformTaskUseCase.getAssignedTasks(
+                isRefresh = isRefresh,
+                assigneeStatusType = AssigneeStatusType.ACCEPTED,
+            ).collect {
+                it.forEach {
+                    when (it.taskStatus) {
+                        TaskStatus.IN_PROGRESS ->  { _progressTasks.value += it}
+                        TaskStatus.DONE -> {
+                            
+                        }
+
+                        else -> {}
+                    }
+                }
+            }
         }
     }
 
-
-
-    fun onTaskDetailClick(onClickEvent: OnClickEvent) {
-        when(onClickEvent) {
-            is OnClickEvent.OnTaskDetailClick -> _clickEvent.value = OnClickEvent.OnTaskDetailClick
-            is OnClickEvent.OnCalendarClick -> _clickEvent.value = OnClickEvent.OnCalendarClick
-            is OnClickEvent.OnTaskListClick -> _clickEvent.value = OnClickEvent.OnTaskListClick
-            is OnClickEvent.OnProfileClick -> _clickEvent.value = OnClickEvent.OnProfileClick
+    fun createTask(task: TaskDto) {
+        viewModelScope.launch {
+            taskRepository.createTask(task)
         }
     }
-    sealed class OnClickEvent {
-        data object OnTaskDetailClick: OnClickEvent()
-        data object OnCalendarClick: OnClickEvent()
-        data object OnTaskListClick: OnClickEvent()
-        data object OnProfileClick: OnClickEvent()
-    }
 
-
+    fun deleteTaskById(taskId: Int
 
 }

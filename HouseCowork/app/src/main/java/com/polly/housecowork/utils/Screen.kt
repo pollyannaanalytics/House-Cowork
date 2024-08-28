@@ -22,6 +22,16 @@ sealed class Screen(
         route = Route.SIGN_UP
     )
 
+    data class Profile(val profileId: Int) : Screen(
+        pageTitle = "Profile",
+        route = Route.PROFILE
+    )
+
+    data class TaskDetail(val taskId: Int) : Screen(
+        pageTitle = "Task Detail",
+        route = Route.TASK_DETAIL
+    )
+
 
 
 

@@ -2,6 +2,7 @@ package com.polly.housecowork.permission
 
 import android.content.Context
 import android.content.pm.PackageManager
+import com.polly.housecowork.dataclass.ApiResult
 
 class PermissionUtils {
 
@@ -18,11 +19,11 @@ class PermissionUtils {
         }
     }
 
-    fun Context.checkUserPermission(permission: RequiredPermissions) {
+    fun Context.checkUserPermission(permission: RequiredPermissions){
         val requiredPermissions = getFeatureRequiredPermissions(permission)
 
         if(this.checkSelfPermission(requiredPermissions) != PackageManager.PERMISSION_GRANTED) {
-            throw HCWOperationException.MissingPermissions(listOf(requiredPermissions))
+             throw ApiResult.Failure.Reason.PermissionDenied(requiredPermissions)
         }
     }
 

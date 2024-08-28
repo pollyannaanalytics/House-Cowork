@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,9 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,11 +28,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.polly.housecowork.R
-import com.polly.housecowork.dataclass.Task
+import com.polly.housecowork.dataclass.TaskDto
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.ui.utils.SingleTaskCard
@@ -46,9 +42,9 @@ import kotlin.math.absoluteValue
 @Composable
 fun RecentTaskView(
     modifier: Modifier = Modifier,
-    onTaskClick: (Task) -> Unit = {},
+    onTaskClick: (TaskDto) -> Unit = {},
     pagerState: PagerState,
-    pages: Array<Task>,
+    pages: List<TaskDto>,
 ) {
     val currentPage by remember {
         mutableIntStateOf(0)
@@ -93,8 +89,8 @@ fun RecentTaskView(
                         elevation = 8.dp,
                         shape = RoundedCornerShape(16.dp)
                     ),
-                title = pages[task].taskName,
-                description = pages[task].taskDescription,
+                title = pages[task].title,
+                description = pages[task].description,
                 imageURL = ""
             )
         }
@@ -157,13 +153,3 @@ fun GreyDotIndicator(
         }
     }
 }
-
-@Preview
-@Composable
-fun EmptyTaskCardPreview() {
-    HomeScreen(
-        taskList = listOf(),
-        categoryList = listOf()
-    )
-}
-

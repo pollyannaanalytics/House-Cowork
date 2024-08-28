@@ -22,7 +22,7 @@ import com.polly.housecowork.viewmodel.SignUpViewModel
 fun SignUpScreen(
     modifier: Modifier = Modifier,
     viewModel: SignUpViewModel = hiltViewModel(),
-    navigateOnClick: () -> Unit = {}
+    navigateToHome: () -> Unit = {}
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -46,7 +46,7 @@ fun SignUpScreen(
             joinOnClick = {
                 if (viewModel.checkAllFieldsValid()) {
                     viewModel.setUpUserInfo()
-                    navigateOnClick()
+                    navigateToHome()
                 }
             }
         )

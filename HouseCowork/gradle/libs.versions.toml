@@ -20,6 +20,8 @@ gson = "2.8.6"
 gmsPlugin = "4.4.1"
 googleMaterial = "1.9.0"
 moshi = "1.15.1"
+room = "2.6.1"
+pagingCommonAndroid = "3.3.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +53,11 @@ firebase-remoteConfig = { group = "com.google.firebase", name = "firebase-config
 google-material = { group = "com.google.android.material", name = "material", version.ref = "googleMaterial" }
 
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+room-runtime = {group = "androidx.room", name = "room-runtime", version.ref = "room"}
+room-compiler = {group = "androidx.room", name = "room-compiler", version.ref = "room"}
+room-paging = {group = "androidx.room", name = "room"}
+androidx-paging-common-android = { group = "androidx.paging", name = "paging-common-android", version.ref = "pagingCommonAndroid" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

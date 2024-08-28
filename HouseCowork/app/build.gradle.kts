@@ -54,6 +54,12 @@ android {
 
 dependencies {
 
+    // room
+    implementation(libs.room.runtime)
+    implementation(libs.androidx.paging.common.android)
+    ksp(libs.room.compiler)
+    implementation(libs.room.paging)
+
     // network
     ksp(libs.moshi)
     implementation(libs.retrofit)
