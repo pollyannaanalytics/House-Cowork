@@ -1,6 +1,5 @@
 package com.polly.housecowork.model.task.usecase
 
-import com.polly.housecowork.dataclass.AssigneeStatus
 import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.dataclass.TaskDto
 import com.polly.housecowork.model.assigneestatus.AssigneeRepository
