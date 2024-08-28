@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.polly.housecowork.R
+import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.dataclass.TaskDto
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
@@ -42,9 +43,9 @@ import kotlin.math.absoluteValue
 @Composable
 fun RecentTaskView(
     modifier: Modifier = Modifier,
-    onTaskClick: (TaskDto) -> Unit = {},
+    onTaskClick: (Task) -> Unit = {},
     pagerState: PagerState,
-    pages: List<TaskDto>,
+    pages: List<Task>,
 ) {
     val currentPage by remember {
         mutableIntStateOf(0)

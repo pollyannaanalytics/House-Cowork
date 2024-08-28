@@ -41,6 +41,7 @@ fun HomeScreen(
 ) {
     val dinosaurTypeState by homeViewModel.dinosaurType.collectAsState()
     val progressTasks by homeViewModel.progressTasks.collectAsState()
+    val doneTasks by homeViewModel.doneTasks.collectAsState()
 
     val pagerState = rememberPagerState(pageCount = { progressTasks.size })
     Scaffold(
@@ -83,7 +84,7 @@ fun HomeScreen(
                     .weight(1f)
                     .fillMaxWidth(),
                 dinosaurType = dinosaurTypeState,
-                taskStats = 0
+                taskStats = doneTasks.size
             )
         }
     }

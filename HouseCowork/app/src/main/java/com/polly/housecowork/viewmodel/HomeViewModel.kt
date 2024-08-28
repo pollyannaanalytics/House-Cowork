@@ -22,48 +22,44 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val generateDinosaurGrowthUseCase: GenerateDinosaurGrowthUseCase,
     private val transformTaskUseCase: TransformTaskUseCase,
-    private val taskRepository: TaskRepository
 ): ViewModel() {
 
     private val _dinosaurType = MutableStateFlow<DinosaurType>(DinosaurType.Egg)
     val dinosaurType: StateFlow<DinosaurType> = _dinosaurType
 
-    private val _progressTasks = MutableStateFlow<MutableList<Task>>(emptyList().toMutableList())
+    private val _progressTasks = MutableStateFlow(
+        emptyList<Task>().toMutableList()
+    )
     val progressTasks: StateFlow<List<Task>> = _progressTasks
 
-    private val _doneTasks = MutableStateFlow<MutableList<Task>>(emptyList().toMutableList())
+    private val _doneTasks = MutableStateFlow(
+        emptyList<Task>().toMutableList()
+    )
     val doneTasks: StateFlow<List<Task>> = _doneTasks
 
     init {
-
+        getAssignedTasks()
     }
 
-    fun getAssignedTasks(isRefresh: Boolean = false) {
+    private fun getAssignedTasks(isRefresh: Boolean = false) {
         viewModelScope.launch {
             transformTaskUseCase.getAssignedTasks(
                 isRefresh = isRefresh,
                 assigneeStatusType = AssigneeStatusType.ACCEPTED,
-            ).collect {
-                it.forEach {
-                    when (it.taskStatus) {
-                        TaskStatus.IN_PROGRESS ->  { _progressTasks.value += it}
+            ).collect { tasks ->
+                val progressTasks = emptyList<Task>().toMutableList()
+                tasks.forEach { task ->
+                    when (task.taskStatus) {
+                        TaskStatus.IN_PROGRESS ->  { progressTasks.add(task) }
                         TaskStatus.DONE -> {
-                            
+                            _doneTasks.value.add(task)
                         }
-
                         else -> {}
                     }
                 }
+                _progressTasks.value = progressTasks
+                _dinosaurType.value = generateDinosaurGrowthUseCase.invoke(tasks)
             }
         }
     }
-
-    fun createTask(task: TaskDto) {
-        viewModelScope.launch {
-            taskRepository.createTask(task)
-        }
-    }
-
-    fun deleteTaskById(taskId: Int
-
 }

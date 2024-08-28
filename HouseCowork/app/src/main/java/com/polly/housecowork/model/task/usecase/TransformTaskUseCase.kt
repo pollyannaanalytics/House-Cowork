@@ -10,6 +10,7 @@ import com.polly.housecowork.prefs.PrefsLicense
 import com.polly.housecowork.ui.utils.AccessLevel
 import com.polly.housecowork.ui.utils.AssigneeStatusType
 import com.polly.housecowork.ui.utils.TaskStatus
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -54,10 +55,27 @@ class TransformTaskUseCase @Inject constructor(
         }
     }
 
-    suspend fun getAssignedTasks(assigneeStatusId: Int = prefsLicense.userId, assigneeStatusType: AssigneeStatusType, isRefresh: Boolean = false) =
-        taskRepository.getAssignedTasks(assigneeStatusId, assigneeStatusType.level, isRefresh).map {
+    suspend fun getAssignedTasks(
+        assigneeStatusId: Int = prefsLicense.userId,
+        assigneeStatusType: AssigneeStatusType,
+        isRefresh: Boolean = false
+    ): Flow<List<Task>> {
+        return taskRepository.getAssignedTasks(
+            assigneeStatusId,
+            assigneeStatusType.level,
+            isRefresh
+        ).map {
             it.map { taskDto -> taskDto.toTask() }
         }
+    }
+
+    suspend fun createTask(task: Task) {
+        taskRepository.createTask(task.toTaskDto())
+    }
+
+    suspend fun deleteTaskById(taskId: Int) {
+        taskRepository.deleteTaskById(taskId)
+    }
 
 
 
