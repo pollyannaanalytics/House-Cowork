@@ -1,7 +1,12 @@
 package com.polly.housecowork.model.profile
 
-class ProfileRemoteDataSource {
-    fun getProfileById(profileId: Int) {
+import com.polly.housecowork.dataclass.ProfileInfo
+import javax.inject.Inject
+
+class ProfileRemoteDataSource @Inject constructor(
+
+) {
+    fun getProfileById(profileId: Int): ProfileInfo {
 
     }
 }

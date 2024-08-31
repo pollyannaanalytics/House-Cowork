@@ -1,36 +1,36 @@
 package com.polly.housecowork.model.profile
 
 import com.polly.housecowork.dataclass.ProfileInfo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class DefaultProfileRepository @Inject constructor(
     private val remoteDataSource: ProfileRemoteDataSource,
     private val localDataSource: ProfileDao
 ): ProfileRepository{
-    fun getProfile() = ProfileInfo(
-        id = 1,
-        name = "Polly",
-        nickName = "Polly",
-        avatar = "https://avatars.githubusercontent.com/u/12345678?v=4",
-        bankAccount = "1234567890"
-        )
 
-    override fun getProfileById(profileId: Int): ProfileInfo {
-        if(localDataSource.getProfileById(profileId) == null){
-            val profile = remoteDataSource.getProfileById(profileId)
+    override suspend fun getProfileById(profileId: Int): Flow<ProfileInfo> = flow {
+        var profile = localDataSource.getProfileById(profileId)
+        if (profile == null) {
+            profile = remoteDataSource.getProfileById(profileId)
+            emit(profile)
             localDataSource.insertProfile(profile)
         }
-    }p
+        emit(profile)
+    }.flowOn(Dispatchers.IO)
 
-    override fun getAllProfiles(): List<ProfileInfo> {
+    override suspend fun getAllProfiles(): Flow<List<ProfileInfo>> = flow {
         TODO("Not yet implemented")
     }
 
-    override fun updateProfile(profile: ProfileInfo) {
+    override suspend fun updateProfile(profile: ProfileInfo) {
         TODO("Not yet implemented")
     }
 
-    override fun deleteProfileById(profileId: Int) {
+    override suspend fun deleteProfileById(profileId: Int) {
         TODO("Not yet implemented")
     }
 }

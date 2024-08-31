@@ -1,5 +1,7 @@
 package com.polly.housecowork.model.task.usecase
 
+import android.provider.ContactsContract.Profile
+import com.polly.housecowork.dataclass.ProfileInfo
 import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.dataclass.TaskDto
 import com.polly.housecowork.model.assigneestatus.AssigneeRepository
@@ -37,7 +39,7 @@ class TransformTaskUseCase @Inject constructor(
        }
     }
 
-    fun toTask(taskDto: TaskDto): Task {
+    suspend fun toTask(taskDto: TaskDto): Task {
         taskDto.apply {
             return Task(
                 id,
@@ -54,7 +56,13 @@ class TransformTaskUseCase @Inject constructor(
         }
     }
 
-    private fun getProfile(profileId: Int) = profileRepository.getProfileById(profileId)
+    private suspend fun getProfile(profileId: Int): ProfileInfo {
+        var profile: ProfileInfo? = null
+        profileRepository.getProfileById(profileId).collect {
+            profile = it
+        }
+        return profile!!
+    }
 
     private fun getAssignees(assigneeId: Int) = assigneeRepository.getAssigneeStatus(assigneeId)
 

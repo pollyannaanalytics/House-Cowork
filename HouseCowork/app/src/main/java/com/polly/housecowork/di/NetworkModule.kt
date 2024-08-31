@@ -1,6 +1,6 @@
 package com.polly.housecowork.di
 
-import com.polly.housecowork.data.network.TaskApiService
+import com.polly.housecowork.data.network.HCWApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +13,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideHouseCoworkService(): TaskApiService {
-        return TaskApiService.create()
+    fun provideHouseCoworkService(): HCWApiService {
+        return HCWApiService.create()
     }
 }

@@ -1,13 +1,12 @@
 package com.polly.housecowork.model.task
 
 import com.polly.housecowork.dataclass.Result
-import com.polly.housecowork.data.network.TaskApiService
+import com.polly.housecowork.data.network.HCWApiService
 import com.polly.housecowork.dataclass.TaskDto
-import com.polly.housecowork.ui.utils.AssigneeStatusType
 import javax.inject.Inject
 
 class TaskRemoteDataSource @Inject constructor(
-    private val apiService : TaskApiService
+    private val apiService : HCWApiService
 ){
     suspend fun getAllTasks(): Result<List<TaskDto>> {
         return try {

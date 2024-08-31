@@ -2,9 +2,11 @@ package com.polly.housecowork.data.network
 
 import com.polly.housecowork.dataclass.Result
 import com.polly.housecowork.dataclass.TaskDto
-import java.util.UUID
+import com.polly.housecowork.utils.Constant.Companion.BASE_URL
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
 
-interface TaskApiService {
+interface HCWApiService {
     suspend fun createTask(
         taskTitle: String,
         taskDescription: String,
@@ -19,7 +21,7 @@ interface TaskApiService {
     suspend fun updateLastEditTime(): Result<Long>
 
     companion object {
-        fun create(): TaskApiService {
+        fun create(): HCWApiService {
 
 //            val client = OkHttpClient
 //                .Builder()
@@ -29,14 +31,14 @@ interface TaskApiService {
 //                .baseUrl(BASE_URL)
 //                .client(client)
 //                .build()
-//                .create(HouseCoworkService::class.java)
+//                .create(HCWApiService::class.java)
 
-            return MockTaskApiService()
+            return MockHCWApiService()
         }
     }
 }
 
-class MockTaskApiService : TaskApiService {
+class MockHCWApiService : HCWApiService {
     private val mockTaskDto = TaskDto(
         1,
         0,

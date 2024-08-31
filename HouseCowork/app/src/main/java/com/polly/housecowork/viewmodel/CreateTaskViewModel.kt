@@ -2,6 +2,7 @@ package com.polly.housecowork.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.polly.housecowork.model.profile.ProfileRepository
 import com.polly.housecowork.model.task.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateTaskViewModel @Inject constructor(
-    private val taskRepository: TaskRepository
+    private val taskRepository: TaskRepository,
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
     data class ErrorState(
@@ -64,13 +66,18 @@ class CreateTaskViewModel @Inject constructor(
         _dueMinute.value = (currentTime / 1000 / 60 % 60).toInt()
     }
 
+    private fun getAllUsers() {
+        viewModelScope.launch {
+            _allUsers.value = profileRepository.getAllUsers().map { it.name }
+        }
+    }
+
     fun setTaskTitle(title: String) {
         _taskTitle.value = title
     }
     fun setAssignedUser(userId: Int) {
         _assignedUser.value.add(userId)
     }
-
 
     fun setDueDate(dateTimestamp: Long) {
         val calendar = Calendar.getInstance(TimeZone.getDefault())
