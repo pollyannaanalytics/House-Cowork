@@ -48,10 +48,24 @@ class DefaultTaskRepository @Inject constructor(
         taskLocalDataSource.upsertAllTasks(taskDtos)
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun createTask(taskDto: TaskDto) {
+    override suspend fun createTask(
+        taskTitle: String,
+        taskDescription: String,
+        taskAccessLevel: Int,
+        taskDueTime: Long,
+        assignees: List<Int>
+    ) {
         withContext(Dispatchers.IO) {
-            taskRemoteDataSource.createTask(taskDto)
-            taskLocalDataSource.updateTask(taskDto)
+            val fetchResult = taskRemoteDataSource.createTask(
+                taskTitle,
+                taskDescription,
+                taskAccessLevel,
+                taskDueTime,
+                assignees
+            )
+            if (fetchResult is Result.Success){
+                taskLocalDataSource.updateTask(fetchResult.data as TaskDto)
+            }
         }
     }
 
@@ -68,5 +82,6 @@ class DefaultTaskRepository @Inject constructor(
     }
 
     override suspend fun getOwnedTasks(fetchRemote: Boolean):Flow<List<TaskDto>>{
+        TODO("Not yet implemented")
     }
 }

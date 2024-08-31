@@ -9,6 +9,8 @@ import com.polly.housecowork.model.task.TaskRepository
 import com.polly.housecowork.ui.utils.DinosaurType
 import com.polly.housecowork.model.task.usecase.GenerateDinosaurGrowthUseCase
 import com.polly.housecowork.model.task.usecase.TransformTaskUseCase
+import com.polly.housecowork.model.task.usecase.TransformTaskUseCase.*
+import com.polly.housecowork.prefs.PrefsLicense
 import com.polly.housecowork.ui.utils.AssigneeStatusType
 import com.polly.housecowork.ui.utils.TaskStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +24,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val generateDinosaurGrowthUseCase: GenerateDinosaurGrowthUseCase,
     private val transformTaskUseCase: TransformTaskUseCase,
+    private val prefsLicense: PrefsLicense,
+    private val taskRepository: TaskRepository,
 ): ViewModel() {
 
     private val _dinosaurType = MutableStateFlow<DinosaurType>(DinosaurType.Egg)
@@ -43,22 +47,20 @@ class HomeViewModel @Inject constructor(
 
     private fun getAssignedTasks(isRefresh: Boolean = false) {
         viewModelScope.launch {
-            transformTaskUseCase.getAssignedTasks(
-                isRefresh = isRefresh,
-                assigneeStatusType = AssigneeStatusType.ACCEPTED,
-            ).collect { tasks ->
-                val progressTasks = emptyList<Task>().toMutableList()
+            taskRepository.getAssignedTasks(
+                prefsLicense.userId,
+                AssigneeStatusType.ACCEPTED.level,
+                isRefresh
+            ).collect { taskDtos ->
+                val tasks = taskDtos.map { transformTaskUseCase.toTask(it) }
                 tasks.forEach { task ->
-                    when (task.taskStatus) {
-                        TaskStatus.IN_PROGRESS ->  { progressTasks.add(task) }
-                        TaskStatus.DONE -> {
-                            _doneTasks.value.add(task)
-                        }
+                    when(task.taskStatus){
+                        TaskStatus.IN_PROGRESS -> _progressTasks.value.add(task)
+                        TaskStatus.DONE -> _doneTasks.value.add(task)
                         else -> {}
                     }
                 }
-                _progressTasks.value = progressTasks
-                _dinosaurType.value = generateDinosaurGrowthUseCase.invoke(tasks)
+                generateDinosaurGrowthUseCase.invoke(_doneTasks.value)
             }
         }
     }

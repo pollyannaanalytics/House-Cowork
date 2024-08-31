@@ -12,33 +12,33 @@ import com.polly.housecowork.ui.utils.TaskStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Singleton
 
 class TransformTaskUseCase @Inject constructor(
-    private val taskRepository: TaskRepository,
     private val profileRepository: ProfileRepository,
     private val assigneeRepository: AssigneeRepository,
     private val prefsLicense: PrefsLicense
 ){
-    fun Task.toTaskDto(): TaskDto {
-        apply {
-            return TaskDto(
-                id,
-                owner.id,
-                title,
-                description,
-                accessLevel.level,
-                taskStatus.level,
-                dueTime,
-                assigneeStatus.first().id,
-                prefsLicense.houseId,
-                createdTime,
-                updatedTime
-            )
-        }
+   fun toTaskDto(task: Task): TaskDto {
+       task.apply {
+           return TaskDto(
+               id,
+               owner.id,
+               title,
+               description,
+               accessLevel.level,
+               taskStatus.level,
+               dueTime,
+               assigneeStatus.first().id,
+               prefsLicense.houseId,
+               createdTime,
+               updatedTime
+           )
+       }
     }
 
-    private fun TaskDto.toTask(): Task {
-        apply {
+    fun toTask(taskDto: TaskDto): Task {
+        taskDto.apply {
             return Task(
                 id,
                 getProfile(ownerId),
@@ -53,31 +53,6 @@ class TransformTaskUseCase @Inject constructor(
             )
         }
     }
-
-    suspend fun getAssignedTasks(
-        assigneeStatusId: Int = prefsLicense.userId,
-        assigneeStatusType: AssigneeStatusType,
-        isRefresh: Boolean = false
-    ): Flow<List<Task>> {
-        return taskRepository.getAssignedTasks(
-            assigneeStatusId,
-            assigneeStatusType.level,
-            isRefresh
-        ).map {
-            it.map { taskDto -> taskDto.toTask() }
-        }
-    }
-
-    suspend fun createTask(task: Task) {
-        taskRepository.createTask(task.toTaskDto())
-    }
-
-    suspend fun deleteTaskById(taskId: Int) {
-        taskRepository.deleteTaskById(taskId)
-    }
-
-
-
 
     private fun getProfile(profileId: Int) = profileRepository.getProfileById(profileId)
 

@@ -42,15 +42,14 @@ class TaskRemoteDataSource @Inject constructor(
 
 
 
-    suspend fun createTask(taskDto: TaskDto): Result<Nothing> {
-        val result = apiService.createTask(taskDto)
-        return if (result is Result.Success) {
-            Result.Success(Unit)
-        } else {
-            Result.Error(
-                Result.Error.Reason.SearchFailed(e = Exception("Network: Failed to create task"))
-            )
-        }
+    suspend fun createTask(
+        taskTitle: String,
+        taskDescription: String,
+        taskAccessLevel: Int,
+        taskDueTime: Long,
+        assignees: List<Int>
+        ): Result<TaskDto> {
+        return apiService.createTask(taskTitle, taskDescription, taskAccessLevel, taskDueTime, assignees)
     }
 
     suspend fun updateTask(task: TaskDto): Result<Nothing> {

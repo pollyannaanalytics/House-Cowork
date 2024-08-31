@@ -1,10 +1,12 @@
 package com.polly.housecowork.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.polly.housecowork.dataclass.UserInfo
+import androidx.lifecycle.viewModelScope
+import com.polly.housecowork.model.task.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -12,7 +14,9 @@ import java.util.TimeZone
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateTaskViewModel @Inject constructor() : ViewModel() {
+class CreateTaskViewModel @Inject constructor(
+    private val taskRepository: TaskRepository
+) : ViewModel() {
 
     data class ErrorState(
         var titleError: Boolean = false,
@@ -21,7 +25,13 @@ class CreateTaskViewModel @Inject constructor() : ViewModel() {
 
     private val _taskTitle: MutableStateFlow<String> = MutableStateFlow("")
 
-    private var _assignedUser: MutableStateFlow<UserInfo?> = MutableStateFlow(null)
+    private val _taskDescription: MutableStateFlow<String> = MutableStateFlow("")
+    val taskDescription = _taskDescription.asStateFlow()
+
+    private val _accessLevel: MutableStateFlow<Int> = MutableStateFlow(0)
+    val accessLevel = _accessLevel.asStateFlow()
+
+    private var _assignedUser: MutableStateFlow<MutableList<Int>> = MutableStateFlow(mutableListOf())
     val assignedUser = _assignedUser.asStateFlow()
 
     private var _allUsers: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
@@ -57,8 +67,8 @@ class CreateTaskViewModel @Inject constructor() : ViewModel() {
     fun setTaskTitle(title: String) {
         _taskTitle.value = title
     }
-    fun setAssignedUser(userName: String) {
-//        _assignedUser.value = user
+    fun setAssignedUser(userId: Int) {
+        _assignedUser.value.add(userId)
     }
 
 
@@ -84,7 +94,15 @@ class CreateTaskViewModel @Inject constructor() : ViewModel() {
         _errorState.value.dueTimeError = _dueTime.value < System.currentTimeMillis()
 
         if (_errorState.value.titleError || _errorState.value.dueTimeError) {
-            // save task
+            viewModelScope.launch {
+                taskRepository.createTask(
+                    _taskTitle.value,
+                    _taskDescription.value,
+                    taskAccessLevel = _accessLevel.value,
+                    taskDueTime = _dueTime.value,
+                    assignees = _assignedUser.value.map { it },
+                )
+            }
             return
         }
         _shouldScrollTop.value = true

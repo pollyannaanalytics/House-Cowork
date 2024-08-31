@@ -5,7 +5,12 @@ import com.polly.housecowork.dataclass.TaskDto
 import java.util.UUID
 
 interface TaskApiService {
-    suspend fun createTask(task: TaskDto): Result<TaskDto>
+    suspend fun createTask(
+        taskTitle: String,
+        taskDescription: String,
+        taskAccessLevel: Int,
+        taskDueTime: Long,
+        assignees: List<Int>): Result<TaskDto>
     suspend fun getAllTasks(): Result<List<TaskDto>>
     suspend fun getTaskById(taskId: Int): Result<TaskDto>
     suspend fun getTasksByUserId(userId: Int, assigneeStatus: Int): Result<List<TaskDto>>
@@ -47,7 +52,11 @@ class MockTaskApiService : TaskApiService {
     )
 
     override suspend fun createTask(
-        taskDto: TaskDto
+        taskTitle: String,
+        taskDescription: String,
+        taskAccessLevel: Int,
+        taskDueTime: Long,
+        assignees: List<Int>
     ):  Result<TaskDto> {
         return Result.Success(List(10) { mockTaskDto })
     }
@@ -75,10 +84,8 @@ class MockTaskApiService : TaskApiService {
         return Result.Success(mockTaskDto)
     }
 
-    override suspend fun getAssignedTaskByStatus(assigneeStatus: Int): Result<List<TaskDto>> {
-        return Result.Success(
-            List(10) { mockTaskDto }
-        )
+    override suspend fun getTasksByUserId(userId: Int, assigneeStatus: Int): Result<List<TaskDto>> {
+        return Result.Success(List(10) { mockTaskDto })
     }
 
     override suspend fun updateTask(

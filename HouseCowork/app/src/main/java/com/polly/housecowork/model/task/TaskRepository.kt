@@ -9,7 +9,13 @@ interface TaskRepository {
     suspend fun syncUpTasks()
     suspend fun getAssignedTasks(assigneeStatusId: Int, assigneeStatusType: Int, fetchRemote: Boolean = false): Flow<List<TaskDto>>
     suspend fun getOwnedTasks(fetchRemote: Boolean = false): Flow<List<TaskDto>>
-    suspend fun createTask(task: TaskDto)
+    suspend fun createTask(
+        taskTitle: String,
+        taskDescription: String,
+        taskAccessLevel: Int,
+        taskDueTime: Long,
+        assignees: List<Int>
+    )
     suspend fun reviseTask(task: TaskDto)
     suspend fun deleteTaskById(taskId: Int)
     suspend fun deleteAllTasks()
