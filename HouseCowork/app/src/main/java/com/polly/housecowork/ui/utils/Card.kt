@@ -55,10 +55,11 @@ fun SingleTaskCard(
                 )
                 if (imageURL.isNotEmpty()) {
                     Avatar(
-                        imageURL = imageURL,
                         modifier = Modifier
                             .fillMaxWidth(0.2f)
-                            .aspectRatio(1f)
+                            .aspectRatio(1f),
+                        imageUrl = imageURL,
+                        onClick = {}
                     )
                 } else {
                     Icon(

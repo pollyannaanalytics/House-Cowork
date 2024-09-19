@@ -21,18 +21,31 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.ui.utils.HCWDatePicker
 import com.polly.housecowork.ui.utils.PrimaryCard
+import com.polly.housecowork.viewmodel.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier, navigateOnClick: () -> Unit = {}) {
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+    navigateOnClick: () -> Unit = {},
+    viewModel: ProfileViewModel = hiltViewModel(),
+    profileId: Int
+    ) {
+    
+    val profileInfo by viewModel.profileInfo.collectAsState()
+    val context = LocalContext.current
 
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = 0L
@@ -41,6 +54,11 @@ fun ProfileScreen(modifier: Modifier = Modifier, navigateOnClick: () -> Unit = {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(
         rememberTopAppBarState()
     )
+
+    LaunchedEffect(Unit) {
+        viewModel.getProfileById(profileId)
+        viewModel.getUserCalendars(profileId)
+    }
 
     Scaffold(
         modifier
@@ -75,17 +93,20 @@ fun ProfileScreen(modifier: Modifier = Modifier, navigateOnClick: () -> Unit = {
                 .fillMaxSize()
                 .background(LocalColorScheme.current.background)
         ) {
-            ProfileAvatarName(
-                modifier = Modifier.fillMaxWidth(),
-                name = { "Pollyanna" },
-                photoUrl = { "" })
-
-            Bio()
-            HCWDatePicker(
-                modifier = Modifier.padding(16.dp),
-                datePickerState = { datePickerState })
-
-
+            profileInfo?.let {
+                ProfileAvatarName(
+                    modifier = Modifier.fillMaxWidth(),
+                    name = { it.name },
+                    photoUrl = { it.avatar }
+                )
+                Bio(
+                    modifier = Modifier.fillMaxWidth(),
+                    description = { it.nickName }
+                )
+                HCWDatePicker(
+                    modifier = Modifier.padding(16.dp),
+                    datePickerState = { datePickerState })
+            }
         }
 
     }
@@ -118,7 +139,7 @@ fun ProfileAvatarName(modifier: Modifier = Modifier, name: () -> String, photoUr
 }
 
 @Composable
-fun Bio(modifier: Modifier = Modifier) {
+fun Bio(modifier: Modifier = Modifier, description: () -> String) {
     Column(modifier) {
         Text(
             modifier = Modifier.padding(start = 16.dp),
@@ -129,15 +150,15 @@ fun Bio(modifier: Modifier = Modifier) {
                 .padding(top = 8.dp)
                 .fillMaxHeight(0.3f)
                 .padding(start = 16.dp, end = 16.dp),
-            description = { "I am Pollyanna Wu, love to do house work" },
+            description = { description() },
             textStyle = LocalTypography.current.titleSmall
         )
 
     }
 }
 
-@Preview
-@Composable
-fun ProfileScreenPreview() {
-    ProfileScreen()
-}
+//@Preview
+//@Composable
+//fun ProfileScreenPreview() {
+//    ProfileScreen()
+//}

@@ -31,8 +31,4 @@ sealed class Screen(
         pageTitle = "Task Detail",
         route = Route.TASK_DETAIL
     )
-
-
-
-
 }

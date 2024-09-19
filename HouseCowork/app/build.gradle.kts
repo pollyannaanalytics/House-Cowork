@@ -55,14 +55,13 @@ android {
 dependencies {
 
     // room
-    implementation(libs.room.runtime)
-    implementation(libs.androidx.paging.common.android)
     ksp(libs.room.compiler)
-    implementation(libs.room.paging)
+    implementation(libs.room.ktx)
 
     // network
     ksp(libs.moshi)
     implementation(libs.retrofit)
+    implementation(libs.retrofit2.converter.gson)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

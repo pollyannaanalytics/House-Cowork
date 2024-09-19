@@ -17,19 +17,33 @@ data class TaskDto(
     val description: String,
     @ColumnInfo(name = "access_level")
     val accessLevel: Int,
+
+    @ColumnInfo(name = "task_status")
     var taskStatus: Int,
     val dueTime: String,
+
+    @ColumnInfo(name = "assignee_status_id")
     val assigneeStatusId: Int,
+
+    @ColumnInfo(name = "house_id")
     val houseId: Int,
+
+    @ColumnInfo(name = "created_time")
     val createdTime: Long,
+
+    @ColumnInfo(name = "updated_time")
     val updatedTime: Long
 )
 
-@Entity
+@Entity(tableName = "assignee_status")
 data class AssigneeStatus(
     @PrimaryKey
     val id: Int,
+
+    @ColumnInfo(name = "assignee_id")
     val assigneeId: Int,
+
+    @ColumnInfo(name = "task_id")
     val taskId: Int,
     val status: Int
 )

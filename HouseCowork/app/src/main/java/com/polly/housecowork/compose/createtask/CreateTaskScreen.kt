@@ -54,7 +54,6 @@ import com.polly.housecowork.ui.utils.PositiveButton
 import com.polly.housecowork.viewmodel.CreateTaskViewModel
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateTaskScreen(
@@ -78,12 +77,11 @@ fun CreateTaskScreen(
 
     val scrollState = rememberScrollState()
     val shouldScrollTop by viewModel.shouldScrollTop.collectAsState()
-    val assignedUser by viewModel.assignedUser.collectAsState()
-    val allUsers by viewModel.allUsers.collectAsState()
     val errorState by viewModel.errorState.collectAsState()
 
     val dueHour by viewModel.dueHour.collectAsState()
     val dueMinute by viewModel.dueMinute.collectAsState()
+    val selectableAssignees by viewModel.selectableAssignees.collectAsState()
 
     LaunchedEffect(shouldScrollTop) {
         if (shouldScrollTop) {
@@ -174,12 +172,16 @@ fun CreateTaskScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                itemList = { allUsers },
-                selectedUserName = { assignedUser?.name },
+                itemList = { selectableAssignees },
                 onAssigneeClick = {
                     viewModel.setAssignedUser(it)
                 }
             )
+            AccessSwitch(modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()) {
+                viewModel.setAccessLevel(it)
+            }
             HCWDatePicker(
                 modifier = Modifier
                     .padding(16.dp)

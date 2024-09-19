@@ -34,10 +34,12 @@ import com.polly.housecowork.ui.theme.LocalTypography
 fun AssignDrawer(
     modifier: Modifier,
     itemList: () -> List<String>,
-    selectedUserName: () -> String?,
     onAssigneeClick: (String) -> Unit
 ) {
     var shouldExpanded by remember { mutableStateOf(false) }
+    var selectedUserName: String by remember {
+        mutableStateOf(itemList().first())
+    }
 
     Row(
         modifier = modifier
@@ -64,7 +66,7 @@ fun AssignDrawer(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
-                selectedUserName = { selectedUserName() },
+                selectedUser = { selectedUserName },
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = shouldExpanded)
                 }
@@ -74,12 +76,12 @@ fun AssignDrawer(
                     .background(LocalColorScheme.current.surface),
                 expanded = shouldExpanded,
                 onDismissRequest = { shouldExpanded = false }) {
-                itemList().forEachIndexed { index, user ->
+                itemList().forEachIndexed { index, userName ->
                     DropdownMenuItem(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(LocalColorScheme.current.surface),
-                        text = { Text(text = "everyone") },
+                        text = { Text(text = userName) },
                         leadingIcon = {
                             Icon(
                                 Icons.Default.AccountCircle,
@@ -87,8 +89,8 @@ fun AssignDrawer(
                             )
                         },
                         onClick = {
-                            val selectedUser = itemList()[index]
-                            onAssigneeClick(selectedUser)
+                            onAssigneeClick(userName)
+                            selectedUserName = userName
                             shouldExpanded = false
                         }
                     )
@@ -98,10 +100,11 @@ fun AssignDrawer(
     }
 }
 
+
 @Composable
 fun DefaultAssignItem(
     modifier: Modifier = Modifier,
-    selectedUserName: () -> String?,
+    selectedUser: () -> String,
     trailingIcon: @Composable () -> Unit
 ) {
     Box(
@@ -118,7 +121,7 @@ fun DefaultAssignItem(
 
             Text(
                 modifier = Modifier.padding(start = 4.dp),
-                text = selectedUserName() ?: "everyone"
+                text = selectedUser(),
             )
 
             trailingIcon()

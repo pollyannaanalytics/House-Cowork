@@ -1,6 +1,7 @@
 package com.polly.housecowork.prefs
 
 import android.content.SharedPreferences
+import javax.inject.Inject
 
 interface PrefsRepository{
 fun getString(key: String, def: String? = null): String?
@@ -11,8 +12,9 @@ fun getString(key: String, def: String? = null): String?
 
 }
 
-class PrefsDefaultRepository(prefsModule: PrefsModule): PrefsRepository {
-    private val sharedPreferences = prefsModule.provideSharedPreference()
+
+class PrefsDefaultRepository @Inject constructor(private val sharedPreferences: SharedPreferences): PrefsRepository {
+
 
     override fun getString(key: String, def: String?): String? = sharedPreferences.getString(key, def?:"")
 

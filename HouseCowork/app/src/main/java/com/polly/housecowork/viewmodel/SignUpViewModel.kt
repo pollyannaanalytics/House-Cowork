@@ -73,7 +73,7 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
     }
     fun setUpUserInfo(){
        val newUser = UserInfo(
-           name = _username.value,
+           username = _username.value,
            email = _email.value,
            password = _password.value
        )

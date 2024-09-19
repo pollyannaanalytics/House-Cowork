@@ -1,12 +1,12 @@
 package com.polly.housecowork.model.task.usecase
 
+import android.content.Context
 import android.provider.ContactsContract.Profile
 import com.polly.housecowork.dataclass.ProfileInfo
 import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.dataclass.TaskDto
 import com.polly.housecowork.model.assigneestatus.AssigneeRepository
-import com.polly.housecowork.model.profile.ProfileRepository
-import com.polly.housecowork.model.task.TaskRepository
+import com.polly.housecowork.model.profile.DefaultProfileRepository
 import com.polly.housecowork.prefs.PrefsLicense
 import com.polly.housecowork.ui.utils.AccessLevel
 import com.polly.housecowork.ui.utils.AssigneeStatusType
@@ -17,7 +17,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 class TransformTaskUseCase @Inject constructor(
-    private val profileRepository: ProfileRepository,
+    private val profileRepository: DefaultProfileRepository,
     private val assigneeRepository: AssigneeRepository,
     private val prefsLicense: PrefsLicense
 ){
@@ -43,7 +43,7 @@ class TransformTaskUseCase @Inject constructor(
         taskDto.apply {
             return Task(
                 id,
-                getProfile(ownerId),
+                getProfile(profileId = ownerId),
                 title,
                 description,
                 AccessLevel.from(accessLevel),
@@ -56,12 +56,8 @@ class TransformTaskUseCase @Inject constructor(
         }
     }
 
-    private suspend fun getProfile(profileId: Int): ProfileInfo {
-        var profile: ProfileInfo? = null
-        profileRepository.getProfileById(profileId).collect {
-            profile = it
-        }
-        return profile!!
+    private suspend fun getProfile(fetchRemote: Boolean = false, profileId: Int): ProfileInfo {
+        return profileRepository.getProfileById(fetchRemote, profileId )
     }
 
     private fun getAssignees(assigneeId: Int) = assigneeRepository.getAssigneeStatus(assigneeId)

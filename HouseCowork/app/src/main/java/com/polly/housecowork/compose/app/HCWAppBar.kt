@@ -17,7 +17,7 @@ import com.polly.housecowork.ui.utils.Avatar
 fun HCWAppBar(
     modifier: Modifier = Modifier,
     profileInfo: ProfileInfo,
-    onClick: (ProfileInfo) -> Unit
+    navigateToProfile: (ProfileInfo) -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -36,8 +36,10 @@ fun HCWAppBar(
             modifier = Modifier
                 .fillMaxHeight()
                 .aspectRatio(1f),
-            profileInfo = profileInfo,
-            onClick = onClick
+           imageUrl = profileInfo.avatar,
+            onClick = {
+                navigateToProfile(profileInfo)
+            }
         )
     }
 }

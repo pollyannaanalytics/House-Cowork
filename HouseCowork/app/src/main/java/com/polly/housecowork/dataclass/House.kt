@@ -9,6 +9,17 @@ data class House(
     val id: Int,
     val name: String,
     val description: String,
-    val rules: List<String>,
-    val members: List<UserInfo>
+    val rules: String,
+    val members: Int,
+    val updateTime: Long
+)
+
+
+@Entity
+data class HouseMembers(
+    @PrimaryKey
+    val id: Int,
+    val houseId: Int,
+    val userId: Int,
+    val updateTime: Long
 )

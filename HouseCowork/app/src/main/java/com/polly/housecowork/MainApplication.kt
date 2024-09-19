@@ -2,6 +2,7 @@ package com.polly.housecowork
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 @HiltAndroidApp
-class MainApplication: Application()
+class MainApplication @Inject constructor(): Application()

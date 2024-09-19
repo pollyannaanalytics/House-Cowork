@@ -1,8 +1,6 @@
 package com.polly.housecowork.compose.app
 
 import android.app.Activity
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,51 +20,55 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.polly.housecowork.compose.createtask.CreateTaskScreen
 import com.polly.housecowork.compose.home.HomeScreen
+import com.polly.housecowork.compose.profile.ProfileScreen
 import com.polly.housecowork.compose.signup.SignUpScreen
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.utils.Screen
 import com.polly.housecowork.viewmodel.HouseCoworkAppViewModel
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HCWApp(
     viewModel: HouseCoworkAppViewModel= hiltViewModel()) {
     val navController = rememberNavController()
     val profileInfoState by viewModel.profileInfo.collectAsState()
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         topBar = {
-            HCWAppBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.1f)
-                    .background(LocalColorScheme.current.background)
-                    .padding(16.dp),
-                profileInfo = profileInfoState,
-                onClick = { userProfile ->
-                    navController.navigate(
-                        Screen.Profile(profileId = userProfile.id).route
-                    )
-                }
-            )
+            profileInfoState?.let {
+                HCWAppBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.1f)
+                        .background(LocalColorScheme.current.background)
+                        .padding(16.dp),
+                    profileInfo = it,
+                    navigateToProfile = { userProfile ->
+                        navController.navigate(
+                            Screen.Profile(profileId = userProfile.id).route
+                        )
+                    }
+                )
+            }
         }
     ) { innerPadding ->
         HCWNavHost(
             modifier = Modifier.padding(innerPadding),
-            navController = navController
+            navController = navController,
+            profileId = { profileInfoState?.id ?: 0 },
+            taskId = { 0 }
         )
     }
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HCWNavHost(
     modifier: Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    profileId: () -> Int,
+    taskId: () -> Int
 ) {
     val activity = (LocalContext.current as Activity)
     NavHost(
@@ -96,6 +98,15 @@ fun HCWNavHost(
                 navigateOnClick = {
                     navController.popBackStack()
                 }
+            )
+        }
+        composable(Screen.Profile(profileId = profileId()).route) {
+            ProfileScreen(
+                modifier = Modifier.fillMaxSize(),
+                navigateOnClick = {
+                    navController.popBackStack()
+                },
+                profileId = profileId()
             )
         }
     }

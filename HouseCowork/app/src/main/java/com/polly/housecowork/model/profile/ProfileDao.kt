@@ -1,7 +1,6 @@
 package com.polly.housecowork.model.profile
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -10,7 +9,7 @@ import com.polly.housecowork.dataclass.ProfileInfo
 @Dao
 interface ProfileDao {
     @Query("SELECT * FROM profile_info WHERE id = :profileId")
-    fun getProfileById(profileId: Int): ProfileInfo?
+    fun getProfileById(profileId: Int): ProfileInfo
 
     @Query("SELECT * FROM profile_info")
     fun getAllProfiles(): List<ProfileInfo>
@@ -21,6 +20,6 @@ interface ProfileDao {
     @Update
     fun updateProfile(profile: ProfileInfo)
 
-    @Delete
+    @Query("DELETE FROM profile_info WHERE id = :profileId")
     fun deleteProfileById(profileId: Int)
 }

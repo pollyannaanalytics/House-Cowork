@@ -1,23 +1,18 @@
 package com.polly.housecowork.prefs
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.polly.housecowork.MainApplication
 import javax.inject.Inject
 
 class PrefsCommon @Inject constructor(
-    private val application: MainApplication
+    private val context: Context,
+    private val prefs: SharedPreferences
 ): Prefs{
     override fun getContext(): Context {
-        return application.applicationContext
+        return context
     }
 
-    override fun getRepo(): PrefsDefaultRepository = PrefsDefaultRepository(
-        PrefsModule(application.applicationContext, PREF_NAME, Context.MODE_PRIVATE)
-    )
-
-    companion object {
-        private const val PREF_NAME = "shared_prefs"
-    }
-
+    override fun getRepo(): PrefsDefaultRepository = PrefsDefaultRepository(prefs)
 
 }

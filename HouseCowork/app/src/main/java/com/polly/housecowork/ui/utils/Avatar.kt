@@ -16,17 +16,17 @@ import com.polly.housecowork.dataclass.ProfileInfo
 @Composable
 fun Avatar(
     modifier: Modifier = Modifier,
-    profileInfo: ProfileInfo,
-    onClick: (ProfileInfo) -> Unit
+    imageUrl: String,
+    onClick: () -> Unit
 ) {
-    if (profileInfo.avatar.isNotEmpty()) {
+    if (imageUrl.isNotEmpty()) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(profileInfo.avatar)
+                .data(imageUrl)
                 .crossfade(true)
                 .build(),
             contentDescription = "avatar",
-            modifier = modifier.clickable { onClick(profileInfo) },
+            modifier = modifier.clickable { onClick() },
             contentScale = ContentScale.Crop,
         )
     } else {

@@ -19,7 +19,7 @@ firebaseBom = "32.4.0"
 gson = "2.8.6"
 gmsPlugin = "4.4.1"
 googleMaterial = "1.9.0"
-moshi = "1.15.1"
+retrofit = "2.9.0"
 room = "2.6.1"
 pagingCommonAndroid = "3.3.2"
 
@@ -43,8 +43,10 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilVersion"
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt-version" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt-version" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
-retrofit = { module = "com.squareup.retrofit2:retrofit", version = "2.9.0" }
-moshi = { module = "com.squareup.moshi:moshi", version = "moshi" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version = "retrofit" }
+
+retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+moshi = { module = "com.squareup.moshi:moshi", version = "1.15.1" }
 google-font = {module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "googleFont"}
 
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
@@ -55,6 +57,7 @@ google-material = { group = "com.google.android.material", name = "material", ve
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 room-runtime = {group = "androidx.room", name = "room-runtime", version.ref = "room"}
 room-compiler = {group = "androidx.room", name = "room-compiler", version.ref = "room"}
+room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
 room-paging = {group = "androidx.room", name = "room"}
 androidx-paging-common-android = { group = "androidx.paging", name = "paging-common-android", version.ref = "pagingCommonAndroid" }
 

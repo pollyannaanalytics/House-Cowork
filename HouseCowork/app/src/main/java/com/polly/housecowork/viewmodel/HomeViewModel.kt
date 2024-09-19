@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.polly.housecowork.dataclass.AssigneeStatus
 import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.dataclass.TaskDto
-import com.polly.housecowork.model.task.TaskRepository
+import com.polly.housecowork.model.task.DefaultTaskRepository
 import com.polly.housecowork.ui.utils.DinosaurType
 import com.polly.housecowork.model.task.usecase.GenerateDinosaurGrowthUseCase
 import com.polly.housecowork.model.task.usecase.TransformTaskUseCase
@@ -25,7 +25,7 @@ class HomeViewModel @Inject constructor(
     private val generateDinosaurGrowthUseCase: GenerateDinosaurGrowthUseCase,
     private val transformTaskUseCase: TransformTaskUseCase,
     private val prefsLicense: PrefsLicense,
-    private val taskRepository: TaskRepository,
+    private val taskRepository: DefaultTaskRepository,
 ): ViewModel() {
 
     private val _dinosaurType = MutableStateFlow<DinosaurType>(DinosaurType.Egg)

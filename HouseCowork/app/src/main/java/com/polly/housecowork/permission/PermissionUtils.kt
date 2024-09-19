@@ -23,7 +23,7 @@ class PermissionUtils {
         val requiredPermissions = getFeatureRequiredPermissions(permission)
 
         if(this.checkSelfPermission(requiredPermissions) != PackageManager.PERMISSION_GRANTED) {
-             throw ApiResult.Failure.Reason.PermissionDenied(requiredPermissions)
+             throw SecurityException("Permission $requiredPermissions is required")
         }
     }
 

@@ -8,16 +8,11 @@ import java.util.UUID
 
 @Entity
 data class UserInfo(
-    @PrimaryKey
-    val id: Int = 0,
-    val uid: UUID = UUID.randomUUID(),
-    val name: String,
-    val nickName: String,
-    val avatar: String,
-    @ColumnInfo(name = "bank_account")
-    val bankAccount: String,
+    @PrimaryKey val id: UUID = UUID.randomUUID(),
+    @ColumnInfo(name = "username") val username: String,
+    @ColumnInfo(name = "email") val email: String,
+    @ColumnInfo(name = "password") val password: String
 )
-
 
 
 

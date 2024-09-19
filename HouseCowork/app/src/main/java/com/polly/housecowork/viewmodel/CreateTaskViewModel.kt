@@ -1,9 +1,13 @@
 package com.polly.housecowork.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.polly.housecowork.model.profile.ProfileRepository
-import com.polly.housecowork.model.task.TaskRepository
+import com.polly.housecowork.calendar.CalendarRepository
+import com.polly.housecowork.dataclass.ProfileInfo
+import com.polly.housecowork.model.profile.DefaultProfileRepository
+import com.polly.housecowork.model.task.DefaultTaskRepository
+import com.polly.housecowork.ui.utils.AccessLevel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,8 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateTaskViewModel @Inject constructor(
-    private val taskRepository: TaskRepository,
-    private val profileRepository: ProfileRepository
+    private val taskRepository: DefaultTaskRepository,
+    private val profileRepository: DefaultProfileRepository
 ) : ViewModel() {
 
     data class ErrorState(
@@ -30,14 +34,15 @@ class CreateTaskViewModel @Inject constructor(
     private val _taskDescription: MutableStateFlow<String> = MutableStateFlow("")
     val taskDescription = _taskDescription.asStateFlow()
 
-    private val _accessLevel: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val _accessLevel: MutableStateFlow<AccessLevel> = MutableStateFlow(AccessLevel.PUBLIC)
     val accessLevel = _accessLevel.asStateFlow()
 
-    private var _assignedUser: MutableStateFlow<MutableList<Int>> = MutableStateFlow(mutableListOf())
-    val assignedUser = _assignedUser.asStateFlow()
+    private var _assignedUser: MutableStateFlow<MutableList<ProfileInfo>> = MutableStateFlow(mutableListOf())
 
-    private var _allUsers: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
-    val allUsers = _allUsers.asStateFlow()
+    private var _selectableAssignees: MutableStateFlow<List<String>> = MutableStateFlow(mutableListOf())
+    val selectableAssignees = _selectableAssignees.asStateFlow()
+
+    private var _allUsers: MutableList<ProfileInfo> = mutableListOf()
 
     private var _dueTime: MutableStateFlow<Long> = MutableStateFlow(System.currentTimeMillis())
     val dueTime = _dueTime.asStateFlow()
@@ -56,6 +61,7 @@ class CreateTaskViewModel @Inject constructor(
 
     init {
         setInitialDueTime()
+        getAllUsers()
     }
 
     private fun setInitialDueTime(){
@@ -66,17 +72,31 @@ class CreateTaskViewModel @Inject constructor(
         _dueMinute.value = (currentTime / 1000 / 60 % 60).toInt()
     }
 
-    private fun getAllUsers() {
+    fun getAllUsers(fetchRemote: Boolean = false) {
         viewModelScope.launch {
-            _allUsers.value = profileRepository.getAllUsers().map { it.name }
+            val users = emptyList<ProfileInfo>().toMutableList()
+            profileRepository.getAllProfiles(fetchRemote).collect{
+                it.map { profile ->
+                   users.add(profile)
+                }
+            }
+            _allUsers = users
+            _selectableAssignees.value = listOf("everyone" + users.map { it.name })
+
         }
     }
 
     fun setTaskTitle(title: String) {
         _taskTitle.value = title
     }
-    fun setAssignedUser(userId: Int) {
-        _assignedUser.value.add(userId)
+    fun setAssignedUser(selectedName: String) {
+       if (selectedName == "everyone") {
+           _assignedUser.value = _allUsers
+       } else {
+           val selectedUser = _allUsers.filter { it.name == selectedName }
+           _assignedUser.value.add(selectedUser[0])
+       }
+
     }
 
     fun setDueDate(dateTimestamp: Long) {
@@ -105,9 +125,9 @@ class CreateTaskViewModel @Inject constructor(
                 taskRepository.createTask(
                     _taskTitle.value,
                     _taskDescription.value,
-                    taskAccessLevel = _accessLevel.value,
+                    taskAccessLevel = _accessLevel.value.level,
                     taskDueTime = _dueTime.value,
-                    assignees = _assignedUser.value.map { it },
+                    assignees = _assignedUser.value.map { it.id },
                 )
             }
             return
@@ -119,12 +139,13 @@ class CreateTaskViewModel @Inject constructor(
        _errorState.value.titleError = false
     }
 
+    fun setAccessLevel(isPublic: Boolean) {
+        _accessLevel.value = if (isPublic) AccessLevel.PUBLIC else AccessLevel.PRIVATE
+    }
+
     fun clearDueTimeError() {
         _errorState.value.dueTimeError = false
     }
 
-    fun checkDueTime(){
-        _errorState.value.dueTimeError = _dueTime.value < System.currentTimeMillis()
-    }
 
 }
