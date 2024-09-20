@@ -19,7 +19,7 @@ class DefaultProfileRepository @Inject constructor(
         fetchRemote: Boolean,
         profileId: Int
     ): ProfileInfo = withContext(Dispatchers.IO) {
-            if (!fetchRemote || connectionUtils.isNetworkAvailable()) {
+            if (!fetchRemote || !connectionUtils.isNetworkAvailable()) {
                 return@withContext localDataSource.getProfileById(profileId)
             }
             val result = remoteDataSource.getProfileById(profileId)
@@ -40,11 +40,6 @@ class DefaultProfileRepository @Inject constructor(
             val result = remoteDataSource.getAllProfiles()
             if(result is ApiResult.Success){
                 val profiles = result.data
-                emit(profiles)
-            }
-        } else {
-            val profiles = localDataSource.getAllProfiles()
-            if(profiles.isNotEmpty()){
                 emit(profiles)
             }
         }

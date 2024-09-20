@@ -11,13 +11,12 @@ interface ProfileApiService {
 
 class MockProfileApiService : ProfileApiService {
     private val mockProfileInfo = ProfileInfo(
-        1,
-        "Mock Profile",
-        "Mock Profile Description",
-        "https://mock.com",
-        "23232323",
-        "2021-10-10",
-        123232323
+        name = "Mock Profile",
+        nickName = "Mock Profile Description",
+        avatar = "https://mock.com",
+        bankAccount = "23232323",
+        email = "pinyunwuu@gmail.com",
+        updateTime = 123232323
     )
 
     override suspend fun getProfileById(id: Int): ProfileInfo{
@@ -25,6 +24,6 @@ class MockProfileApiService : ProfileApiService {
     }
 
     override suspend fun getAllProfiles(): List<ProfileInfo> {
-        return listOf(mockProfileInfo)
+        return List(10) { mockProfileInfo }
     }
 }

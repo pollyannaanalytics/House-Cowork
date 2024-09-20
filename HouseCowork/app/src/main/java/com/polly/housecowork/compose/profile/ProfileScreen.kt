@@ -65,27 +65,6 @@ fun ProfileScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .fillMaxSize()
             .background(LocalColorScheme.current.background),
-        topBar = {
-            CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = LocalColorScheme.current.background,
-                    titleContentColor = LocalColorScheme.current.onBackground
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { navigateOnClick() }) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowLeft,
-                            contentDescription = "Close",
-                            modifier = Modifier.fillMaxSize(),
-                            tint = LocalColorScheme.current.onBackground,
-                        )
-                    }
-                },
-                title = { Text(text = "Profile") },
-                actions = {},
-                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
-            )
-        }
     ) { contentPadding ->
         Column(
             modifier = Modifier

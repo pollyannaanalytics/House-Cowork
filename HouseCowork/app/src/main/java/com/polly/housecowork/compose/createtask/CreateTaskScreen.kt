@@ -105,44 +105,6 @@ fun CreateTaskScreen(
         modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .clickable { focusManager.clearFocus() },
-        topBar = {
-            CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = LocalColorScheme.current.background,
-                    titleContentColor = LocalColorScheme.current.onBackground
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { navigateOnClick() }) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowLeft,
-                            contentDescription = "Close",
-                            modifier = Modifier.fillMaxHeight(),
-                            tint = LocalColorScheme.current.onBackground,
-                        )
-                    }
-
-                },
-                title = {
-                    Text(
-                        textAlign = TextAlign.Center,
-                        text = "Create a Task",
-                        style = LocalTypography.current.titleSmall,
-                    )
-
-                },
-                actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = "Profile",
-                            modifier = Modifier.fillMaxHeight()
-                        )
-                    }
-
-                },
-                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
-            )
-        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
