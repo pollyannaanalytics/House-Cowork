@@ -3,6 +3,8 @@ package com.polly.housecowork.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polly.housecowork.dataclass.ProfileInfo
+import com.polly.housecowork.model.auth.AuthRepository
+import com.polly.housecowork.model.auth.AuthState
 import com.polly.housecowork.model.profile.DefaultProfileRepository
 import com.polly.housecowork.prefs.PrefsLicense
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,12 +16,16 @@ import javax.inject.Inject
 @HiltViewModel
 class HCWAppViewModel @Inject constructor(
     private val profileRepository: DefaultProfileRepository,
+    private val authRepository: AuthRepository,
     private val license: PrefsLicense
 
 ) : ViewModel(){
 
     private val _profileInfo = MutableStateFlow<ProfileInfo?>(null)
     val profileInfo = _profileInfo.asStateFlow()
+
+    private val _authState = MutableStateFlow(checkAuthState())
+    val authState = _authState.asStateFlow()
 
     init {
         getUserProfileInfo()
@@ -32,7 +38,7 @@ class HCWAppViewModel @Inject constructor(
         }
     }
 
-
-
-
+    private fun checkAuthState(): AuthState {
+        return authRepository.checkAuthState("house_cowork")
+    }
 }

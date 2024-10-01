@@ -21,13 +21,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.ui.utils.PrimaryMediumButton
 import com.polly.housecowork.utils.Screen
+import com.polly.housecowork.utils.StepState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel = hiltViewModel(),
-    navigateTo: (Screen) -> Unit
+    navigateTo: (StepState) -> Unit
 ) {
     val dinosaurTypeState by homeViewModel.dinosaurType.collectAsState()
     val progressTasks by homeViewModel.progressTasks.collectAsState()

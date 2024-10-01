@@ -1,4 +1,4 @@
-package com.polly.housecowork.compose.signup
+package com.polly.housecowork.compose.onboarding.signup
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

@@ -10,16 +10,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.polly.housecowork.compose.createtask.CreateTaskScreen
 import com.polly.housecowork.compose.home.HomeScreen
-import com.polly.housecowork.compose.house.HouseListScreen
+import com.polly.housecowork.compose.house.houseNavigation
+import com.polly.housecowork.compose.onboarding.onboardingNavigation
 import com.polly.housecowork.compose.profile.ProfileScreen
-import com.polly.housecowork.compose.signup.SignUpScreen
 import com.polly.housecowork.utils.Screen
-
+import com.polly.housecowork.utils.StepState
 
 @Composable
 fun HCWNavHost(
     modifier: Modifier,
     navController: NavHostController,
+    graphStartDestination: StepState,
     profileId: () -> Int,
     taskId: () -> Int
 ) {
@@ -27,25 +28,24 @@ fun HCWNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Screen.SignUp.route
+        startDestination = graphStartDestination.step
     ) {
-        composable(Screen.SignUp.route) {
-            SignUpScreen(
-                modifier = Modifier.fillMaxSize(),
-                navigateToHome = {
-                    navController.navigate(Screen.Home.route)
-                }
-            )
-        }
-        composable(Screen.Home.route) {
+        onboardingNavigation(
+            navController = navController,
+            onOnboardingComplete = {
+                navController.navigate(StepState.Home.step)
+            }
+        )
+        composable(StepState.Home.step) {
             HomeScreen(
                 modifier = Modifier.fillMaxSize(),
-                navigateTo = { screen ->
-                    navController.navigate(screen.route)
+                navigateTo = { stepStep ->
+                    navController.navigate(stepStep.step)
                 }
             )
         }
-        composable(Screen.CreateTask.route) {
+
+        composable(StepState.CreateTask.step) {
             CreateTaskScreen(
                 modifier = Modifier.fillMaxSize(),
                 navigateOnClick = {
@@ -53,6 +53,10 @@ fun HCWNavHost(
                 }
             )
         }
+
+        composable(StepState.TaskDetail.step){
+        }
+
         composable(Screen.Profile(profileId = profileId()).route) {
             ProfileScreen(
                 modifier = Modifier.fillMaxSize(),
@@ -62,17 +66,11 @@ fun HCWNavHost(
                 profileId = profileId()
             )
         }
-
-        composable(Screen.HouseList.route) {
-            HouseListScreen(
-                modifier = Modifier.fillMaxSize(),
-                navigateToHouseDetail = { house ->
-                    navController.navigate(Screen.HouseDetail(houseId = house.id).route)
-                }
-            )
-        }
+        houseNavigation(navController = navController)
     }
 }
+
+
 
 class MainActions(navController: NavHostController) {
     val navigateTo: (Screen) -> Unit = { screen ->

@@ -1,6 +1,5 @@
 package com.polly.housecowork.compose.app
 
-import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,16 +14,18 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.polly.housecowork.model.auth.AuthState
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.utils.Screen
+import com.polly.housecowork.utils.StepState
 import com.polly.housecowork.viewmodel.HCWAppViewModel
 
 
 @Composable
-fun HCWApp(
-    viewModel: HCWAppViewModel= hiltViewModel()) {
+fun HCWApp(viewModel: HCWAppViewModel= hiltViewModel()) {
     val navController = rememberNavController()
     val profileInfoState by viewModel.profileInfo.collectAsState()
+    val authState by viewModel.authState.collectAsState()
 
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
@@ -61,7 +62,9 @@ fun HCWApp(
             modifier = Modifier.padding(innerPadding),
             navController = navController,
             profileId = { profileInfoState?.id ?: 0 },
-            taskId = { 0 }
+            taskId = { 0 },
+            graphStartDestination = if (authState is AuthState.Login) StepState.Home else StepState.Onboarding
+
         )
     }
 }

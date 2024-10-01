@@ -13,6 +13,7 @@ val SlightGrey = Color(0xffD9D9D9)
 val Black = Color(0xff3A3636)
 val colorLightOnBackground = Color(0x99FFFFFF)
 val Red = Color(0xffFE2D2D)
+val Skinny = Color(0xffFCF9ED)
 
 val Yellow80 = Color(0xffe1ca72)
 val Brown30 = Color(0xffa4903e)
