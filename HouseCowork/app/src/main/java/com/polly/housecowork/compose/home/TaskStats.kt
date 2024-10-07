@@ -1,16 +1,16 @@
 package com.polly.housecowork.compose.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -36,81 +36,84 @@ fun TaskStats(
     val dinosaurTypeState = remember {
         dinosaurType
     }
-    Card(
-        modifier
-            .padding(16.dp)
-            .border(1.dp, LocalColorScheme.current.tertiary, RoundedCornerShape(16.dp))
+    Card(modifier.padding(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = LocalColorScheme.current.primary,
+        ),
+
     ) {
         Column(
             modifier = Modifier
-                .background(LocalColorScheme.current.background)
-                .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                modifier = Modifier.padding(bottom = 8.dp),
-                text = "Task Count",
-                style = LocalTypography.current.headlineSmall
-            )
             Row(
-                Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = androidx.compose.ui.Alignment.Bottom,
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center
+                Modifier.fillMaxWidth(),
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                when (dinosaurTypeState) {
-                    is DinosaurType.Egg -> {
-                        Image(
-                            modifier = Modifier
-                                .fillMaxHeight(),
-                            painter = painterResource(id = R.drawable.egg),
-                            contentDescription = "dinosour"
-                        )
-                    }
-
-                    is DinosaurType.EggOut -> {
-                        Image(
-                            modifier = Modifier
-                                .fillMaxHeight(),
-                            painter = painterResource(id = R.drawable.egg_out),
-                            contentDescription = "dinosour"
-                        )
-                    }
-
-                    is DinosaurType.Dinosaur -> {
-                        Image(
-                            modifier = Modifier
-                                .fillMaxHeight(),
-                            painter = painterResource(id = R.drawable.dinosaur),
-                            contentDescription = "dinosour"
-                        )
-                    }
-
-                    is DinosaurType.DinosaurKing -> {
-                        Image(
-                            modifier = Modifier
-                                .fillMaxHeight(),
-                            painter = painterResource(id = R.drawable.dinosaur_king),
-                            contentDescription = "dinosour"
-                        )
-                    }
-                }
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 16.dp),
+                    verticalAlignment = androidx.compose.ui.Alignment.Bottom,
+                ) {
                     Text(
                         modifier = Modifier.padding(start = 16.dp),
                         text = taskStatsState.toString(),
-                        style = LocalTypography.current.displayLarge
+                        style = LocalTypography.current.displayLarge,
+                        color = LocalColorScheme.current.onBackground
                     )
-                    Text(
-                        modifier = Modifier.padding(start = 4.dp),
-                        text = " / month",
-                        style = LocalTypography.current.titleMedium
-                    )
+                    Column(
+                        Modifier.padding(start = 8.dp),
+                    ) {
+                        Text("tasks", color = LocalColorScheme.current.onBackground)
+                        Text("/ month", color = LocalColorScheme.current.onBackground)
+                    }
+                }
+                Column(modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.Center
+                    ) {
+                    when (dinosaurTypeState) {
+                        is DinosaurType.Egg -> {
+                            Image(
+                                painter = painterResource(id = R.drawable.egg),
+                                contentDescription = "dinosour"
+                            )
+                        }
+
+                        is DinosaurType.EggOut -> {
+                            Image(
+                                painter = painterResource(id = R.drawable.egg_out),
+                                contentDescription = "dinosour"
+                            )
+                        }
+
+                        is DinosaurType.Dinosaur -> {
+                            Image(
+                                painter = painterResource(id = R.drawable.dinosaur),
+                                contentDescription = "dinosour"
+                            )
+                        }
+
+                        is DinosaurType.DinosaurKing -> {
+                            Image(
+                                painter = painterResource(id = R.drawable.dinosaur_king),
+                                contentDescription = "dinosour"
+                            )
+                        }
+                    }
+                }
+
+
 
             }
         }
 
     }
 }
+
+
 
 @Composable
 @Preview

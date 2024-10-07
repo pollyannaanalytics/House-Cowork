@@ -54,7 +54,13 @@ fun HCWNavHost(
             )
         }
 
-        composable(StepState.TaskDetail.step){
+        composable(StepState.TaskDetail(taskId = taskId()).step) {
+            CreateTaskScreen(
+                modifier = Modifier.fillMaxSize(),
+                navigateOnClick = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable(Screen.Profile(profileId = profileId()).route) {

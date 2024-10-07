@@ -41,12 +41,12 @@ fun SignUpForm(
         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
     ) {
         Text(
-            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+            modifier = Modifier.padding(top = 16.dp),
             text = "*All blanks need to be filled",
-            style = LocalTypography.current.bodyMedium
+            style = LocalTypography.current.bodySmall
         )
         HCWTextField(
-            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+            modifier = Modifier.padding(top = 16.dp),
             onTextChange = { nameOnChange(it) },
             hint = "Name  ( ex. Polly Wu )",
             keyboardOptions = {
@@ -58,7 +58,7 @@ fun SignUpForm(
                 onNext = { moveFocus(0, focusRequesters) }
             ))
         HCWTextField(
-            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+            modifier = Modifier.padding(top = 16.dp),
             onTextChange = { emailOnChange(it) },
             hint = "E-mail",
             errorState = emailError,
@@ -77,13 +77,13 @@ fun SignUpForm(
                     .fillMaxWidth()
                     .padding(top = 4.dp, bottom = 4.dp, start = 16.dp),
                 text = "*Please enter a valid email address.",
-                style = LocalTypography.current.bodyMedium,
+                style = LocalTypography.current.bodySmall,
                 color = LocalColorScheme.current.error
             )
         }
 
         HCWTextField(
-            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+            modifier = Modifier.padding(top = 16.dp),
             onTextChange = { passwordOnChange(it) },
             hint = "Password",
             errorState = passwordError,
@@ -100,13 +100,13 @@ fun SignUpForm(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 4.dp, bottom = 4.dp, start = 16.dp),
+                .padding(top = 4.dp, start = 16.dp),
             text = "*Required at least 10 characters, and contain at least one uppercase character.",
-            style = LocalTypography.current.bodyMedium,
-            color = if (passwordError) LocalColorScheme.current.error else LocalColorScheme.current.secondary,
+            style = LocalTypography.current.bodySmall,
+            color = if (passwordError) LocalColorScheme.current.error else LocalColorScheme.current.onBackground,
         )
         HCWTextField(
-            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+            modifier = Modifier.padding(top = 16.dp),
             onTextChange = { repeatPasswordOnChange(it) },
             hint = "Repeat Password",
             errorState = repeatPasswordError,
@@ -129,7 +129,7 @@ fun SignUpForm(
                     .fillMaxWidth()
                     .padding(top = 4.dp, bottom = 4.dp, start = 16.dp),
                 text = "*Passwords do not match.",
-                style = LocalTypography.current.bodyMedium,
+                style = LocalTypography.current.bodySmall,
                 color = LocalColorScheme.current.error
             )
         }
@@ -144,7 +144,7 @@ fun SignUpForm(
                 )
         }
         PositiveButton(
-            modifier = Modifier.padding(top = 8.dp),
+            modifier = Modifier.padding(top = 8.dp).fillMaxWidth(0.4f),
             text = "Join !", textStyle = LocalTypography.current.titleMedium,
             onClick = { joinOnClick() }
         )

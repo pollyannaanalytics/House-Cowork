@@ -34,7 +34,7 @@ fun NavGraphBuilder.houseNavigation(
         composable(Route.CREATE_HOUSE){
             CreateHouseScreen(
                 navigateOnClick = {
-                    navController.navigate(Step.HOUSE_STEP)
+                    navController.popBackStack()
                 }
             )
         }

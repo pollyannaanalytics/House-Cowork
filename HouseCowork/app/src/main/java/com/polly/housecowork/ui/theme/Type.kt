@@ -30,54 +30,43 @@ val HCWTypo = Typography(
         fontFamily = fontFamily
     ),
     headlineMedium = TextStyle(
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 32.sp,
+        fontFamily = fontFamily
+    ),
+    titleLarge = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 30.sp,
         fontFamily = fontFamily
     ),
-    headlineSmall = TextStyle(
+    titleMedium = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         fontFamily = fontFamily
     ),
-    labelMedium = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 20.sp,
-        fontFamily = fontFamily
-    ),
-    labelSmall = TextStyle(
-        fontWeight = FontWeight.ExtraBold,
-        fontSize = 18.sp,
-        fontFamily = fontFamily
-    ),
     titleSmall = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
-        fontFamily = fontFamily
-
-    ),
-    titleMedium = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
         fontFamily = fontFamily
     ),
     bodyLarge = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 24.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
         fontFamily = fontFamily
     ),
     bodyMedium = TextStyle(
         fontWeight = FontWeight.Normal,
-        fontSize = 13.sp,
+        fontSize = 20.sp,
         fontFamily = fontFamily
     ),
     bodySmall = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 11.sp,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 15.sp,
         fontFamily = fontFamily
     ),
-    displayLarge = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 50.sp,
+    labelLarge = TextStyle(
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 16.sp,
         fontFamily = fontFamily
     ),
 )

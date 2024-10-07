@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -30,11 +32,13 @@ fun SignUpScreen(
     Column(
         modifier
             .clickable { focusManager.clearFocus() }
-            .padding(16.dp),
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp)
+        ,
         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
     ) {
         Welcome(modifier = Modifier.padding(16.dp))
-        SignUpTitle(modifier = Modifier.padding(16.dp))
+        SignUpTitle(modifier = Modifier.padding(8.dp))
         SignUpForm(
             nameOnChange = { viewModel.setUsername(it) },
             emailOnChange = { viewModel.setEmail(it) },
@@ -57,15 +61,16 @@ fun SignUpScreen(
 fun Welcome(modifier: Modifier = Modifier) {
     Row(
         modifier.fillMaxWidth(),
-        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center
+        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
     ) {
         Text(
             text = "Let's",
-            style = LocalTypography.current.bodyLarge
+            style = LocalTypography.current.bodyMedium
         )
         Text(
             text = " House Cowork :)",
-            style = LocalTypography.current.headlineSmall
+            style = LocalTypography.current.headlineMedium
         )
     }
 }
@@ -73,6 +78,7 @@ fun Welcome(modifier: Modifier = Modifier) {
 @Composable
 fun SignUpTitle(modifier: Modifier = Modifier) {
     Text(
+        modifier = modifier,
         text = "Sign Up",
         style = LocalTypography.current.headlineLarge,
         color = LocalColorScheme.current.onPrimary

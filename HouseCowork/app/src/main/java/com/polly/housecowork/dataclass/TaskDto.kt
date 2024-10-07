@@ -56,6 +56,7 @@ data class Task(
     val description: String,
     val accessLevel: AccessLevel,
     var taskStatus: TaskStatus,
+    val dueDate: String,
     val dueTime: String,
     val assigneeStatus: List<AssigneeStatus>,
     val createdTime: Long,

@@ -23,6 +23,7 @@ private val LightColorScheme = lightColorScheme(
     primary = Yellow,
     secondary = DeepGrey,
     tertiary = Green90,
+    onTertiary = GreenBlue,
     background = YellowWhite,
     onBackground = Black,
     surface = Dim87,

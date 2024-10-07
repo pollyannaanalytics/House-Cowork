@@ -32,6 +32,6 @@ fun ShowPasswordCheckBox(
                 isChecked = it
                 onCheckChanged(it)
             })
-        Text(text = "Show Password", style = LocalTypography.current.bodyMedium)
+        Text(text = "Show Password", style = LocalTypography.current.bodySmall)
     }
 }

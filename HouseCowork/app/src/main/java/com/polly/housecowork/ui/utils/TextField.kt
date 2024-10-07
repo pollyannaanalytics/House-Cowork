@@ -49,7 +49,7 @@ fun HCWTextField(
             .clip(RoundedCornerShape(16.dp))
             .background(LocalColorScheme.current.surface)
             .border(1.dp, borderColor, RoundedCornerShape(16.dp))
-            .padding(16.dp),
+            .padding(12.dp),
         value = textState,
         onValueChange = {
             textState = it

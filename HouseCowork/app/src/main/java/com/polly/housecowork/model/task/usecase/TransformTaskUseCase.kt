@@ -1,7 +1,7 @@
 package com.polly.housecowork.model.task.usecase
 
-import android.content.Context
-import android.provider.ContactsContract.Profile
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.polly.housecowork.dataclass.ProfileInfo
 import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.dataclass.TaskDto
@@ -9,12 +9,10 @@ import com.polly.housecowork.model.assigneestatus.AssigneeRepository
 import com.polly.housecowork.model.profile.DefaultProfileRepository
 import com.polly.housecowork.prefs.PrefsLicense
 import com.polly.housecowork.ui.utils.AccessLevel
-import com.polly.housecowork.ui.utils.AssigneeStatusType
 import com.polly.housecowork.ui.utils.TaskStatus
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import javax.inject.Singleton
 
 class TransformTaskUseCase @Inject constructor(
     private val profileRepository: DefaultProfileRepository,
@@ -39,6 +37,7 @@ class TransformTaskUseCase @Inject constructor(
        }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun toTask(taskDto: TaskDto): Task {
         taskDto.apply {
             return Task(
@@ -48,13 +47,29 @@ class TransformTaskUseCase @Inject constructor(
                 description,
                 AccessLevel.from(accessLevel),
                 TaskStatus.from(taskStatus),
-                dueTime,
+                formateDate(dueTime),
+                formatTime(dueTime),
                 getAssignees(assigneeStatusId),
                 createdTime,
                 updatedTime
             )
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun formatTime(isoTime: String): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        val localDateTime = LocalDateTime.parse(isoTime, formatter)
+        return localDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun formateDate(isoTime: String): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        val localDateTime = LocalDateTime.parse(isoTime, formatter)
+        return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+    }
+
 
     private suspend fun getProfile(fetchRemote: Boolean = false, profileId: Int): ProfileInfo {
         return profileRepository.getProfileById(fetchRemote, profileId )

@@ -21,6 +21,7 @@ import com.polly.housecowork.dataclass.ProfileInfo
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.utils.Screen
+import com.polly.housecowork.utils.StepState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +32,7 @@ fun HCWAppBar(
     title: () -> String
 ) {
     val isHome by remember {
-        mutableStateOf( title() == Screen.Home.route)
+        mutableStateOf( title() == StepState.Home.step)
     }
 
     Surface(
@@ -68,7 +69,11 @@ fun HCWAppBar(
 
             actions = {
                 IconButton(onClick = { navigateToProfile(profileInfo) }) {
-                    Icon(imageVector = Icons.Rounded.AccountCircle , contentDescription = "profile")
+                    Icon(
+                        imageVector = Icons.Rounded.AccountCircle ,
+                        contentDescription = "profile",
+                        tint = LocalColorScheme.current.onBackground,
+                    )
                 }
             }
         )

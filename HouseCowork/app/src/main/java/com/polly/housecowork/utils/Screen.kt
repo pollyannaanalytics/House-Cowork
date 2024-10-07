@@ -8,13 +8,13 @@ sealed class StepState(val step: String){
     data object Home : StepState(step = Step.HOME_STEP)
     data object Profile : StepState(step = Step.PROFILE_STEP)
     data object CreateTask : StepState(step = Route.ADD_TASK)
-    data object TaskDetail : StepState(step = Route.TASK_DETAIL)
+    data class TaskDetail(val taskId: Int) : StepState(step = Route.TASK_DETAIL)
 
-    sealed class HouseStep(route: String): StepState(Step.HOUSE_STEP){
-        data object HouseList : HouseStep(Route.HOUSE_LIST)
-        data object HouseDetail : HouseStep(Route.HOUSE_DETAIL)
-        data object CreateHouse : HouseStep(Route.CREATE_HOUSE)
-        data object JoinHouse : HouseStep(Route.JOIN_HOUSE)
+    sealed class HouseStep: StepState(Step.HOUSE_STEP){
+        data object HouseList : StepState(step = Route.HOUSE_LIST)
+        data class HouseDetail(val houseId: Int) : StepState(step = Route.HOUSE_DETAIL)
+        data object CreateHouse : StepState(step = Route.CREATE_HOUSE)
+        data object JoinHouse : StepState(step = Route.JOIN_HOUSE)
     }
 }
 
