@@ -84,33 +84,7 @@ fun HCWApp(viewModel: HCWAppViewModel= hiltViewModel()) {
 
         bottomBar = {
             HCWBtmNavBar(navController = navController)
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                modifier = Modifier
-                    .onGloballyPositioned {
-                        fabHeight = it.size.height
-                    }
-                    .offset(y = fabOffsetY)
-                    .border(
-                        width = 5.dp,
-                        color = LocalColorScheme.current.onPrimary,
-                        shape = CircleShape
-                    ),
-                shape = CircleShape,
-                containerColor = Color.White,
-                onClick = {
-                    navController.navigate(StepState.CreateTask.step)
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Add",
-                    tint = LocalColorScheme.current.onPrimary,
-                )
-            }
-        },
-        floatingActionButtonPosition = FabPosition.Center
+        }
     ) { innerPadding ->
 
         LaunchedEffect(fabHeight) {
