@@ -3,6 +3,7 @@ package com.polly.housecowork.compose.home
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,11 +29,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Cyan
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -106,38 +111,42 @@ fun SingleTaskCard(
     isExpired: Boolean
 ) {
 
-    ElevatedCard (
+    ElevatedCard(
         elevation = CardDefaults.cardElevation(4.dp),
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = 200.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .drawBehind {
-                val strokeWidth = 1 * density
-
-                if (toDoTitle == ToDoType.EXPIRED.title) drawLine(
-                    Color.LightGray,
-                    Offset(0f, strokeWidth),
-                    Offset(0f, size.height),
-                    strokeWidth
-                )
-
-                if (toDoTitle == ToDoType.THREE_DAYS_FUTURE.title) {
-                    drawLine(
-                        Color.LightGray,
-                        Offset(size.width, strokeWidth),
-                        Offset(size.width, size.height),
-                        strokeWidth
-                    )
-                }
-            }
             .padding(8.dp)
-        ,
+            .heightIn(min = 200.dp)
+            .clip(RoundedCornerShape(16.dp)),
         colors = CardDefaults.cardColors(
             containerColor = LocalColorScheme.current.surface
         )
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 200.dp)
+            .drawBehind {
+                if (toDoTitle == ToDoType.EXPIRED.title) {
+                    val strokeWidth = 16.dp.toPx()
+                    drawLine(
+                        color = Color.Gray,
+                        start = Offset(0f, 0f),
+                        end = Offset(0f, size.height),
+                        strokeWidth = strokeWidth
+                    )
+                }
+                if (toDoTitle == ToDoType.THREE_DAYS_FUTURE.title) {
+                    val strokeWidth = 16.dp.toPx()
+                    drawLine(
+                        color = Color.Gray,
+                        start = Offset(size.width, 0f),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = strokeWidth
+                    )
+                }
+            }
+            .padding(16.dp)
+        ) {
             Text(
                 text = toDoTitle,
                 style = LocalTypography.current.titleSmall,
@@ -158,9 +167,13 @@ fun SingleTaskCard(
 }
 
 
-
 @Composable
-fun BulletItem (modifier: Modifier = Modifier, taskTitle: String, isExpired: Boolean, taskTime: String) {
+fun BulletItem(
+    modifier: Modifier = Modifier,
+    taskTitle: String,
+    isExpired: Boolean,
+    taskTime: String
+) {
     val bulletColor = if (isExpired) Color.Red else LocalColorScheme.current.onTertiary
     Row(
         modifier = modifier
@@ -168,10 +181,11 @@ fun BulletItem (modifier: Modifier = Modifier, taskTitle: String, isExpired: Boo
             .padding(top = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(modifier = Modifier
-            .padding(end = 8.dp)
-            .size(8.dp)
-            .background(bulletColor, CircleShape)
+        Box(
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(8.dp)
+                .background(bulletColor, CircleShape)
         )
         Text(modifier = Modifier.padding(horizontal = 4.dp), text = taskTime)
         Text(taskTitle)
@@ -206,34 +220,36 @@ fun GreyDotIndicator(
 @Composable
 fun SingleTaskCardPreview() {
     SingleTaskCard(
-        toDoTitle = "Today's To-Do",
-        tasks = List(2) {Task(
-            id = 1,
-            title = "Task 1",
-            description = "Description 1",
-            accessLevel = AccessLevel.PUBLIC,
-            taskStatus = TaskStatus.IN_PROGRESS,
-            assigneeStatus = List(2){
-                AssigneeStatus(
-                    id = 1,
-                    assigneeId = 1,
-                    taskId = 1,
-                    status = 1
-                )
-            },
-            dueDate = "2023-07-28",
-            dueTime = "14:30",
-            createdTime = 1630000000000,
-            owner = ProfileInfo(
+        toDoTitle = ToDoType.EXPIRED.title,
+        tasks = List(2) {
+            Task(
                 id = 1,
-                name = "Owner 1",
-                email = "pinyunwuu@gmail.com",
-                avatar = "https://www.google.com",
-                bankAccount = "2232323",
-                nickName = "Polly",
-                updateTime = 1212222222,
-            ),
-            updatedTime = 1630000000000)
+                title = "Task 1",
+                description = "Description 1",
+                accessLevel = AccessLevel.PUBLIC,
+                taskStatus = TaskStatus.IN_PROGRESS,
+                assigneeStatus = List(2) {
+                    AssigneeStatus(
+                        id = 1,
+                        assigneeId = 1,
+                        taskId = 1,
+                        status = 1
+                    )
+                },
+                dueDate = "2023-07-28",
+                dueTime = "14:30",
+                createdTime = 1630000000000,
+                owner = ProfileInfo(
+                    id = 1,
+                    name = "Owner 1",
+                    email = "pinyunwuu@gmail.com",
+                    avatar = "https://www.google.com",
+                    bankAccount = "2232323",
+                    nickName = "Polly",
+                    updateTime = 1212222222,
+                ),
+                updatedTime = 1630000000000
+            )
         },
         isExpired = false
     )

@@ -40,7 +40,6 @@ fun HCWTextField(
     var textState by remember {
         mutableStateOf(TextFieldValue())
     }
-    Log.e("HCWTextField", "textState: $textState, passwordState: $errorState")
     BasicTextField(
         modifier = modifier
             .padding(start = 16.dp, end = 16.dp)

@@ -15,19 +15,29 @@ if (有明確指定任務接收者) then (true)
 
     if (有人接) then (yes)
       :執行任務;
-    else if(大家都拒接)
+      stop
+    else if(大家都拒接) then (true)
       :通知 reporter 重新指派;
-    endif
-    :task closed;
+      stop
+      endif
+      stop
     endif
 else (false)
 : 對指派者發出任務通知;
 if(當事人接收) then (true)
   :執行任務;
+  stop
 else (false)
   :通知 reporter 重新指派;
-endif
+    if(reporter重新指派) then (true)
+        :assign Task;
+        stop
+    else (false)
+        : 把 task 退回 backlog;
+        stop
+        endif
 
+  endif
 endif
 else (false)
 :通知群組;
@@ -35,5 +45,9 @@ if(有人接) then (true)
   :執行任務;
 else if(大家都拒接)
   :通知 reporter 重新指派;
+  if(reporter重新指派) then (true)
+    :assign Task;
+  else (false)
+    : 把 task 退回 backlog;
 stop
 @enduml

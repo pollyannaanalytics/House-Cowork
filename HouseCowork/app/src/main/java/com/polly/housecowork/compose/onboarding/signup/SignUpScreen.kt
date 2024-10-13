@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,7 +39,7 @@ fun SignUpScreen(
         ,
         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
     ) {
-        Welcome(modifier = Modifier.padding(16.dp))
+        Welcome(modifier = Modifier.padding(16.dp).clickable { navigateToHome() })
         SignUpTitle(modifier = Modifier.padding(8.dp))
         SignUpForm(
             nameOnChange = { viewModel.setUsername(it) },
