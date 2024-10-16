@@ -1,9 +1,6 @@
 package com.polly.housecowork.compose.home
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,32 +9,27 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.graphics.Color.Companion.Cyan
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,7 +43,6 @@ import com.polly.housecowork.ui.utils.AccessLevel
 import com.polly.housecowork.ui.utils.TaskStatus
 import kotlin.math.absoluteValue
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RecentTaskView(
     modifier: Modifier = Modifier,
@@ -59,12 +50,18 @@ fun RecentTaskView(
     pagerState: PagerState,
     tasksMap: Map<ToDoType, List<Task>>,
 ) {
-    val currentPage by remember { mutableIntStateOf(0) }
+    var pageOrder by remember {
+        mutableIntStateOf(0)
+    }
+    LaunchedEffect(pagerState.currentPage) {
+        pageOrder = tasksMap.keys.toList()[pagerState.currentPage].eventOrder
+    }
 
     Column(
         modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+
         HorizontalPager(state = pagerState) { page ->
             val tasksType = tasksMap.keys.toList()[page]
             val tasks = tasksMap[tasksType] ?: emptyList()
@@ -86,7 +83,6 @@ fun RecentTaskView(
 
                         scaleX = scale
                         scaleY = scale
-
                         shape = RoundedCornerShape(16.dp)
                     },
                 toDoTitle = tasksType.title,
@@ -96,13 +92,12 @@ fun RecentTaskView(
         }
         GreyDotIndicator(
             modifier = Modifier.padding(8.dp),
-            pageCount = tasksMap.size,
-            currentPage = currentPage
+            pageCount = ToDoType.entries.size,
+            currentPage = pageOrder
         )
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SingleTaskCard(
     modifier: Modifier = Modifier,
@@ -117,7 +112,9 @@ fun SingleTaskCard(
             .fillMaxWidth()
             .padding(8.dp)
             .heightIn(min = 200.dp)
-            .clip(RoundedCornerShape(16.dp)),
+            .clip(RoundedCornerShape(16.dp))
+            .padding(8.dp)
+        ,
         colors = CardDefaults.cardColors(
             containerColor = LocalColorScheme.current.surface
         )
@@ -199,23 +196,24 @@ fun GreyDotIndicator(
     pageCount: Int,
     currentPage: Int
 ) {
-    Row(
-        modifier = modifier,
-    ) {
-        repeat(pageCount) {
-            val color = if (it == currentPage) Color.Black else Color.Gray
+    val dotBlack = LocalColorScheme.current.onBackground
+    val dotGrey = Color.Gray
+    LazyRow(modifier = modifier) {
+        items(pageCount) { index ->
             Box(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .size(8.dp)
                     .padding(1.dp)
                     .clip(CircleShape)
-                    .background(color = color)
+                    .background(
+                        if (index == currentPage) dotBlack  else dotGrey
+                    )
             )
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun SingleTaskCardPreview() {
@@ -255,7 +253,6 @@ fun SingleTaskCardPreview() {
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RecentTaskViewPreview() {
     val pagerState = rememberPagerState(
@@ -330,7 +327,6 @@ fun RecentTaskViewPreview() {
     RecentTaskView(pagerState = pagerState, tasksMap = tasksMap)
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun RecentTaskViewPreviewScreen() {
