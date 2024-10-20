@@ -9,7 +9,7 @@ enum class TaskStatus(val level: Int) {
 
     companion object {
         fun from(level: Int): TaskStatus {
-            return values().first { it.level == level }
+            return entries.first { it.level == level }
         }
     }
 }

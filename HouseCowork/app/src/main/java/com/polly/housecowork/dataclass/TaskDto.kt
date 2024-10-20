@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.polly.housecowork.ui.utils.AccessLevel
+import com.polly.housecowork.ui.utils.AssigneeStatusType
 import com.polly.housecowork.ui.utils.TaskStatus
 import java.util.UUID
 
@@ -48,6 +49,19 @@ data class AssigneeStatus(
     val status: Int
 )
 
+data class AssignedTask(
+    val id: Int,
+    val owner: ProfileInfo,
+    val title: String,
+    val description: String,
+    val accessLevel: AccessLevel,
+    var taskStatus: TaskStatus,
+    val dueDate: String,
+    val dueTime: String,
+    val assigneeStatus: Int,
+    val createdTime: Long,
+    val updatedTime: Long
+)
 
 data class Task(
     val id: Int,

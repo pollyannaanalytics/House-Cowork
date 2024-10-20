@@ -1,190 +1,115 @@
 package com.polly.housecowork.viewmodel
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polly.housecowork.compose.home.ToDoType
-import com.polly.housecowork.dataclass.AssigneeStatus
-import com.polly.housecowork.dataclass.ProfileInfo
-import com.polly.housecowork.dataclass.Task
-import com.polly.housecowork.dataclass.TaskDto
-import com.polly.housecowork.model.task.DefaultTaskRepository
+import com.polly.housecowork.dataclass.AssignedTask
 import com.polly.housecowork.ui.utils.DinosaurType
 import com.polly.housecowork.model.task.usecase.GenerateDinosaurGrowthUseCase
 import com.polly.housecowork.model.task.usecase.TransformTaskUseCase
-import com.polly.housecowork.model.task.usecase.TransformTaskUseCase.*
 import com.polly.housecowork.prefs.PrefsLicense
-import com.polly.housecowork.ui.utils.AccessLevel
 import com.polly.housecowork.ui.utils.AssigneeStatusType
 import com.polly.housecowork.ui.utils.TaskStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
+
+private val initProgressTasksMap: Map<ToDoType, List<AssignedTask>> = mapOf(
+    ToDoType.EXPIRED to emptyList(),
+    ToDoType.TODAY to emptyList(),
+    ToDoType.TOMORROW to emptyList(),
+    ToDoType.FUTURE to emptyList(),
+    ToDoType.THREE_DAYS_FUTURE to emptyList()
+)
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val generateDinosaurGrowthUseCase: GenerateDinosaurGrowthUseCase,
     private val transformTaskUseCase: TransformTaskUseCase,
-    private val prefsLicense: PrefsLicense,
-    private val taskRepository: DefaultTaskRepository,
-): ViewModel() {
+    private val prefsLicense: PrefsLicense
+) : ViewModel() {
 
     private val _dinosaurType = MutableStateFlow<DinosaurType>(DinosaurType.Egg)
     val dinosaurType: StateFlow<DinosaurType> = _dinosaurType
 
-    private val _progressTasks = MutableStateFlow<Map<ToDoType, List<Task>>>(
-        mapOf(
-            ToDoType.EXPIRED to emptyList(),
-            ToDoType.TODAY to emptyList(),
-            ToDoType.TOMORROW to emptyList(),
-            ToDoType.FUTURE to emptyList(),
-            ToDoType.THREE_DAYS_FUTURE to emptyList()
-        )
+    private val _progressTasks = MutableStateFlow(initProgressTasksMap)
+    val progressTasks: StateFlow<Map<ToDoType, List<AssignedTask>>> = _progressTasks
 
-    )
-    val progressTasks: StateFlow<Map<ToDoType, List<Task>>> = _progressTasks
+    private val _doneTasks = MutableStateFlow(emptyList<AssignedTask>())
+    val doneTasks: StateFlow<List<AssignedTask>> = _doneTasks
 
-    private val _doneTasks = MutableStateFlow(
-        emptyList<Task>().toMutableList()
-    )
-    val doneTasks: StateFlow<List<Task>> = _doneTasks
+    private val _shouldSeeMore = MutableStateFlow(false)
+    val shouldSeeMore: StateFlow<Boolean> = _shouldSeeMore.asStateFlow()
 
-    init { getAssignedTasks() }
+    init {
+        getAssignedTasks()
+    }
 
-    private fun getAssignedTasks(isRefresh: Boolean = false) {
+    private fun getAssignedTasks(isRefresh: Boolean = true) {
         viewModelScope.launch {
-            taskRepository.getAssignedTasks(
+            transformTaskUseCase.invoke(
                 prefsLicense.userId,
-                AssigneeStatusType.ACCEPTED.level,
+                AssigneeStatusType.ACCEPTED,
                 isRefresh
-            ).collect { taskDtos ->
-                val tasks = taskDtos.map { transformTaskUseCase.toTask(it) }
-                tasks.forEach { task ->
-                    when(task.taskStatus){
-                        TaskStatus.IN_PROGRESS -> _progressTasks.value = groupTasksByDueDate(tasks)
-                        TaskStatus.DONE -> _doneTasks.value.add(task)
-                        else -> {}
-                    }
+            ).collect { result ->
+                result.onSuccess { tasks ->
+                    Log.d("HomeViewModel", "getAssignedTasks: $tasks")
+                    processTasks(tasks)
                 }
-                generateDinosaurGrowthUseCase.invoke(_doneTasks.value)
+                    .onFailure { error ->
+                        Log.e("HomeViewModel", "getAssignedTasks: $error")
+                    }
             }
         }
     }
 
-    private fun groupTasksByDueDate(tasks: List<Task>): Map<ToDoType, List<Task>> {
-        val expiredTasks = mutableListOf<Task>()
-        val todayTasks = mutableListOf<Task>()
-        val tomorrowTasks = mutableListOf<Task>()
-        val futureTasks = mutableListOf<Task>()
-        val threeDaysFutureTasks = mutableListOf<Task>()
+    private fun groupTasksByDueDate(tasks: List<AssignedTask>): Map<ToDoType, List<AssignedTask>> {
+        val groupedTasks = tasks.groupBy { getToDoType(it.dueDate) }
 
-        val progressTasks: MutableMap<ToDoType, List<Task>> = mutableMapOf(
-            ToDoType.EXPIRED to expiredTasks,
-            ToDoType.TODAY to todayTasks,
-            ToDoType.TOMORROW to tomorrowTasks,
-            ToDoType.FUTURE to futureTasks,
-            ToDoType.THREE_DAYS_FUTURE to threeDaysFutureTasks
-        )
+        return initProgressTasksMap.mapValues { (todoType, _) ->
+           val tasksForType = groupedTasks[todoType] ?: emptyList()
+
+            if(tasksForType.size < 5) return@mapValues tasksForType
+            tasksForType.take(5)
+        }
+    }
+
+
+    private fun processTasks(tasks: List<AssignedTask>) {
+        val doneTasks = mutableListOf<AssignedTask>()
+        val progressTasks = mutableListOf<AssignedTask>()
+
         tasks.forEach { task ->
-            when(getToDoType(task.dueDate)){
-                ToDoType.EXPIRED -> expiredTasks.add(task)
-                ToDoType.TODAY -> todayTasks.add(task)
-                ToDoType.TOMORROW -> tomorrowTasks.add(task)
-                ToDoType.FUTURE -> futureTasks.add(task)
-                ToDoType.THREE_DAYS_FUTURE -> threeDaysFutureTasks.add(task)
+            when (task.taskStatus) {
+                TaskStatus.DONE -> doneTasks.add(task)
+                TaskStatus.IN_PROGRESS -> progressTasks.add(task)
+                TaskStatus.OPEN, TaskStatus.CANCELLED -> {}
             }
         }
 
-        return  mapOf(
-            ToDoType.TODAY to listOf(
-                Task(
-                    id = 1,
-                    owner = ProfileInfo(
-                        name = "Mock Profile",
-                        nickName = "Mock Profile Description",
-                        avatar = "https://mock.com",
-                        bankAccount = "23232323",
-                        email = "pinyunwuu@gmail.com",
-                        updateTime = 123232323
-                    ),
-                    title = "Grocery Shopping",
-                    description = "Buy milk, eggs, bread",
-                    accessLevel = AccessLevel.PRIVATE,
-                    taskStatus = TaskStatus.IN_PROGRESS,
-                    dueDate = "2023-07-28",
-                    dueTime = "14:30",
-                    assigneeStatus = emptyList(),
-                    createdTime = 1690886400000,
-                    updatedTime = 1690886400000
-                ),
-                Task(
-                    id = 2,
-                    owner = ProfileInfo(
-                        name = "Mock Profile",
-                        nickName = "Mock Profile Description",
-                        avatar = "https://mock.com",
-                        bankAccount = "23232323",
-                        email = "pinyunwuu@gmail.com",
-                        updateTime = 123232323
-                    ),
-                    title = "Book Doctor Appointment",
-                    description = "Schedule a check-up",
-                    accessLevel = AccessLevel.PRIVATE,
-                    taskStatus = TaskStatus.IN_PROGRESS,
-                    dueDate = "2023-07-28",
-                    dueTime = "14:30",
-                    assigneeStatus = emptyList(),
-                    createdTime = 1690897200000,
-                    updatedTime = 1690897200000
-                )
-            ),
-            ToDoType.TOMORROW to listOf(
-                Task(
-                    id = 3,
-                    owner = ProfileInfo(
-                        name = "Mock Profile",
-                        nickName = "Mock Profile Description",
-                        avatar = "https://mock.com",
-                        bankAccount = "23232323",
-                        email = "pinyunwuu@gmail.com",
-                        updateTime = 123232323
-                    ),
-                    title = "Pay Bills",
-                    description = "Pay electricity and internet bills",
-                    accessLevel = AccessLevel.PRIVATE,
-                    taskStatus = TaskStatus.IN_PROGRESS,
-                    dueDate = "2023-07-28",
-                    dueTime = "14:30",
-                    assigneeStatus = emptyList(),
-                    createdTime = 1690972800000,
-                    updatedTime = 1690972800000
-                )
-            )
-        )
+        _progressTasks.value = groupTasksByDueDate(progressTasks)
+        _dinosaurType.value = generateDinosaurGrowthUseCase.invoke(doneTasks)
+        _doneTasks.value = doneTasks
+        Log.d("HomeViewModel", "processTasks: ${_progressTasks.value}")
     }
 
     private fun getToDoType(dateString: String): ToDoType {
-        val comparisonResult = compareDateWithToday(dateString)
+        val dueDate = LocalDate.parse(dateString)
         val today = LocalDate.now()
 
         return when {
-            comparisonResult < 0 -> ToDoType.EXPIRED
-            comparisonResult == 0 -> ToDoType.TODAY
-            today.plusDays(1).isEqual(LocalDate.parse(dateString)) -> ToDoType.TOMORROW
-            today.plusDays(2).isEqual(LocalDate.parse(dateString)) ||
-                    today.plusDays(3).isEqual(LocalDate.parse(dateString)) -> ToDoType.FUTURE
-            else -> ToDoType.THREE_DAYS_FUTURE
+            dueDate.isBefore(today) -> ToDoType.EXPIRED
+            dueDate.isEqual(today) -> ToDoType.TODAY
+            dueDate.isEqual(today.plusDays(1)) -> ToDoType.TOMORROW
+            dueDate.isBefore(today.plusDays(4)) && dueDate.isAfter(today.plusDays(1)) -> ToDoType.THREE_DAYS_FUTURE
+            else -> ToDoType.FUTURE
         }
     }
 
-    fun compareDateWithToday(dateString: String): Int {
-        val date = LocalDate.parse(dateString)
-        val today = LocalDate.now()
-        return date.compareTo(today)
-    }
+
 }

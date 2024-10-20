@@ -40,7 +40,7 @@ import com.polly.housecowork.dataclass.Time
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.utils.DateUtils
-import com.polly.housecowork.utils.lightPallet
+import com.polly.housecowork.utils.ComposeUtils.Companion.lightPallet
 import java.util.Calendar
 import java.util.Date
 

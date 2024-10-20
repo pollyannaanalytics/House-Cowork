@@ -3,7 +3,6 @@ package com.polly.housecowork.data.network
 import com.polly.housecowork.dataclass.ProfileInfo
 
 interface ProfileApiService {
-
     suspend fun getProfileById(id: Int): ProfileInfo
     suspend fun getAllProfiles(): List<ProfileInfo>
 }
