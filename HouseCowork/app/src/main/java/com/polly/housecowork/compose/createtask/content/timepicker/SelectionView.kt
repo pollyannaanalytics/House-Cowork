@@ -1,4 +1,4 @@
-package com.polly.housecowork.compose.createtask.timepicker
+package com.polly.housecowork.compose.createtask.content.timepicker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,16 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
 import com.polly.housecowork.dataclass.SelectorOptions
-import com.polly.housecowork.ui.theme.LocalColorScheme
 
 @Composable
 fun SelectionView(

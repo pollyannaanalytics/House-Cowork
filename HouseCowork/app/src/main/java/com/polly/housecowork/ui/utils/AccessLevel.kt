@@ -9,5 +9,6 @@ enum class AccessLevel(val level: Int) {
         fun from(level: Int): AccessLevel {
             return entries.first { it.level == level }
         }
+
     }
 }

@@ -31,9 +31,9 @@ class HCWAppViewModel @Inject constructor(
         getUserProfileInfo()
     }
 
-    fun getUserProfileInfo() {
+    private fun getUserProfileInfo() {
         viewModelScope.launch {
-            _profileInfo.value = profileRepository.getProfileById(true, license.userId)
+            _profileInfo.value = profileRepository.getProfileById(license.userId, true)
 
         }
     }

@@ -1,4 +1,4 @@
-package com.polly.housecowork.compose.createtask
+package com.polly.housecowork.compose.createtask.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

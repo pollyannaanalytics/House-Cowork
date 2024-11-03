@@ -1,16 +1,12 @@
 package com.polly.housecowork.data.network
 
 import com.polly.housecowork.dataclass.TaskDto
-import java.util.UUID
+import com.polly.housecowork.dataclass.TaskInput
 import kotlin.random.Random
 
 interface TaskApiService {
     suspend fun createTask(
-        taskTitle: String,
-        taskDescription: String,
-        taskAccessLevel: Int,
-        taskDueTime: Long,
-        assignees: List<Int>
+       taskInput: TaskInput
     ): Result<TaskDto>
 
     suspend fun getTasksBy(
@@ -46,11 +42,7 @@ class MockTaskApiService : TaskApiService {
 
 
     override suspend fun createTask(
-        taskTitle: String,
-        taskDescription: String,
-        taskAccessLevel: Int,
-        taskDueTime: Long,
-        assignees: List<Int>
+        taskInput: TaskInput
     ): Result<TaskDto> {
         return  Result.success(mockTaskList.first())
     }

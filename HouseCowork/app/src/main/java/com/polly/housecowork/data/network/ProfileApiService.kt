@@ -3,8 +3,8 @@ package com.polly.housecowork.data.network
 import com.polly.housecowork.dataclass.ProfileInfo
 
 interface ProfileApiService {
-    suspend fun getProfileById(id: Int): ProfileInfo
-    suspend fun getAllProfiles(): List<ProfileInfo>
+    suspend fun getProfileById(id: Int): Result<ProfileInfo>
+    suspend fun getAllProfiles(): Result<List<ProfileInfo>>
 }
 
 
@@ -18,11 +18,11 @@ class MockProfileApiService : ProfileApiService {
         updateTime = 123232323
     )
 
-    override suspend fun getProfileById(id: Int): ProfileInfo{
-        return mockProfileInfo
+    override suspend fun getProfileById(id: Int): Result<ProfileInfo>{
+        return Result.success(mockProfileInfo)
     }
 
-    override suspend fun getAllProfiles(): List<ProfileInfo> {
-        return List(10) { mockProfileInfo }
+    override suspend fun getAllProfiles(): Result<List<ProfileInfo>> {
+        return Result.success(List(10) { mockProfileInfo })
     }
 }

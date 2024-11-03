@@ -1,4 +1,4 @@
-package com.polly.housecowork.compose.createtask
+package com.polly.housecowork.compose.createtask.content
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row

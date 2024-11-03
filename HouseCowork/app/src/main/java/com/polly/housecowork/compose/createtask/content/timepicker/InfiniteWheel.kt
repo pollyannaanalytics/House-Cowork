@@ -1,4 +1,4 @@
-package com.polly.housecowork.compose.createtask.timepicker
+package com.polly.housecowork.compose.createtask.content.timepicker
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -24,7 +25,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.polly.housecowork.dataclass.SelectorOptions
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @Composable
 fun InfiniteWheel(
@@ -169,7 +169,7 @@ fun PreviewInfiniteWheel() {
         selectorOption = SelectorOptions(
             width = 80f.dp,
             alpha = 0.5f,
-            color = androidx.compose.ui.graphics.Color.White
+            color = Color.White
         ),
         itemCount = 12,
         content = {

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polly.housecowork.dataclass.ProfileInfo
-import com.polly.housecowork.model.task.usecase.GetProfileUseCase
+import com.polly.housecowork.model.profile.DefaultProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,8 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val getProfileUseCase: GetProfileUseCase,
-//    private val getUserCalendarsUseCase: GetUserCalendarsUseCase,
+    private val profileRepository: DefaultProfileRepository,
 ): ViewModel() {
 
     private val _profileInfo = MutableStateFlow<ProfileInfo?>(null)
@@ -22,7 +21,7 @@ class ProfileViewModel @Inject constructor(
 
     fun getProfileById(profileId: Int, fetchRemote: Boolean = false){
        viewModelScope.launch {
-             _profileInfo.value =  getProfileUseCase.invoke(fetchRemote, profileId)
+             _profileInfo.value = profileRepository.getProfileById(profileId, fetchRemote)
        }
     }
 

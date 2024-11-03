@@ -2,6 +2,7 @@ package com.polly.housecowork.model.task
 
 import android.util.Log
 import com.polly.housecowork.dataclass.TaskDto
+import com.polly.housecowork.dataclass.TaskInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -41,20 +42,10 @@ class DefaultTaskRepository @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     suspend fun createTask(
-        taskTitle: String,
-        taskDescription: String,
-        taskAccessLevel: Int,
-        taskDueTime: Long,
-        assignees: List<Int>
+        taskInput: TaskInput
     ) {
         withContext(Dispatchers.IO) {
-            val fetchResult = taskRemoteDataSource.createTask(
-                taskTitle,
-                taskDescription,
-                taskAccessLevel,
-                taskDueTime,
-                assignees
-            )
+            val fetchResult = taskRemoteDataSource.createTask(taskInput)
             fetchResult.fold(
                 onSuccess = { taskDto ->
                     taskLocalDataSource.insertCreatedTask(taskDto)

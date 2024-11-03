@@ -2,6 +2,7 @@ package com.polly.housecowork.model.task
 
 import com.polly.housecowork.data.network.TaskApiService
 import com.polly.housecowork.dataclass.TaskDto
+import com.polly.housecowork.dataclass.TaskInput
 import javax.inject.Inject
 
 class TaskRemoteDataSource @Inject constructor(
@@ -15,14 +16,8 @@ class TaskRemoteDataSource @Inject constructor(
         return apiService.getTasksBy(assignId = assigneeId, assigneeStatus = assigneeStatusType)
     }
 
-     suspend fun createTask(
-        taskTitle: String,
-        taskDescription: String,
-        taskAccessLevel: Int,
-        taskDueTime: Long,
-        assignees: List<Int>
-    ): Result<TaskDto> {
-        return apiService.createTask(taskTitle, taskDescription, taskAccessLevel, taskDueTime, assignees)
+     suspend fun createTask(taskInput: TaskInput): Result<TaskDto> {
+        return apiService.createTask(taskInput)
     }
 
     suspend fun updateTask(task: TaskDto): Result<TaskDto> {

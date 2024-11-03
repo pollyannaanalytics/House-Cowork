@@ -2,7 +2,6 @@ package com.polly.housecowork.model.task.usecase
 
 import com.polly.housecowork.dataclass.AssignedTask
 import com.polly.housecowork.dataclass.ProfileInfo
-import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.dataclass.TaskDto
 import com.polly.housecowork.model.assigneestatus.AssigneeRepository
 import com.polly.housecowork.model.profile.DefaultProfileRepository
@@ -37,7 +36,7 @@ class TransformTaskUseCase @Inject constructor(
     }
 
     private suspend fun transformTask(taskDto: TaskDto): AssignedTask {
-        val owner = getProfile(true, taskDto.ownerId)
+        val owner = getProfile(taskDto.ownerId, true)
         val assigneeStatus = getAssignees(taskDto.assigneeStatusId, taskDto.id)
         return AssignedTask(
             taskDto.id,
@@ -67,8 +66,8 @@ class TransformTaskUseCase @Inject constructor(
     }
 
 
-    private suspend fun getProfile(fetchRemote: Boolean = false, profileId: Int): ProfileInfo {
-        return profileRepository.getProfileById(fetchRemote, profileId)
+    private suspend fun getProfile(profileId: Int, fetchRemote: Boolean = false, ): ProfileInfo {
+        return profileRepository.getProfileById(profileId, fetchRemote)
     }
 
     private fun getAssignees(assigneeId: Int, taskId: Int) = assigneeRepository.getAssigneeStatus(assigneeId, taskId)

@@ -20,6 +20,9 @@ interface ProfileDao {
     @Update
     fun updateProfile(profile: ProfileInfo)
 
+    @Insert
+    fun upsertAllProfiles(profiles: List<ProfileInfo>)
+
     @Query("DELETE FROM profile_info WHERE id = :profileId")
     fun deleteProfileById(profileId: Int)
 }

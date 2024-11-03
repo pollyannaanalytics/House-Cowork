@@ -78,4 +78,11 @@ data class Task(
 )
 
 
+data class TaskInput(
+    val taskTitle: String,
+    val taskDescription: String,
+    val taskAccessLevel: Int,
+    val taskDueTime: Long,
+    val assignees: List<Int>
+)
 

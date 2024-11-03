@@ -1,28 +1,27 @@
 package com.polly.housecowork.model.profile
 
 import com.polly.housecowork.data.network.ProfileApiService
-import com.polly.housecowork.dataclass.ApiResult
 import com.polly.housecowork.dataclass.ProfileInfo
 import javax.inject.Inject
 
 class ProfileRemoteDataSource @Inject constructor(
     private val apiService: ProfileApiService
 ) {
-    suspend fun getProfileById(profileId: Int): ApiResult<ProfileInfo> {
+    suspend fun getProfileById(profileId: Int): Result<ProfileInfo> {
         try {
             val profile = apiService.getProfileById(profileId)
-            return ApiResult.Success(profile)
+            return profile
         } catch (e: Exception) {
-            return ApiResult.Error(e)
+            return Result.failure(e)
         }
     }
 
-    suspend fun getAllProfiles(): ApiResult<List<ProfileInfo>> {
+    suspend fun getAllProfiles(): Result<List<ProfileInfo>> {
         try {
             val profiles = apiService.getAllProfiles()
-            return ApiResult.Success(profiles)
+            return profiles
         } catch (e: Exception) {
-            return ApiResult.Error(e)
+            return Result.failure(e)
         }
     }
 }

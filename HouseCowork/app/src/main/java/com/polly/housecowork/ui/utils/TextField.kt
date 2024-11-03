@@ -30,6 +30,7 @@ import com.polly.housecowork.ui.theme.LocalTypography
 @Composable
 fun HCWTextField(
     modifier: Modifier = Modifier,
+    defaultText: String = "",
     onTextChange: (String) -> Unit, hint: String,
     errorState: Boolean = false,
     keyboardOptions: () -> KeyboardOptions = { KeyboardOptions(keyboardType = KeyboardType.Text) },
@@ -38,7 +39,7 @@ fun HCWTextField(
     val borderColor =
         if (errorState) LocalColorScheme.current.error else LocalColorScheme.current.secondary
     var textState by remember {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(TextFieldValue(defaultText))
     }
     BasicTextField(
         modifier = modifier
