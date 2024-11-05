@@ -96,16 +96,16 @@ fun CreateTaskContent(
         Column(
             modifier = Modifier
                 .verticalScroll(scrollState)
-                .padding(top = innerPadding.calculateTopPadding())
+                .padding(innerPadding)
                 .background(LocalColorScheme.current.background),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
             CreateTaskInputSection(
+                modifier = Modifier.fillMaxWidth().padding(ComposeUtils.ContentPadding),
                 title = taskUiState.title,
                 isError = errorState.titleError,
                 onTitleChange = { onTitleChange(it) },
-                onClearFocus = { focusManager.clearFocus() }
             )
             AssignUserSection(
                 modifier = Modifier.fillMaxWidth().padding(ComposeUtils.ContentPadding),
@@ -148,15 +148,13 @@ private fun CreateTaskInputSection(
     modifier: Modifier = Modifier,
     title: String,
     isError: Boolean,
-    onTitleChange: (String) -> Unit,
-    onClearFocus: () -> Unit,
+    onTitleChange: (String) -> Unit
 ){
     CreateTaskTextField(
         modifier = modifier,
         onTextChange = onTitleChange,
         defaultText = title,
         isTaskEmptyError = isError,
-        clearFocus = onClearFocus
     )
     if (isError) {
         Text(
@@ -184,6 +182,7 @@ private fun AssignUserSection(
     )
 
     PublicSwitch(
+        modifier = modifier,
         isPublic = isPublic,
         onPublicChange = onPublicChange
     )

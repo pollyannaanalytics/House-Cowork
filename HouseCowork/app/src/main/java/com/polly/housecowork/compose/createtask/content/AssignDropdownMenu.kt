@@ -38,7 +38,7 @@ fun AssignDrawer(
 ) {
     var shouldExpanded by remember { mutableStateOf(false) }
     var selectedUserName: String by remember {
-        mutableStateOf(itemList().first())
+        mutableStateOf("everyone")
     }
 
     Row(
@@ -49,7 +49,6 @@ fun AssignDrawer(
     ) {
         Text(
             modifier = Modifier
-                .padding(start = 16.dp)
                 .wrapContentWidth(), text = "Assign to",
             style = LocalTypography.current.titleMedium
         )

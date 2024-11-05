@@ -8,6 +8,8 @@ sealed class StepState(val step: String){
     data object Home : StepState(step = Step.HOME_STEP)
     data object Profile : StepState(step = Step.PROFILE_STEP)
     data object CreateTask : StepState(step = Route.ADD_TASK)
+    data object Chat: StepState(step = Route.CHAT)
+    data object Money: StepState(step = Route.MONEY)
     data class TaskDetail(val taskId: Int) : StepState(step = Route.TASK_DETAIL)
 
     sealed class HouseStep: StepState(Step.HOUSE_STEP){

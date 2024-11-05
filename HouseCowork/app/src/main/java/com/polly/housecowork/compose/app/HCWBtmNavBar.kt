@@ -1,5 +1,6 @@
 package com.polly.housecowork.compose.app
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -32,18 +33,23 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.ui.utils.compose.BadgeDollarSign
 import com.polly.housecowork.ui.utils.compose.Chat
+import com.polly.housecowork.utils.StepState
 
 
 @Composable
-fun HCWBtmNavBar(navController: NavController) {
+fun HCWBtmNavBar(
+    onNavigateClick: (StepState) -> Unit = {}
+) {
     Box(modifier = Modifier.fillMaxWidth()){
         Card (
-            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+            ,
             colors = CardDefaults.cardColors(contentColor = LocalColorScheme.current.primary, containerColor = LocalColorScheme.current.primary),
             elevation = CardDefaults.cardElevation(4.dp),
             shape = RoundedCornerShape(
@@ -59,7 +65,9 @@ fun HCWBtmNavBar(navController: NavController) {
                     itemData = BottomNavItemData(
                         imageVector = Chat,
                         selected = true,
-                        onClick = {},
+                        onClick = {
+                            onNavigateClick(StepState.Chat)
+                        },
                         label = "Chat"
                     )
                 )
@@ -67,7 +75,9 @@ fun HCWBtmNavBar(navController: NavController) {
                     itemData = BottomNavItemData(
                         imageVector = BadgeDollarSign,
                         selected = false,
-                        onClick = {},
+                        onClick = {
+                            onNavigateClick(StepState.Money)
+                        },
                         label = "Money"
                     )
                 )
@@ -78,7 +88,9 @@ fun HCWBtmNavBar(navController: NavController) {
                     itemData = BottomNavItemData(
                         imageVector = Icons.Filled.Home,
                         selected = false,
-                        onClick = {},
+                        onClick = {
+                            onNavigateClick(StepState.Home)
+                        },
                         label = "Home"
                     )
                 )
@@ -86,7 +98,9 @@ fun HCWBtmNavBar(navController: NavController) {
                     itemData = BottomNavItemData(
                         imageVector = Icons.Filled.AccountCircle,
                         selected = false,
-                        onClick = {},
+                        onClick = {
+                            onNavigateClick(StepState.Profile)
+                        },
                         label = "Profile"
                     )
                 )
@@ -101,8 +115,8 @@ fun HCWBtmNavBar(navController: NavController) {
                 .align(Alignment.Center)
                 .padding(vertical = 4.dp)
                 .border(width = 8.dp, shape = CircleShape, color = LocalColorScheme.current.onPrimary)
-            , // Customizable FAB border
-            onClick = {},
+            ,
+            onClick = { onNavigateClick(StepState.CreateTask) },
             shape = CircleShape,
             containerColor = Color.White,
             contentColor = LocalColorScheme.current.onPrimary
@@ -160,6 +174,5 @@ data class BottomNavItemData(
 @Preview
 @Composable
 fun HCWBtmNavBarPreview() {
-    val context = androidx.compose.ui.platform.LocalContext.current
-    HCWBtmNavBar(navController = NavController(context))
+    HCWBtmNavBar()
 }

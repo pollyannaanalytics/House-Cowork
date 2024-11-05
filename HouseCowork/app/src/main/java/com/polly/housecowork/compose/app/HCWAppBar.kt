@@ -34,12 +34,8 @@ fun HCWAppBar(
     val isHome by remember {
         mutableStateOf( title() == StepState.Home.step)
     }
-
-    Surface(
-        color = LocalColorScheme.current.background,
-        modifier = modifier
-    ) {
         CenterAlignedTopAppBar(
+            modifier = modifier,
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = LocalColorScheme.current.background,
                 titleContentColor = LocalColorScheme.current.onBackground
@@ -77,7 +73,7 @@ fun HCWAppBar(
                 }
             }
         )
-    }
+
 }
 
 @Preview

@@ -6,10 +6,12 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.utils.AccessLevel
+import com.polly.housecowork.utils.ComposeUtils
 
 @Composable
 fun PublicSwitch(
@@ -17,14 +19,13 @@ fun PublicSwitch(
     onPublicChange: (Boolean) -> Unit,
     isPublic: Boolean
 ) {
-    Row(modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically) {
         Text("Public")
         Switch(
-            modifier = Modifier.padding(start = 8.dp),
+            modifier = Modifier.padding(start = ComposeUtils.ContentPadding),
             checked = isPublic,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = LocalColorScheme.current.primary,
-            ),
             onCheckedChange = {
                 onPublicChange(it)
             }

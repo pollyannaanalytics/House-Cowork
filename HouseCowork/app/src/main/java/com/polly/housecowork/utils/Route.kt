@@ -11,6 +11,8 @@ class Route{
         const val HOUSE_DETAIL = "House Detail"
         const val CREATE_HOUSE = "Create House"
         const val JOIN_HOUSE = "Join House"
+        const val CHAT = "Chat"
+        const val MONEY = "Money"
     }
 }
 

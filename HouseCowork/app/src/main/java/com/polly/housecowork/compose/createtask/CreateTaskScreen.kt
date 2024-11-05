@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.polly.housecowork.compose.createtask.content.CreateTaskContent
 import com.polly.housecowork.ui.utils.AccessLevel
+import com.polly.housecowork.utils.ComposeUtils
 import com.polly.housecowork.viewmodel.CreateTaskViewModel
 
 @Composable
@@ -28,7 +29,7 @@ fun CreateTaskScreen(
 
     CreateTaskContent(
         modifier = modifier
-            .padding(16.dp)
+            .padding(ComposeUtils.Padding)
             .fillMaxWidth(),
         taskUiState = taskUiState,
         onTitleChange = { viewModel.setTaskTitle(it) },
@@ -49,5 +50,4 @@ fun CreateTaskScreen(
 @Preview
 @Composable
 fun PreviewCreateTaskScreen() {
-    CreateTaskScreen()
 }
