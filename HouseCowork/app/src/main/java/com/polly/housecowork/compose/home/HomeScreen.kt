@@ -20,9 +20,8 @@ import androidx.compose.ui.unit.dp
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.viewmodel.HomeViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.polly.housecowork.dataclass.ProfileInfo
-import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.ui.theme.LocalTypography
+import com.polly.housecowork.utils.ComposeUtils
 import com.polly.housecowork.utils.StepState
 @Composable
 fun HomeScreen(
@@ -50,7 +49,8 @@ fun HomeScreen(
             )
             RecentTaskView(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                ,
                 tasksMap = progressTasks
             )
 
@@ -58,6 +58,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(2f)
+                    .padding(ComposeUtils.ContentPadding)
                 ,
                 dinosaurType = dinosaurTypeState,
                 taskStats = doneTasks.size

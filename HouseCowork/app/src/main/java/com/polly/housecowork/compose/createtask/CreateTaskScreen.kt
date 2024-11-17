@@ -5,14 +5,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.polly.housecowork.compose.createtask.content.CreateTaskContent
-import com.polly.housecowork.ui.utils.AccessLevel
 import com.polly.housecowork.utils.ComposeUtils
 import com.polly.housecowork.viewmodel.CreateTaskViewModel
 
@@ -24,7 +20,7 @@ fun CreateTaskScreen(
 ) {
     val taskUiState by viewModel.taskUiState.collectAsState()
     val errorState by viewModel.errorState.collectAsState()
-    val isPublic by remember { mutableStateOf( taskUiState.accessLevel == AccessLevel.PUBLIC )}
+    val isPublic by viewModel.isPublic.collectAsState()
 
 
     CreateTaskContent(

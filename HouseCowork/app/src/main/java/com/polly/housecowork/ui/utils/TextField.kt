@@ -1,6 +1,5 @@
 package com.polly.housecowork.ui.utils
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,7 +42,6 @@ fun HCWTextField(
     }
     BasicTextField(
         modifier = modifier
-            .padding(start = 16.dp, end = 16.dp)
             .fillMaxWidth()
             .wrapContentHeight()
             .clip(RoundedCornerShape(16.dp))

@@ -27,7 +27,7 @@ fun HCWApp(viewModel: HCWAppViewModel = hiltViewModel()) {
     val authState by viewModel.authState.collectAsState()
     val appState = rememberHCWAppState(
         profileInfo = profileInfo,
-        authState = authState
+        authState = authState,
     )
 
     HCWAppContent(
@@ -46,7 +46,9 @@ private fun HCWAppContent(
                 showTopBar = appState.showTopBar,
                 profileInfo = appState.profileInfo,
                 currentRoute = appState.currentRoute,
-                onNavigateToProfile = appState::navigateToProfile
+                onNavigateToProfile = {
+                    appState.navigateToProfile()
+                }
             )
         },
         bottomBar = {
@@ -105,8 +107,8 @@ private class HCWAppState(
     val startDestination: StepState
         get() = if (authState is AuthState.Login) StepState.Home else StepState.Onboarding
 
-    fun navigateToProfile(userProfile: ProfileInfo) {
-        navController.navigate(Screen.Profile(profileId = userProfile.id).route)
+    fun navigateToProfile() {
+        navController.navigate(StepState.Profile.step)
     }
 
     fun navigate(stepState: StepState) {
@@ -120,7 +122,7 @@ private fun AppTopBar(
     showTopBar: Boolean,
     profileInfo: ProfileInfo?,
     currentRoute: String?,
-    onNavigateToProfile: (ProfileInfo) -> Unit
+    onNavigateToProfile: () -> Unit
 ) {
     profileInfo?.let {
         if (showTopBar) {

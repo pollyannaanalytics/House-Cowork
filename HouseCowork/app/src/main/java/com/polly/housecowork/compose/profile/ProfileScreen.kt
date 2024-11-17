@@ -40,82 +40,33 @@ import com.polly.housecowork.viewmodel.ProfileViewModel
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     navigateOnClick: () -> Unit = {},
-    viewModel: ProfileViewModel = hiltViewModel(),
-    profileId: Int
+    viewModel: ProfileViewModel = hiltViewModel()
     ) {
     
     val profileInfo by viewModel.profileInfo.collectAsState()
     val context = LocalContext.current
-
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = 0L
-    )
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(
         rememberTopAppBarState()
     )
 
     LaunchedEffect(Unit) {
-        viewModel.getProfileById(profileId)
-        viewModel.getUserCalendars(profileId)
+        viewModel.getUserProfile()
     }
 
-    Scaffold(
-        modifier
+    ProfileContent(
+        modifier = modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .fillMaxSize()
             .background(LocalColorScheme.current.background),
-    ) { contentPadding ->
-        Column(
-            modifier = Modifier
-                .padding(contentPadding)
-                .fillMaxSize()
-                .background(LocalColorScheme.current.background)
-        ) {
-            profileInfo?.let {
-                ProfileAvatarName(
-                    modifier = Modifier.fillMaxWidth(),
-                    name = { it.name },
-                    photoUrl = { it.avatar }
-                )
-                Bio(
-                    modifier = Modifier.fillMaxWidth(),
-                    description = { it.nickName }
-                )
-                HCWDatePicker(
-                    modifier = Modifier.padding(16.dp),
-                    datePickerState = { datePickerState })
-            }
-        }
-
-    }
-
+        profileInfo = profileInfo,
+        tasks = emptyList(),
+        dates = emptyList()
+    )
 }
 
-@Composable
-fun ProfileAvatarName(modifier: Modifier = Modifier, name: () -> String, photoUrl: () -> String) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
-        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.AccountCircle,
-            contentDescription = "Profile",
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(0.3f)
-                .aspectRatio(1f),
-        )
-        Text(
-            modifier = Modifier.padding(start = 16.dp),
-            text = name(),
-            style = LocalTypography.current.headlineMedium
-        )
 
-    }
 
-}
 
 @Composable
 fun Bio(modifier: Modifier = Modifier, description: () -> String) {
@@ -136,8 +87,3 @@ fun Bio(modifier: Modifier = Modifier, description: () -> String) {
     }
 }
 
-//@Preview
-//@Composable
-//fun ProfileScreenPreview() {
-//    ProfileScreen()
-//}

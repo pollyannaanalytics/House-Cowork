@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,7 +36,6 @@ import com.polly.housecowork.compose.createtask.dataclass.ErrorState
 import com.polly.housecowork.compose.createtask.dataclass.TaskState
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
-import com.polly.housecowork.ui.utils.AccessLevel
 import com.polly.housecowork.ui.utils.HCWAlertDialog
 import com.polly.housecowork.ui.utils.HCWDatePicker
 import com.polly.housecowork.ui.utils.NegativeButton
@@ -60,7 +58,7 @@ fun CreateTaskContent(
     onPublicChange: (Boolean) -> Unit,
     onCancelClick: () -> Unit,
     onDoneClick: () -> Unit,
-){
+) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     val datePickerState = rememberDatePickerState(
@@ -91,7 +89,6 @@ fun CreateTaskContent(
     Scaffold(
         modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .clickable { focusManager.clearFocus() },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -102,13 +99,17 @@ fun CreateTaskContent(
             horizontalAlignment = Alignment.Start
         ) {
             CreateTaskInputSection(
-                modifier = Modifier.fillMaxWidth().padding(ComposeUtils.ContentPadding),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(ComposeUtils.ContentPadding),
                 title = taskUiState.title,
                 isError = errorState.titleError,
                 onTitleChange = { onTitleChange(it) },
             )
             AssignUserSection(
-                modifier = Modifier.fillMaxWidth().padding(ComposeUtils.ContentPadding),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(ComposeUtils.ContentPadding),
                 allUserNames = allUserNames,
                 isPublic = isPublic,
                 onAssigneeClick = { onAssigneeClick(it) },
@@ -116,6 +117,9 @@ fun CreateTaskContent(
             )
 
             TaskDueTimeSettingSection(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(ComposeUtils.ContentPadding),
                 datePickerState = datePickerState,
                 dueHour = taskUiState.dueHour,
                 dueMinute = taskUiState.dueMinute,
@@ -149,7 +153,7 @@ private fun CreateTaskInputSection(
     title: String,
     isError: Boolean,
     onTitleChange: (String) -> Unit
-){
+) {
     CreateTaskTextField(
         modifier = modifier,
         onTextChange = onTitleChange,
@@ -173,7 +177,7 @@ private fun AssignUserSection(
     onAssigneeClick: (String) -> Unit,
     isPublic: Boolean,
     onPublicChange: (Boolean) -> Unit,
-){
+) {
 
     AssignDrawer(
         modifier = modifier,
@@ -191,26 +195,27 @@ private fun AssignUserSection(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TaskDueTimeSettingSection(
+    modifier: Modifier = Modifier,
     datePickerState: DatePickerState,
     dueHour: Int,
     dueMinute: Int,
     onTimePickerClick: () -> Unit
-){
-    HCWDatePicker(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        datePickerState = { datePickerState }
-    )
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        HCWDatePicker(
+            datePickerState = { datePickerState }
+        )
 
-    TaskDueTime(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        dueHour = { dueHour },
-        dueMinute = { dueMinute },
-        showTimePicker = onTimePickerClick
-    )
+        TaskDueTime(
+            dueHour = { dueHour },
+            dueMinute = { dueMinute },
+            showTimePicker = onTimePickerClick
+        )
+    }
+
 }
 
 @Composable
@@ -218,7 +223,7 @@ private fun ActionButtonSection(
     modifier: Modifier = Modifier,
     onCancelClick: () -> Unit,
     onDoneClick: () -> Unit,
-){
+) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.Center
@@ -237,6 +242,7 @@ private fun ActionButtonSection(
     }
 
 }
+
 @Composable
 private fun HandleDialogs(
     showTimePickerSheet: Boolean,
@@ -261,7 +267,6 @@ private fun HandleDialogs(
         )
     }
 }
-
 
 
 private fun enableTimePicker(showTickPickerBottomSheet: Boolean): Boolean {

@@ -1,7 +1,9 @@
 package com.polly.housecowork.ui.utils
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -144,11 +146,15 @@ fun SeeMoreButton(
 
 }
 
+
 @Preview
 @Composable
 fun PreviewButtons(){
-    StandardButton(text = "test", textStyle = LocalTypography.current.bodyMedium)
-    SeeMoreButton()
-    PrimaryMediumButton(text = "test", onClick = { /*TODO*/ })
-    NegativeButton(text = "test", onClick = { /*TODO*/ })
+    Column {
+        StandardButton(text = "test", textStyle = LocalTypography.current.bodyMedium)
+        SeeMoreButton()
+        PrimaryMediumButton(text = "test", onClick = { /*TODO*/ })
+        NegativeButton(text = "test", onClick = { /*TODO*/ })
+    }
+
 }

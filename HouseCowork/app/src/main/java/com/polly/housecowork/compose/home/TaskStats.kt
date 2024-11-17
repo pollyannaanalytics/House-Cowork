@@ -30,7 +30,7 @@ fun TaskStats(
 ) {
 
     Card(
-        modifier.padding(ComposeUtils.Padding),
+        modifier,
         colors = CardDefaults.cardColors(
             containerColor = LocalColorScheme.current.primary,
         )
@@ -45,7 +45,7 @@ fun TaskStats(
                 taskCount = taskStats
             )
             DinosaurImage(
-                modifier = Modifier.fillMaxHeight(),
+                modifier = Modifier.fillMaxHeight().padding(ComposeUtils.Padding),
                 dinosaurType = dinosaurType
             )
         }

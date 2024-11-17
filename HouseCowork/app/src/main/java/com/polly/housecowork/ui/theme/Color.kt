@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 val YellowWhite = Color(0xffF5F1E7)
 val Yellow = Color(0xffF9E386)
 val DeepYellow = Color(0xffFFCE00)
-val Gray90 = Color(0xFFD9D9D9)
+val Gray90 = Color(0xff5F6368)
 val Green90 = Color(0xFF809783)
 val DeepGrey = Color(0xFFB7AFAF)
 val Dim87 = Color(0xfffafafa)

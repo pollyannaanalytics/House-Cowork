@@ -19,10 +19,10 @@ class ProfileViewModel @Inject constructor(
     private val _profileInfo = MutableStateFlow<ProfileInfo?>(null)
     val profileInfo = _profileInfo.asStateFlow()
 
-    fun getProfileById(profileId: Int, fetchRemote: Boolean = false){
-       viewModelScope.launch {
-             _profileInfo.value = profileRepository.getProfileById(profileId, fetchRemote)
-       }
+    fun getUserProfile(){
+        viewModelScope.launch {
+            _profileInfo.value = profileRepository.getUserProfile(true)
+        }
     }
 
     fun getUserCalendars(profileId: Int, fetchRemote: Boolean = false){

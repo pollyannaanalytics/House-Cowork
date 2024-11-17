@@ -12,10 +12,11 @@ class MockProfileApiService : ProfileApiService {
     private val mockProfileInfo = ProfileInfo(
         name = "Mock Profile",
         nickName = "Mock Profile Description",
-        avatar = "https://mock.com",
+        imageUrl = "https://mock.com",
         bankAccount = "23232323",
         email = "pinyunwuu@gmail.com",
-        updateTime = 123232323
+        updateTime = 123232323,
+        bio = "i am a software engineer"
     )
 
     override suspend fun getProfileById(id: Int): Result<ProfileInfo>{

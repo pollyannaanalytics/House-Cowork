@@ -8,7 +8,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -21,18 +20,17 @@ import com.polly.housecowork.dataclass.ProfileInfo
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.utils.Screen
-import com.polly.housecowork.utils.StepState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HCWAppBar(
     modifier: Modifier = Modifier,
     profileInfo: ProfileInfo,
-    navigateToProfile: (ProfileInfo) -> Unit,
+    navigateToProfile: () -> Unit,
     title: () -> String
 ) {
     val isHome by remember {
-        mutableStateOf( title() == StepState.Home.step)
+        mutableStateOf( title() == Screen.Home.route)
     }
         CenterAlignedTopAppBar(
             modifier = modifier,
@@ -41,7 +39,7 @@ fun HCWAppBar(
                 titleContentColor = LocalColorScheme.current.onBackground
             ),
             title = {
-                if (!isHome) {
+                if (isHome) {
                     Text(text = title(), style = LocalTypography.current.titleMedium)
                 }
             },
@@ -64,7 +62,7 @@ fun HCWAppBar(
             },
 
             actions = {
-                IconButton(onClick = { navigateToProfile(profileInfo) }) {
+                IconButton(onClick = { navigateToProfile() }) {
                     Icon(
                         imageVector = Icons.Rounded.AccountCircle ,
                         contentDescription = "profile",
@@ -84,10 +82,11 @@ fun PreviewHCWAppBar() {
             id = 0,
             name = "John Doe",
             nickName = "JD",
-            avatar = "",
+            imageUrl = "",
             email = "fasdf@g",
             bankAccount = "1234567890",
-            updateTime = 2323232323
+            updateTime = 2323232323,
+            bio = "I am a developer"
             ),
         navigateToProfile = {},
         title = {"profile"}

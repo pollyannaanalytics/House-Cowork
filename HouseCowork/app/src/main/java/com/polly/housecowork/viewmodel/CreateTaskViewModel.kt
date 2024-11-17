@@ -32,6 +32,8 @@ class CreateTaskViewModel @Inject constructor(
     private var _taskUiState = MutableStateFlow(TaskState())
     val taskUiState = _taskUiState.asStateFlow()
 
+    private val _isPublic = MutableStateFlow(true)
+    val isPublic = _isPublic.asStateFlow()
     init {
         getAllUsers()
     }
@@ -116,6 +118,7 @@ class CreateTaskViewModel @Inject constructor(
 
     fun setPublicLevel(isPublic : Boolean) {
         _taskUiState.update {
+            _isPublic.value = isPublic
             it.copy(accessLevel =  if(isPublic) AccessLevel.PUBLIC else AccessLevel.PRIVATE)
         }
     }

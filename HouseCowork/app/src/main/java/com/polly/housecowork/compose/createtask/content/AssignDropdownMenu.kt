@@ -17,6 +17,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -54,7 +56,7 @@ fun AssignDrawer(
         )
         ExposedDropdownMenuBox(
             modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(start = 16.dp)
                 .border(1.dp, LocalColorScheme.current.secondary, RoundedCornerShape(8.dp))
                 .background(LocalColorScheme.current.surface, RoundedCornerShape(8.dp)),
             expanded = shouldExpanded,
@@ -91,7 +93,11 @@ fun AssignDrawer(
                             onAssigneeClick(userName)
                             selectedUserName = userName
                             shouldExpanded = false
-                        }
+                        },
+                        colors = MenuDefaults.itemColors(
+                            textColor = LocalColorScheme.current.onBackground,
+                            leadingIconColor = LocalColorScheme.current.onBackground,
+                        )
                     )
                 }
             }

@@ -12,7 +12,12 @@ data class ProfileInfo(
 
     @ColumnInfo(name = "nick_name")
     val nickName: String,
-    val avatar: String,
+
+    @ColumnInfo(name = "bio")
+    val bio: String,
+
+    @ColumnInfo(name = "image_url")
+    val imageUrl: String,
 
     @ColumnInfo(name = "bank_account")
     val bankAccount: String,

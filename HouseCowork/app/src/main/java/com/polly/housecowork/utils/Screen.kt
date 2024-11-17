@@ -1,6 +1,8 @@
 package com.polly.housecowork.utils
 
 import androidx.navigation.NamedNavArgument
+import com.polly.housecowork.prefs.Prefs
+import com.polly.housecowork.prefs.PrefsLicense
 import com.polly.housecowork.utils.Step.Companion.ONBOARDING_STEP
 
 sealed class StepState(val step: String){
@@ -44,7 +46,8 @@ sealed class Screen(
         route = Route.HOME
     )
 
-    data object CreateTask : Screen(
+    data object
+    CreateTask : Screen(
         route = Route.ADD_TASK
     )
 

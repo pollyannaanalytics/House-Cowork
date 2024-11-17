@@ -70,7 +70,6 @@ fun HCWNavHost(
                 navigateOnClick = {
                     navController.popBackStack()
                 },
-                profileId = profileId()
             )
         }
         houseNavigation(navController = navController)

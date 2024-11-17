@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.utils.AccessLevel
@@ -24,11 +25,18 @@ fun PublicSwitch(
         verticalAlignment = Alignment.CenterVertically) {
         Text("Public")
         Switch(
-            modifier = Modifier.padding(start = ComposeUtils.ContentPadding),
+            modifier = Modifier.padding(start = ComposeUtils.Padding),
             checked = isPublic,
             onCheckedChange = {
                 onPublicChange(it)
-            }
+            },
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                checkedTrackColor = LocalColorScheme.current.primary,
+                uncheckedThumbColor = Color.White,
+                uncheckedTrackColor = LocalColorScheme.current.secondary
+
+            )
         )
     }
 }
