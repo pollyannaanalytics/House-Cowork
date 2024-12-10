@@ -1,4 +1,4 @@
-package com.polly.housecowork.compose.onboarding.signup
+package com.polly.housecowork.compose.onboarding.register
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,7 +24,7 @@ import com.polly.housecowork.viewmodel.SignUpViewModel
 fun SignUpScreen(
     modifier: Modifier = Modifier,
     viewModel: SignUpViewModel = hiltViewModel(),
-    navigateToHome: () -> Unit = {}
+    onFinishSignUp: () -> Unit = {}
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -39,7 +37,7 @@ fun SignUpScreen(
         ,
         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
     ) {
-        Welcome(modifier = Modifier.padding(16.dp).clickable { navigateToHome() })
+        Welcome(modifier = Modifier.padding(16.dp).clickable { onFinishSignUp() })
         SignUpTitle(modifier = Modifier.padding(8.dp))
         SignUpForm(
             nameOnChange = { viewModel.setUsername(it) },
@@ -52,7 +50,7 @@ fun SignUpScreen(
             joinOnClick = {
                 if (viewModel.checkAllFieldsValid()) {
                     viewModel.setUpUserInfo()
-                    navigateToHome()
+                    onFinishSignUp()
                 }
             }
         )

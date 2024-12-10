@@ -42,7 +42,6 @@ fun RecentTaskView(
            tasksMap.keys.toList()[pagerState.currentPage].eventOrder
         }
     }
-    Log.i("RecentTaskView", "pagerState: ${pagerState.currentPage}")
 
     Column(
         modifier,

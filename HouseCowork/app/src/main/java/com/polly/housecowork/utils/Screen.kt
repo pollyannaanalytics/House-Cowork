@@ -20,6 +20,8 @@ sealed class StepState(val step: String){
         data object CreateHouse : StepState(step = Route.CREATE_HOUSE)
         data object JoinHouse : StepState(step = Route.JOIN_HOUSE)
     }
+
+
 }
 
 sealed class Screen(
@@ -46,13 +48,16 @@ sealed class Screen(
         route = Route.HOME
     )
 
-    data object
-    CreateTask : Screen(
+    data object CreateTask : Screen(
         route = Route.ADD_TASK
     )
 
     data object SignUp : Screen(
         route = Route.SIGN_UP
+    )
+
+    data object Splash : Screen(
+        route = Route.SPLASH
     )
 
     data class Profile(val profileId: Int) : Screen(

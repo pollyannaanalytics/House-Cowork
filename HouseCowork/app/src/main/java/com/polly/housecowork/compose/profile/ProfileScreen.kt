@@ -1,57 +1,67 @@
 package com.polly.housecowork.compose.profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.polly.housecowork.ui.theme.LocalColorScheme
-import com.polly.housecowork.ui.theme.LocalTypography
-import com.polly.housecowork.ui.utils.HCWDatePicker
-import com.polly.housecowork.ui.utils.PrimaryCard
 import com.polly.housecowork.viewmodel.ProfileViewModel
+
+
+
+data class ErrState(
+    var nameErr: Boolean = false,
+    var bioErr: Boolean = false
+)
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     navigateOnClick: () -> Unit = {},
-    viewModel: ProfileViewModel = hiltViewModel()
-    ) {
-    
-    val profileInfo by viewModel.profileInfo.collectAsState()
-    val context = LocalContext.current
+    viewModel: ProfileViewModel = hiltViewModel(),
+) {
+
+    val profileInfo by viewModel.profileInfo.collectAsStateWithLifecycle()
+    val tasks by viewModel.assignedTasks.collectAsState()
+    val isEditMode by viewModel.isEditMode.collectAsState()
+
+    val calendarDate by viewModel.calendarUiModel.collectAsState()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(
         rememberTopAppBarState()
     )
 
-    LaunchedEffect(Unit) {
-        viewModel.getUserProfile()
+    val errState by remember{
+        derivedStateOf {
+            profileInfo?.let {
+                return@derivedStateOf ErrState(
+                    nameErr = it.name.length > 20,
+                    bioErr = it.bio.length > 200
+                )
+            }?: ErrState()
+
+        }
+    }
+
+
+
+    LaunchedEffect(profileInfo) {
+        profileInfo?.let {
+            viewModel.getAssignedTasks(it.id)
+        }
     }
 
     ProfileContent(
@@ -60,30 +70,18 @@ fun ProfileScreen(
             .fillMaxSize()
             .background(LocalColorScheme.current.background),
         profileInfo = profileInfo,
-        tasks = emptyList(),
-        dates = emptyList()
+        tasks = tasks,
+        isEditMode = isEditMode,
+        onBackClick = navigateOnClick,
+        calendarUiModel = calendarDate,
+        onEditClick = { viewModel.changeEditMode() },
+        errState = errState,
+        onNameChange = { name -> viewModel.updateProfileName(name) },
+        onBioChange = { bio -> viewModel.updateProfileBio(bio) },
     )
 }
 
 
 
 
-@Composable
-fun Bio(modifier: Modifier = Modifier, description: () -> String) {
-    Column(modifier) {
-        Text(
-            modifier = Modifier.padding(start = 16.dp),
-            text = "Bio", style = LocalTypography.current.titleMedium
-        )
-        PrimaryCard(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxHeight(0.3f)
-                .padding(start = 16.dp, end = 16.dp),
-            description = { description() },
-            textStyle = LocalTypography.current.titleSmall
-        )
-
-    }
-}
 

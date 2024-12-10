@@ -34,6 +34,11 @@ val HCWTypo = Typography(
         fontSize = 32.sp,
         fontFamily = fontFamily
     ),
+    headlineSmall = TextStyle(
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp,
+        fontFamily = fontFamily
+    ),
     titleLarge = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 30.sp,

@@ -155,7 +155,7 @@ private fun MoreButton(modifier: Modifier = Modifier, onClick: () -> Unit = {}) 
             )
             Icon(
                 modifier = Modifier.padding(TextPadding),
-                painter = painterResource(id = com.polly.housecowork.R.drawable.right_arrow_svg_collection),
+                painter = painterResource(id = R.drawable.right_arrow_svg_collection),
                 contentDescription = "More",
                 tint = LocalColorScheme.current.onBackground,
             )

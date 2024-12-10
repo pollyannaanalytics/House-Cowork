@@ -14,10 +14,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.polly.housecowork.compose.onboarding.OnboardingStep
 import com.polly.housecowork.dataclass.ProfileInfo
 import com.polly.housecowork.model.auth.AuthState
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.utils.Screen
+import com.polly.housecowork.utils.Step
 import com.polly.housecowork.utils.StepState
 import com.polly.housecowork.viewmodel.HCWAppViewModel
 
@@ -94,13 +96,13 @@ private class HCWAppState(
 ) {
     val showTopBar: Boolean
         get() = when (currentRoute) {
-            Screen.SignUp.route -> false
+            Step.REGISTER_STEP-> false
             else -> true
         }
 
     val showBottomBar: Boolean
         get() = when (currentRoute) {
-            Screen.SignUp.route, Screen.CreateTask.route -> false
+            Step.REGISTER_STEP, Screen.CreateTask.route -> false
             else -> true
         }
 

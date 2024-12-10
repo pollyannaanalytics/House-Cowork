@@ -1,17 +1,15 @@
 package com.polly.housecowork.compose.app
 
-import android.app.Activity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.polly.housecowork.compose.createtask.CreateTaskScreen
 import com.polly.housecowork.compose.home.HomeScreen
 import com.polly.housecowork.compose.house.houseNavigation
+import com.polly.housecowork.compose.onboarding.OnboardingStep
 import com.polly.housecowork.compose.onboarding.onboardingNavigation
 import com.polly.housecowork.compose.profile.ProfileScreen
 import com.polly.housecowork.utils.Screen
@@ -25,14 +23,12 @@ fun HCWNavHost(
     profileId: () -> Int,
     taskId: () -> Int
 ) {
-    val activity = (LocalContext.current as Activity)
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = graphStartDestination.step
     ) {
         onboardingNavigation(
-            navController = navController,
             onOnboardingComplete = {
                 navController.navigate(StepState.Home.step)
             }

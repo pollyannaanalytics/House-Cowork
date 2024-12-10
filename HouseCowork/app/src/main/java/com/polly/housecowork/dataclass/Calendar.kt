@@ -27,15 +27,17 @@ data class Calendar(
 
 data class CalendarUiModel(
     val selectedDate: Date, // the date selected by the User. by default is Today.
-    val visibleDates: List<Date> // the dates shown on the screen
+    val visibleDates: List<Date>, // the dates shown on the screen,
+    val month: String
 ) {
 
     val startDate: Date = visibleDates.first() // the first of the visible dates
     val endDate: Date = visibleDates.last() // the last of the visible dates
 
+
     data class Date(
         val date: LocalDate,
-        val isSelected: Boolean,
+        val isSelected: Boolean = false,
         val isToday: Boolean
     ) {
         val day: String = when (date.dayOfWeek) {
@@ -47,5 +49,7 @@ data class CalendarUiModel(
             DayOfWeek.FRIDAY -> "F"
             DayOfWeek.SATURDAY -> "S"
         }
+
+        val month = date.month.toString()
     }
 }

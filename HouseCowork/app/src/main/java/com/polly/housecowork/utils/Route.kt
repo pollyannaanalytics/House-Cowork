@@ -13,6 +13,7 @@ class Route{
         const val JOIN_HOUSE = "Join House"
         const val CHAT = "Chat"
         const val MONEY = "Money"
+        const val SPLASH = "Splash"
     }
 }
 
@@ -23,6 +24,9 @@ class Step{
         const val PROFILE_STEP = "profile"
         const val TASK_STEP = "task"
         const val HOUSE_STEP = "house"
+        const val REGISTER_STEP = "register"
+        const val SPLASH_STEP = "splash"
+        const val SIGN_UP_STEP = "sign_up"
 
     }
 }

@@ -6,11 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.polly.housecowork.compose.home.ToDoType
 import com.polly.housecowork.dataclass.AssignedTask
 import com.polly.housecowork.ui.utils.DinosaurType
-import com.polly.housecowork.model.task.usecase.GenerateDinosaurGrowthUseCase
-import com.polly.housecowork.model.task.usecase.TransformTaskUseCase
 import com.polly.housecowork.prefs.PrefsLicense
 import com.polly.housecowork.ui.utils.AssigneeStatusType
 import com.polly.housecowork.ui.utils.TaskStatus
+import com.polly.housecowork.usecase.task.TaskUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,8 +28,7 @@ private val initProgressTasksMap: Map<ToDoType, List<AssignedTask>> = mapOf(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val generateDinosaurGrowthUseCase: GenerateDinosaurGrowthUseCase,
-    private val transformTaskUseCase: TransformTaskUseCase,
+    private val taskUseCase: TaskUseCase,
     private val prefsLicense: PrefsLicense
 ) : ViewModel() {
 
@@ -52,7 +50,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getAssignedTasks(isRefresh: Boolean = true) {
         viewModelScope.launch {
-            transformTaskUseCase.invoke(
+            taskUseCase.transformTaskUseCase.invoke(
                 prefsLicense.userId,
                 AssigneeStatusType.ACCEPTED,
                 isRefresh
@@ -72,9 +70,9 @@ class HomeViewModel @Inject constructor(
         val groupedTasks = tasks.groupBy { getToDoType(it.dueDate) }
 
         return initProgressTasksMap.mapValues { (todoType, _) ->
-           val tasksForType = groupedTasks[todoType] ?: emptyList()
+            val tasksForType = groupedTasks[todoType] ?: emptyList()
 
-            if(tasksForType.size < 5) return@mapValues tasksForType
+            if (tasksForType.size < 5) return@mapValues tasksForType
             tasksForType.take(5)
         }
     }
@@ -93,7 +91,7 @@ class HomeViewModel @Inject constructor(
         }
 
         _progressTasks.value = groupTasksByDueDate(progressTasks)
-        _dinosaurType.value = generateDinosaurGrowthUseCase.invoke(doneTasks)
+        _dinosaurType.value = taskUseCase.generateDinosaurGrowthUseCase.invoke(doneTasks)
         _doneTasks.value = doneTasks
         Log.d("HomeViewModel", "processTasks: ${_progressTasks.value}")
     }

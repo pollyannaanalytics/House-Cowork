@@ -1,4 +1,4 @@
-package com.polly.housecowork.compose.onboarding.signup
+package com.polly.housecowork.compose.onboarding.register
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -1,0 +1,22 @@
+package com.polly.housecowork.di
+
+import com.polly.housecowork.usecase.task.GenerateDinosaurGrowthUseCase
+import com.polly.housecowork.usecase.task.TaskUseCase
+import com.polly.housecowork.usecase.task.TransformTaskUseCase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+
+@InstallIn(SingletonComponent::class)
+@Module
+object UseCaseModule {
+
+    @Provides
+    fun provideTaskUseCase(
+        generateDinosaurGrowthUseCase: GenerateDinosaurGrowthUseCase,
+        transformTaskUseCase: TransformTaskUseCase
+    ): TaskUseCase {
+        return TaskUseCase(generateDinosaurGrowthUseCase, transformTaskUseCase)
+    }
+}

@@ -1,4 +1,4 @@
-package com.polly.housecowork.model.task.usecase
+package com.polly.housecowork.usecase.task
 
 import com.polly.housecowork.dataclass.AssignedTask
 import com.polly.housecowork.dataclass.ProfileInfo
