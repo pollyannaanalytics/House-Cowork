@@ -13,10 +13,30 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+sealed interface ProfileUiState {
+    data class ViewMode(
+        val profileInfo: ProfileInfo? = null,
+        val calendarUiModel: CalendarUiModel? = null,
+        val assignedTasks: List<AssignedTask> = emptyList()
+    ) : ProfileUiState
+
+    data class EditMode(
+        val isEditMode: Boolean = false,
+        val editName: String = "",
+        val editBio: String = "",
+        val editProfileImage: String = "",
+        val errState: ErrState = ErrState(),
+    ) : ProfileUiState
+}
+
+data class ErrState(
+    var nameErr: Boolean = false,
+    var bioErr: Boolean = false
+)
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -25,61 +45,84 @@ class ProfileViewModel @Inject constructor(
     private val calendarDataSource: CalendarDataSource
 ): ViewModel() {
 
-    private val _profileInfo = MutableStateFlow<ProfileInfo?>(null)
-    val profileInfo: StateFlow<ProfileInfo?> = _profileInfo
-        .onStart {
-           profileRepository.getUserProfile(true)
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
-            initialValue = null
-        )
+    private val _profileViewModeState = MutableStateFlow(ProfileUiState.ViewMode())
+    val profileUiState: StateFlow<ProfileUiState.ViewMode> = _profileViewModeState.asStateFlow()
 
-    private val _calendarUiModel = MutableStateFlow(calendarDataSource.sundayToSaturdayWeek)
-    val calendarUiModel: StateFlow<CalendarUiModel> = _calendarUiModel
-        .onStart {
-            calendarDataSource.sundayToSaturdayWeek
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
-            initialValue = calendarDataSource.sundayToSaturdayWeek
-        )
+    private val _profileEditModeState = MutableStateFlow(ProfileUiState.EditMode())
+    val profileEditModeState: StateFlow<ProfileUiState.EditMode> = _profileEditModeState.asStateFlow()
 
-
-    private val _assignedTasks = MutableStateFlow(emptyList<AssignedTask>())
-    val assignedTasks = _assignedTasks.asStateFlow()
-
-    private val _isEditMode = MutableStateFlow(false)
-    val isEditMode = _isEditMode.asStateFlow()
+    init {
+        fetchProfileInfo()
+        getAssignedTasks()
+        getCalendarUiModel()
+    }
 
 
     fun updateProfileName(name: String){
-
+        _profileEditModeState.update {
+            it.copy(editName = name)
+        }
     }
 
     fun updateProfileBio(bio: String){
+        _profileEditModeState.update {
+            it.copy(editBio = bio)
+        }
+
+    }
+
+    private fun fetchProfileInfo(fetchRemote: Boolean = false)  {
+        viewModelScope.launch {
+            val profile = profileRepository.getUserProfile(fetchRemote)
+            _profileViewModeState.update {
+                it.copy(profileInfo = profile)
+            }
+        }
 
     }
 
 
-    fun getAssignedTasks(userId: Int){
+    fun getAssignedTasks(){
         viewModelScope.launch {
             taskUseCase.transformTaskUseCase.invoke(
-                userId,
                 AssigneeStatusType.ACCEPTED,
-                true
-            )
+                fetchRemote = false
+            ).collect { tasksResult ->
+                val tasks = tasksResult.getOrNull() ?: emptyList()
+                _profileViewModeState.update { state ->
+                    state.copy(assignedTasks = tasks)
+                }
+            }
+
+        }
+    }
+
+    fun getCalendarUiModel(){
+        viewModelScope.launch {
+            _profileViewModeState.update {
+                it.copy(calendarUiModel = calendarDataSource.sundayToSaturdayWeek)
+            }
         }
     }
 
     fun changeEditMode(){
-        _isEditMode.value = !_isEditMode.value
+        _profileEditModeState.update {
+            it.copy(
+               isEditMode = !it.isEditMode,
+            )
+        }
     }
 
+    fun checkEditProfileInfo(){
+        if(_profileEditModeState.value.isEditMode) return
+        _profileEditModeState.update {
+            it.copy(
+                errState = ErrState(
+                    nameErr = it.editName.length > 20 || it.editName.isEmpty(),
+                    bioErr = it.editBio.length > 200 || it.editBio.isEmpty()
+                )
+            )
+        }
 
-
-
-
+    }
 }

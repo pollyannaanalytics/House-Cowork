@@ -34,6 +34,7 @@ import com.polly.housecowork.dataclass.ProfileInfo
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalShapes
 import com.polly.housecowork.ui.theme.LocalTypography
+import com.polly.housecowork.viewmodel.ErrState
 
 @Composable
 fun ProfileContent(

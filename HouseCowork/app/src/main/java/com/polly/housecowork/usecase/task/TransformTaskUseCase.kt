@@ -6,6 +6,7 @@ import com.polly.housecowork.dataclass.TaskDto
 import com.polly.housecowork.model.assigneestatus.AssigneeRepository
 import com.polly.housecowork.model.profile.DefaultProfileRepository
 import com.polly.housecowork.model.task.DefaultTaskRepository
+import com.polly.housecowork.prefs.PrefsLicense
 import com.polly.housecowork.ui.utils.AccessLevel
 import com.polly.housecowork.ui.utils.AssigneeStatusType
 import com.polly.housecowork.ui.utils.TaskStatus
@@ -19,10 +20,11 @@ class TransformTaskUseCase @Inject constructor(
     private val taskRepository: DefaultTaskRepository,
     private val profileRepository: DefaultProfileRepository,
     private val assigneeRepository: AssigneeRepository,
+    private val prefsLicense: PrefsLicense
 ) {
+    val userId = prefsLicense.userId
 
     suspend fun invoke(
-        userId: Int,
         assigneeStatusType: AssigneeStatusType,
         fetchRemote: Boolean
     ): Flow<Result<List<AssignedTask>>> {
