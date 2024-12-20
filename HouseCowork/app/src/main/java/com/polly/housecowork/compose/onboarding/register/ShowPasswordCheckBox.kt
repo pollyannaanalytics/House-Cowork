@@ -16,11 +16,9 @@ import com.polly.housecowork.ui.theme.LocalTypography
 @Composable
 fun ShowPasswordCheckBox(
     modifier: Modifier,
+    isChecked: Boolean = false,
     onCheckChanged: (Boolean) -> Unit
 ) {
-    var isChecked by remember {
-        mutableStateOf(false)
-    }
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.Start,
@@ -29,7 +27,6 @@ fun ShowPasswordCheckBox(
         Checkbox(
             checked = isChecked,
             onCheckedChange = {
-                isChecked = it
                 onCheckChanged(it)
             })
         Text(text = "Show Password", style = LocalTypography.current.bodySmall)

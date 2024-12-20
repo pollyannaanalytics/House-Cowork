@@ -3,6 +3,7 @@ package com.polly.housecowork.di
 import android.content.Context
 import com.polly.housecowork.MainApplication
 import com.polly.housecowork.data.local.TaskDao
+import com.polly.housecowork.data.network.AuthApiService
 import com.polly.housecowork.data.network.CalendarApiService
 import com.polly.housecowork.data.network.ConnectionUtils
 import com.polly.housecowork.data.network.MockProfileApiService
@@ -43,6 +44,11 @@ class NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+    @Provides
+    @Singleton
+    fun provideAuthApiService(retrofit: Retrofit): AuthApiService {
+        return retrofit.create(AuthApiService::class.java)
+    }
 
     @Provides
     @Singleton
@@ -61,10 +67,4 @@ class NetworkModule {
     fun provideConnectionUtils(@ApplicationContext context: Context): ConnectionUtils {
         return ConnectionUtils(context)
     }
-//
-//    @Provides
-//    @Singleton
-//    fun provideCalendarService(retrofit: Retrofit): CalendarApiService {
-//        return MockCalendarApiService()
-//    }
 }

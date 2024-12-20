@@ -4,7 +4,7 @@ class Route{
     companion object{
         const val SIGN_UP = "Sign Up"
         const val HOME = "Home"
-        const val ADD_TASK = "Create Task"
+        const val CREATE_TASK = "Create Task"
         const val PROFILE = "Profile"
         const val TASK_DETAIL = "Task Detail"
         const val HOUSE_LIST = "House List"
@@ -27,6 +27,9 @@ class Step{
         const val REGISTER_STEP = "register"
         const val SPLASH_STEP = "splash"
         const val SIGN_UP_STEP = "sign_up"
+        const val CREATE_TASK_STEP = "create_task"
+        const val CREATE_HOUSE_STEP = "create_house"
+        const val JOIN_HOUSE_STEP = "join_house"
 
     }
 }

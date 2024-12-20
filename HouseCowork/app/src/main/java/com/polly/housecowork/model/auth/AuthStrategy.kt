@@ -1,10 +1,11 @@
 package com.polly.housecowork.model.auth
 
-import com.polly.housecowork.dataclass.ApiResult
+import com.polly.housecowork.dataclass.AuthData
+import com.polly.housecowork.dataclass.SignInRequest
+import com.polly.housecowork.dataclass.SignUpRequest
+import retrofit2.Response
 
 interface AuthStrategy {
-    fun checkAuthState(userId: Int): ApiResult<Unit>
-    fun register(): ApiResult<Int>
-    fun login(): ApiResult<Unit>
-    fun logout(): ApiResult<Unit>
+    suspend fun signUp(signUpRequest: SignUpRequest): Response<AuthData>
+    suspend fun signIn(signInRequest: SignInRequest): Response<AuthData>
 }

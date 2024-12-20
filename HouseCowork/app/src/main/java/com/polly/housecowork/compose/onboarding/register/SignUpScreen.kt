@@ -9,13 +9,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.polly.housecowork.dataclass.FinishSignUpState
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.viewmodel.SignUpViewModel
@@ -24,34 +29,56 @@ import com.polly.housecowork.viewmodel.SignUpViewModel
 fun SignUpScreen(
     modifier: Modifier = Modifier,
     viewModel: SignUpViewModel = hiltViewModel(),
-    onFinishSignUp: () -> Unit = {}
+    onSignUpComplete: () -> Unit = {}
 ) {
 
     val focusManager = LocalFocusManager.current
     val errorState by viewModel.errorState.collectAsState()
+
+    val formState by viewModel.formState.collectAsState()
+    var isChecked by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.finishState.collect {
+            when (it) {
+                FinishSignUpState.Success -> {
+                    onSignUpComplete()
+                }
+
+                FinishSignUpState.Fail -> {}
+            }
+        }
+    }
+
     Column(
         modifier
             .clickable { focusManager.clearFocus() }
             .verticalScroll(rememberScrollState())
-            .padding(16.dp)
-        ,
+            .padding(16.dp),
         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
     ) {
-        Welcome(modifier = Modifier.padding(16.dp).clickable { onFinishSignUp() })
+        Welcome(modifier = Modifier
+            .padding(16.dp)
+            .clickable { onSignUpComplete() })
         SignUpTitle(modifier = Modifier.padding(8.dp))
         SignUpForm(
-            nameOnChange = { viewModel.setUsername(it) },
-            emailOnChange = { viewModel.setEmail(it) },
-            passwordOnChange = { viewModel.setPassword(it) },
-            repeatPasswordOnChange = { viewModel.confirmSamePassword(it) },
-            emailError = errorState.errorEmail,
-            passwordError = errorState.errorPassword,
-            repeatPasswordError = errorState.errorRepeatedPassword,
-            joinOnClick = {
-                if (viewModel.checkAllFieldsValid()) {
-                    viewModel.setUpUserInfo()
-                    onFinishSignUp()
-                }
+            name = formState.name,
+            nickName = formState.nickName,
+            email = formState.email,
+            password = formState.password,
+            repeatPassword = formState.repeatPassword,
+            isPasswordShown = isChecked,
+            onCheckedChange = { isChecked = !isChecked },
+            onNameChange = { viewModel.setUsername(it) },
+            onNickNameChange = { viewModel.setNickName(it) },
+            onEmailChange = { viewModel.setEmail(it) },
+            onPasswordChange = { viewModel.setPassword(it) },
+            onRepeatPasswordChange = { viewModel.confirmSamePassword(it) },
+            isEmailError = errorState.errorEmail,
+            isPasswordError = errorState.errorPassword,
+            isRepeatPasswordError = errorState.errorRepeatedPassword,
+            onJoinClick = {
+                viewModel.signUp()
             }
         )
     }

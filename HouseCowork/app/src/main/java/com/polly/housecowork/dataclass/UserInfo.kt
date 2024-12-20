@@ -1,18 +1,39 @@
 package com.polly.housecowork.dataclass
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import java.util.UUID
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 
-@Entity
-data class UserInfo(
-    @PrimaryKey val id: UUID = UUID.randomUUID(),
-    @ColumnInfo(name = "username") val username: String,
-    @ColumnInfo(name = "email") val email: String,
-    @ColumnInfo(name = "password") val password: String
-)
+@Parcelize
+data class SignUpRequest(
+    val email: String,
+    val password: String,
+    val passwordConfirm: String,
+    val name: String,
+    val nickName: String
+): Parcelable
+
+
+@Parcelize
+data class SignInRequest(
+    val email: String,
+    val password: String
+): Parcelable
+
+@Parcelize
+data class AuthData(
+    val user: User,
+    val accessToken: String
+) : Parcelable
+
+@Parcelize
+data class User(
+    val id: Int,
+    val name: String,
+    val email: String,
+    val nickName: String,
+    val avatar: String
+) : Parcelable
 
 
 

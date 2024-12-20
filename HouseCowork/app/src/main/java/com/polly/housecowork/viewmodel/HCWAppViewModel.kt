@@ -1,5 +1,6 @@
 package com.polly.housecowork.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polly.housecowork.dataclass.ProfileInfo
@@ -33,12 +34,15 @@ class HCWAppViewModel @Inject constructor(
 
     private fun getUserProfileInfo() {
         viewModelScope.launch {
-            _profileInfo.value = profileRepository.getProfileById(license.userId, true)
-
+            _profileInfo.value = profileRepository.getProfileById(
+                license.userId, true
+            )
         }
     }
 
     private fun checkAuthState(): AuthState {
-        return authRepository.checkAuthState("house_cowork")
+        val state = authRepository.checkAuthState()
+        Log.d("HCWAppViewModel", "checkAuthState: $state")
+        return authRepository.checkAuthState()
     }
 }

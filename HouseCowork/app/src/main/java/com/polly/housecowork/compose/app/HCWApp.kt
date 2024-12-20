@@ -14,7 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.polly.housecowork.compose.onboarding.OnboardingStep
 import com.polly.housecowork.dataclass.ProfileInfo
 import com.polly.housecowork.model.auth.AuthState
 import com.polly.housecowork.ui.theme.LocalColorScheme
@@ -63,9 +62,7 @@ private fun HCWAppContent(
         HCWNavHost(
             modifier = Modifier.padding(innerPadding),
             navController = appState.navController,
-            profileId = { appState.profileInfo?.id ?: 0 },
-            taskId = { 0 },
-            graphStartDestination = appState.startDestination
+            appState = appState
         )
     }
 }
@@ -88,7 +85,7 @@ private fun rememberHCWAppState(
     }
 }
 
-private class HCWAppState(
+class HCWAppState(
     val navController: NavHostController,
     val profileInfo: ProfileInfo?,
     val authState: AuthState,
@@ -102,12 +99,12 @@ private class HCWAppState(
 
     val showBottomBar: Boolean
         get() = when (currentRoute) {
-            Step.REGISTER_STEP, Screen.CreateTask.route -> false
+            Step.REGISTER_STEP, Step.SPLASH_STEP, Screen.CreateTask.route -> false
             else -> true
         }
 
     val startDestination: StepState
-        get() = if (authState is AuthState.Login) StepState.Home else StepState.Onboarding
+        get() = if (authState is AuthState.Login) StepState.Splash else StepState.Onboarding
 
     fun navigateToProfile() {
         navController.navigate(StepState.Profile.step)

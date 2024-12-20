@@ -2,82 +2,152 @@ package com.polly.housecowork.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.polly.housecowork.dataclass.UserInfo
+import androidx.lifecycle.viewModelScope
+import com.polly.housecowork.dataclass.FinishSignUpState
+import com.polly.housecowork.dataclass.SignUpRequest
+import com.polly.housecowork.model.auth.AuthRepository
+import com.polly.housecowork.model.auth.AuthState
+import com.polly.housecowork.model.auth.AuthType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor() : ViewModel() {
-
+class SignUpViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+) : ViewModel() {
 
     data class ErrorState(
-        var errorPassword : Boolean = false,
-        var errorEmail : Boolean = false,
-        var errorRepeatedPassword : Boolean = false
+        val errorEmail: Boolean = false,
+        val errorPassword: Boolean = false,
+        val errorRepeatedPassword: Boolean = false
     )
-    private val _username = MutableStateFlow("")
 
-    private val _email = MutableStateFlow("")
+    data class SignUpFormState(
+        val name: String = "",
+        val nickName: String = "",
+        val email: String = "",
+        val password: String = "",
+        val repeatPassword: String = "",
+        val isEmailValid: Boolean = true,
+        val isPasswordValid: Boolean = true,
+        val isPasswordMatched: Boolean = true
+    ) {
+        val isValid: Boolean
+            get() = isEmailValid && isPasswordValid && isPasswordMatched &&
+                    name.isNotBlank() && nickName.isNotBlank() &&
+                    email.isNotBlank() && password.isNotBlank()
+    }
 
-    private val _password = MutableStateFlow("")
+    private val _formState = MutableStateFlow(SignUpFormState())
+    val formState = _formState.asStateFlow()
 
-    private val _errorState = MutableStateFlow(ErrorState())
-    val errorState = _errorState.asStateFlow()
+    private val _finishState= MutableSharedFlow<FinishSignUpState>()
+    val finishState = _finishState.asSharedFlow()
 
+    val errorState = formState.map { state ->
+        ErrorState(
+            errorPassword = !state.isPasswordValid,
+            errorEmail = !state.isEmailValid,
+            errorRepeatedPassword = !state.isPasswordMatched
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        ErrorState()
+    )
 
+    private fun String.isValidEmail(): Boolean =
+        android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
 
     fun setUsername(username: String) {
-        _username.value = username
+        _formState.update {
+            it.copy(name = username)
+        }
+    }
+
+    fun setNickName(nickName: String) {
+        _formState.update {
+            it.copy(nickName = nickName)
+        }
     }
 
     fun setEmail(email: String) {
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _errorState.value = _errorState.value.copy(errorEmail = true)
-        } else {
-            _errorState.value = _errorState.value.copy(errorEmail = false)
-            _email.value = email
+        _formState.update {
+            it.copy(
+                email = email,
+                isEmailValid = email.isValidEmail()
+            )
         }
 
     }
 
     fun setPassword(password: String) {
-        Log.e("SignUpViewModel", "password: $password")
-        if (!checkPasswordValid(password)) {
-            Log.e("SignUptest", "password is invalid")
-            _errorState.value = _errorState.value.copy(errorPassword = true)
-        } else {
-            _errorState.value = _errorState.value.copy(errorPassword = false)
-            _password.value = password
+        _formState.update {
+            it.copy(
+                password = password,
+                isPasswordValid = password.checkPasswordValid(),
+            )
         }
+        Log.e("SignUpViewModel", "password: $password")
     }
 
 
     fun confirmSamePassword(repeatPassword: String) {
-        _errorState.value = _errorState.value.copy(
-            errorRepeatedPassword = _password.value != repeatPassword
-        )
+        _formState.update { currentState ->
+            currentState.copy(
+                repeatPassword = repeatPassword,
+                isPasswordMatched = currentState.password == repeatPassword
+            )
+        }
     }
 
-    private fun checkPasswordValid(password: String): Boolean {
-        return password.length >= 8
-                && password.contains(Regex(".*[A-Z].*"))
-                && password.contains(Regex(".*[0-9].*"))
+    private fun String.checkPasswordValid(): Boolean {
+        return length >= 8
+                && contains(Regex(".*[A-Z].*"))
+                && contains(Regex(".*[0-9].*"))
     }
 
-    fun checkAllFieldsValid(): Boolean {
-        return !_errorState.value.errorEmail
-                && !_errorState.value.errorPassword
-                && !_errorState.value.errorRepeatedPassword
+    fun signUp() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val state = _formState.value
+                if (!state.isValid) {
+                    _finishState.emit(FinishSignUpState.Fail)
+                    return@launch
+                }
+
+                val request = SignUpRequest(
+                    name = state.name,
+                    nickName = state.nickName,
+                    email = state.email,
+                    password = state.password,
+                    passwordConfirm = state.repeatPassword
+                )
+
+                val authState = authRepository.signUp(AuthType.HOUSE_COWORK, request)
+                when (authState) {
+                    is AuthState.Login -> {
+                        _finishState.emit(FinishSignUpState.Success)
+                    }
+                    else -> {
+                        _finishState.emit(FinishSignUpState.Fail)
+                }
+                }
+            } catch (e: Exception) {
+                _finishState.emit(FinishSignUpState.Fail)
+            }
+        }
     }
-    fun setUpUserInfo(){
-       val newUser = UserInfo(
-           username = _username.value,
-           email = _email.value,
-           password = _password.value
-       )
-    // save user info to database
-    }
+
 
 }

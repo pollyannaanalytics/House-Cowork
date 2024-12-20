@@ -7,12 +7,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -24,135 +22,222 @@ import com.polly.housecowork.ui.utils.PositiveButton
 @Composable
 fun SignUpForm(
     modifier: Modifier = Modifier,
-    nameOnChange: (String) -> Unit,
-    emailOnChange: (String) -> Unit,
-    passwordOnChange: (String) -> Unit,
-    repeatPasswordOnChange: (String) -> Unit,
-    emailError: Boolean,
-    passwordError: Boolean,
-    repeatPasswordError: Boolean,
-    joinOnClick: () -> Unit
+    name: String,
+    nickName: String,
+    email: String,
+    password: String,
+    repeatPassword: String,
+    onNickNameChange: (String) -> Unit,
+    onNameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onRepeatPasswordChange: (String) -> Unit,
+    onCheckedChange: (Boolean) -> Unit,
+    isPasswordShown: Boolean,
+    isEmailError: Boolean,
+    isPasswordError: Boolean,
+    isRepeatPasswordError: Boolean,
+    onJoinClick: () -> Unit
 ) {
-    var passwordKeyboard by remember { mutableStateOf(KeyboardOptions(keyboardType = KeyboardType.Password)) }
-    val focusRequesters = List(4) { FocusRequester() }
+    val nickNameFocus = remember { FocusRequester() }
+    val emailFocus = remember { FocusRequester() }
+    val passwordFocus = remember { FocusRequester() }
+    val repeatPasswordFocus = remember { FocusRequester() }
 
     Column(
         modifier = modifier,
         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
     ) {
         Text(
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = commonTextFieldModifier,
             text = "*All blanks need to be filled",
             style = LocalTypography.current.bodySmall
         )
-        HCWTextField(
-            modifier = Modifier.padding(top = 16.dp),
-            onTextChange = { nameOnChange(it) },
-            hint = "Name  ( ex. Polly Wu )",
-            keyboardOptions = {
-                KeyboardOptions(
-                    imeAction = ImeAction.Next
-                )
-            },
-            keyboardActions = KeyboardActions(
-                onNext = { moveFocus(0, focusRequesters) }
-            ))
-        HCWTextField(
-            modifier = Modifier.padding(top = 16.dp),
-            onTextChange = { emailOnChange(it) },
-            hint = "E-mail",
-            errorState = emailError,
-            keyboardOptions = {
-                KeyboardOptions(
-                    imeAction = ImeAction.Next
-                )
-            },
-            keyboardActions = KeyboardActions(
-                onNext = { moveFocus(1, focusRequesters) }
-            )
-        )
-        if (emailError) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp, bottom = 4.dp, start = 16.dp),
-                text = "*Please enter a valid email address.",
-                style = LocalTypography.current.bodySmall,
-                color = LocalColorScheme.current.error
-            )
-        }
-
-        HCWTextField(
-            modifier = Modifier.padding(top = 16.dp),
-            onTextChange = { passwordOnChange(it) },
-            hint = "Password",
-            errorState = passwordError,
-            keyboardOptions = {
-                KeyboardOptions(
-                    imeAction = ImeAction.Next
-                )
-                passwordKeyboard
-            },
-            keyboardActions = KeyboardActions(
-                onNext = { moveFocus(2, focusRequesters) }
-            )
-        )
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, start = 16.dp),
-            text = "*Required at least 10 characters, and contain at least one uppercase character.",
-            style = LocalTypography.current.bodySmall,
-            color = if (passwordError) LocalColorScheme.current.error else LocalColorScheme.current.onBackground,
-        )
-        HCWTextField(
-            modifier = Modifier.padding(top = 16.dp),
-            onTextChange = { repeatPasswordOnChange(it) },
-            hint = "Repeat Password",
-            errorState = repeatPasswordError,
-            keyboardOptions = {
-                KeyboardOptions(
-                    imeAction = ImeAction.Done,
-                    keyboardType = passwordKeyboard.keyboardType)
-
-            },
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    joinOnClick()
-                }
-            )
+        BasicInfoFields(
+            name = name,
+            nickName = nickName,
+            onNameChange = onNameChange,
+            onNickNameChange = onNickNameChange,
+            nickNameFocus = nickNameFocus,
+            emailFocus = emailFocus
         )
 
-        if (repeatPasswordError) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp, bottom = 4.dp, start = 16.dp),
-                text = "*Passwords do not match.",
-                style = LocalTypography.current.bodySmall,
-                color = LocalColorScheme.current.error
-            )
-        }
+        EmailInfoFields(
+            email = email,
+            isEmailError = isEmailError,
+            onEmailChange = onEmailChange,
+            passwordFocus = passwordFocus,
+            emailFocus = emailFocus
+        )
+
+        PasswordFields(
+            password = password,
+            repeatPassword = repeatPassword,
+            isPasswordShown = isPasswordShown,
+            isPasswordError = isPasswordError,
+            isRepeatPasswordError = isRepeatPasswordError,
+            onPasswordChange = onPasswordChange,
+            onRepeatPasswordChange = onRepeatPasswordChange,
+            onJoinClick = onJoinClick,
+            repeatPasswordFocus = repeatPasswordFocus,
+            passwordFocus = passwordFocus
+        )
+
         ShowPasswordCheckBox(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp)
-        ) { shouldShowPassword ->
-            passwordKeyboard =
-                if (shouldShowPassword) KeyboardOptions(keyboardType = KeyboardType.Text) else KeyboardOptions(
-                    keyboardType = KeyboardType.Password
-                )
-        }
+                .padding(start = 16.dp),
+            isChecked = isPasswordShown,
+            onCheckChanged = onCheckedChange
+        )
         PositiveButton(
             modifier = Modifier.padding(top = 8.dp).fillMaxWidth(0.4f),
             text = "Join !", textStyle = LocalTypography.current.titleMedium,
-            onClick = { joinOnClick() }
+            onClick = { onJoinClick() }
         )
     }
 }
 
-fun moveFocus(currentIndex: Int, focusRequesters: List<FocusRequester>) {
-    if (currentIndex < focusRequesters.size - 1) {
-        focusRequesters[currentIndex + 1].requestFocus()
+@Composable
+fun BasicInfoFields(
+    name: String,
+    nickName: String,
+    onNameChange: (String) -> Unit,
+    onNickNameChange: (String) -> Unit,
+    nickNameFocus: FocusRequester,
+    emailFocus: FocusRequester
+){
+    HCWTextField(
+        modifier = commonTextFieldModifier,
+        value = name,
+        onValueChange = { onNameChange(it) },
+        hint = "Name  ( ex. Pollyanna Wu )",
+        keyboardOptions = regularKeyboardOptions,
+        keyboardActions = KeyboardActions(
+            onNext = { nickNameFocus.requestFocus() }
+        ))
+    HCWTextField(
+        modifier = commonTextFieldModifier.focusRequester(nickNameFocus),
+        value = nickName,
+        onValueChange = { onNickNameChange(it) },
+        hint = "Nickname  ( ex. Polly )",
+        keyboardOptions = regularKeyboardOptions,
+        keyboardActions = KeyboardActions(
+            onNext = { emailFocus.requestFocus() }
+        )
+    )
+
+}
+
+@Composable
+fun EmailInfoFields(
+    email: String,
+    isEmailError: Boolean,
+    onEmailChange: (String) -> Unit,
+    emailFocus: FocusRequester,
+    passwordFocus: FocusRequester
+){
+    HCWTextField(
+        modifier = commonTextFieldModifier,
+        value = email,
+        onValueChange = { onEmailChange(it) },
+        hint = "E-mail",
+        isError = isEmailError,
+        keyboardOptions = regularKeyboardOptions,
+        keyboardActions = KeyboardActions(
+            onNext = {
+                passwordFocus.requestFocus()
+            }
+        )
+    )
+    if (isEmailError) {
+        Text(
+            modifier = errorTextModifier.focusRequester(emailFocus),
+            text = "*Please enter a valid email address.",
+            style = LocalTypography.current.bodySmall,
+            color = LocalColorScheme.current.error
+        )
     }
 }
+
+@Composable
+private fun PasswordFields(
+    password: String,
+    repeatPassword: String,
+    isPasswordShown: Boolean,
+    isPasswordError: Boolean,
+    isRepeatPasswordError: Boolean,
+    onPasswordChange: (String) -> Unit,
+    onRepeatPasswordChange: (String) -> Unit,
+    onJoinClick: () -> Unit,
+    passwordFocus: FocusRequester,
+    repeatPasswordFocus: FocusRequester
+) {
+    val passwordKeyboardType = if (isPasswordShown) KeyboardType.Text else KeyboardType.Password
+    val passwordKeyboardOptions = KeyboardOptions(
+        keyboardType = passwordKeyboardType,
+        imeAction = ImeAction.Next
+    )
+
+    val doneKeyboardOptions = KeyboardOptions(
+        keyboardType = passwordKeyboardType,
+        imeAction = ImeAction.Done
+    )
+
+    HCWTextField(
+        modifier = commonTextFieldModifier.focusRequester(passwordFocus),
+        value = password,
+        onValueChange = { onPasswordChange(it) },
+        hint = "Password",
+        isError = isPasswordError,
+        keyboardOptions = passwordKeyboardOptions,
+        keyboardActions = KeyboardActions(
+            onNext = {
+                repeatPasswordFocus.requestFocus()
+            }
+        )
+    )
+    Text(
+        modifier = errorTextModifier,
+        text = "*Required at least 10 characters, and contain at least one uppercase character.",
+        style = LocalTypography.current.bodySmall,
+        color = if (isPasswordError) LocalColorScheme.current.error else LocalColorScheme.current.onBackground,
+    )
+    HCWTextField(
+        modifier = commonTextFieldModifier.focusRequester(repeatPasswordFocus),
+        value = repeatPassword,
+        onValueChange = { onRepeatPasswordChange(it) },
+        hint = "Repeat Password",
+        isError = isRepeatPasswordError,
+        keyboardOptions = doneKeyboardOptions,
+        keyboardActions = KeyboardActions(
+            onDone = {
+                onJoinClick()
+            }
+        )
+    )
+
+    if (isRepeatPasswordError) {
+        Text(
+            modifier = errorTextModifier,
+            text = "*Passwords do not match.",
+            style = LocalTypography.current.bodySmall,
+            color = LocalColorScheme.current.error
+        )
+    }
+
+}
+
+private val regularKeyboardOptions = KeyboardOptions(
+    imeAction = ImeAction.Next,
+    keyboardType = KeyboardType.Text
+)
+
+private val commonTextFieldModifier = Modifier
+    .fillMaxWidth()
+    .padding(top = 16.dp)
+
+private val errorTextModifier = Modifier
+    .fillMaxWidth()
+    .padding(top = 4.dp, start = 16.dp)
+

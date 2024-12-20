@@ -1,15 +1,14 @@
 package com.polly.housecowork.utils
 
 import androidx.navigation.NamedNavArgument
-import com.polly.housecowork.prefs.Prefs
-import com.polly.housecowork.prefs.PrefsLicense
 import com.polly.housecowork.utils.Step.Companion.ONBOARDING_STEP
 
 sealed class StepState(val step: String){
     data object Onboarding : StepState(step = ONBOARDING_STEP)
+    data object Splash : StepState(step = Step.SPLASH_STEP)
     data object Home : StepState(step = Step.HOME_STEP)
     data object Profile : StepState(step = Step.PROFILE_STEP)
-    data object CreateTask : StepState(step = Route.ADD_TASK)
+    data object CreateTask : StepState(step = Step.CREATE_TASK_STEP)
     data object Chat: StepState(step = Route.CHAT)
     data object Money: StepState(step = Route.MONEY)
     data class TaskDetail(val taskId: Int) : StepState(step = Route.TASK_DETAIL)
@@ -49,7 +48,7 @@ sealed class Screen(
     )
 
     data object CreateTask : Screen(
-        route = Route.ADD_TASK
+        route = Route.CREATE_TASK
     )
 
     data object SignUp : Screen(
