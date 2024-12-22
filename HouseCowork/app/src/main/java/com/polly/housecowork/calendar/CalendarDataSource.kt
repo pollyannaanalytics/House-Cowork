@@ -6,8 +6,9 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.stream.Collectors
 import java.util.stream.Stream
+import javax.inject.Inject
 
-class CalendarDataSource {
+class CalendarDataSource @Inject constructor(){
 
     private val today: LocalDate
         get() = LocalDate.now()
@@ -46,7 +47,7 @@ class CalendarDataSource {
             visibleDates = dateList.map {
                 toItemUiModel(it, it.isEqual(lastSelectedDate))
             },
-            month = today.month.name
+
         )
     }
 

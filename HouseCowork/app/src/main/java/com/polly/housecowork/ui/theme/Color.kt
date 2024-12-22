@@ -12,6 +12,7 @@ val Dim87 = Color(0xfffafafa)
 val SlightGrey = Color(0xffD9D9D9)
 val Black = Color(0xff3A3636)
 val colorLightOnBackground = Color(0x99FFFFFF)
+val colorDarkOnBackground = Color(0x99EFEFEF)
 val Red = Color(0xffFE2D2D)
 val Skinny = Color(0xffFCF9ED)
 

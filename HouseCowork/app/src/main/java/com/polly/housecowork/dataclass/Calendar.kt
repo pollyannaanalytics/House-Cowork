@@ -38,7 +38,6 @@ data class CalendarUiModel(
         val isSelected: Boolean = false,
         val isToday: Boolean
     ) {
-        // 使用 companion object 存放常數
         companion object {
             private val DAY_MAPPING = mapOf(
                 DayOfWeek.SUNDAY to "S",
