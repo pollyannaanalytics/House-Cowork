@@ -1,29 +1,19 @@
 package com.polly.housecowork.data.network
 
-import com.polly.housecowork.dataclass.ProfileInfo
+import com.polly.housecowork.dataclass.ProfileInfoResponse
+import com.polly.housecowork.dataclass.ProfileRequest
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface ProfileApiService {
-    suspend fun getProfileById(id: Int): Result<ProfileInfo>
-    suspend fun getAllProfiles(): Result<List<ProfileInfo>>
-}
 
+    @GET("users/{id}/profile")
+    suspend fun getProfileById(@Path("id") id: Int): Response<ProfileInfoResponse>
 
-class MockProfileApiService : ProfileApiService {
-    private val mockProfileInfo = ProfileInfo(
-        name = "Mock Profile",
-        nickName = "Mock Profile Description",
-        imageUrl = "https://mock.com",
-        bankAccount = "23232323",
-        email = "pinyunwuu@gmail.com",
-        updateTime = 123232323,
-        bio = "i am a software engineer"
-    )
+    @PUT("users/profile")
+    suspend fun updateProfile(@Body profileRequest: ProfileRequest): Response<ProfileInfoResponse>
 
-    override suspend fun getProfileById(id: Int): Result<ProfileInfo>{
-        return Result.success(mockProfileInfo)
-    }
-
-    override suspend fun getAllProfiles(): Result<List<ProfileInfo>> {
-        return Result.success(List(10) { mockProfileInfo })
-    }
 }

@@ -32,8 +32,19 @@ data class User(
     val name: String,
     val email: String,
     val nickName: String,
-    val avatar: String
+    val avatar: String = ""
 ) : Parcelable
 
+fun User.toProfileInfo(): ProfileInfo {
+    return ProfileInfo(
+        id = id,
+        name = name,
+        email = email,
+        nickName = nickName,
+        avatar = avatar?:"",
+        bankAccount = "",
+        bio = ""
+    )
+}
 
 

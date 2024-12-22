@@ -1,17 +1,12 @@
 package com.polly.housecowork.di
 
 import android.content.Context
-import com.polly.housecowork.MainApplication
-import com.polly.housecowork.data.local.TaskDao
+import android.util.Log
 import com.polly.housecowork.data.network.AuthApiService
-import com.polly.housecowork.data.network.CalendarApiService
 import com.polly.housecowork.data.network.ConnectionUtils
-import com.polly.housecowork.data.network.MockProfileApiService
 import com.polly.housecowork.data.network.MockTaskApiService
 import com.polly.housecowork.data.network.ProfileApiService
 import com.polly.housecowork.data.network.TaskApiService
-import com.polly.housecowork.model.task.DefaultTaskRepository
-import com.polly.housecowork.model.task.TaskRemoteDataSource
 import com.polly.housecowork.prefs.PrefsLicense
 import com.polly.housecowork.utils.Constant
 import dagger.Module
@@ -19,9 +14,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -30,17 +27,22 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        prefsLicense: PrefsLicense
+    ): OkHttpClient {
+
         return OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(prefsLicense))
             .build()
     }
 
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+
         return Retrofit.Builder()
-            .baseUrl(Constant.BASE_URL)
             .client(okHttpClient)
+            .baseUrl(Constant.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -59,12 +61,44 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideProfileService(retrofit: Retrofit): ProfileApiService {
-        return MockProfileApiService()
+        return retrofit.create(ProfileApiService::class.java)
     }
 
     @Provides
     @Singleton
     fun provideConnectionUtils(@ApplicationContext context: Context): ConnectionUtils {
         return ConnectionUtils(context)
+    }
+
+
+}
+
+@Singleton
+class AuthInterceptor @Inject constructor(private val prefsLicense: PrefsLicense): Interceptor {
+    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+        Log.d("AuthInterceptor", "token: ${prefsLicense.token}")
+        val request = chain.request().newBuilder()
+            .addHeader("Authorization", "Bearer ${prefsLicense.token}")
+            .build()
+
+        Log.d("AuthInterceptor", """
+            URL: ${request.url}
+            Headers: ${request.headers}
+            Method: ${request.method}
+        """.trimIndent())
+
+        return try {
+            Log.d("AuthInterceptor", "Attempting to proceed with request...")
+            val response = chain.proceed(request)
+            Log.d("AuthInterceptor", """
+                Response Code: ${response.code}
+                Response Message: ${response.message}
+                Response Headers: ${response.headers}
+            """.trimIndent())
+            response
+        } catch (e: Exception) {
+            Log.e("AuthInterceptor", "Error during request", e)
+            throw e
+        }
     }
 }

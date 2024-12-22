@@ -1,7 +1,10 @@
 package com.polly.housecowork.model.profile
 
+import android.util.Log
 import com.polly.housecowork.data.network.ConnectionUtils
 import com.polly.housecowork.dataclass.ProfileInfo
+import com.polly.housecowork.dataclass.ProfileRequest
+import com.polly.housecowork.dataclass.toProfileInfo
 import com.polly.housecowork.prefs.PrefsLicense
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,56 +15,58 @@ class DefaultProfileRepository @Inject constructor(
     private val localDataSource: ProfileDao,
     private val connectionUtils: ConnectionUtils,
     private val prefsLicense: PrefsLicense,
-){
-    suspend fun getUserProfile(
-        fetchRemote: Boolean
-    ): ProfileInfo = withContext(Dispatchers.IO) {
-        getProfileById(prefsLicense.userId, fetchRemote)
+) {
+    suspend fun getUserProfile(): ProfileInfo = withContext(Dispatchers.IO) {
+        getProfileById(prefsLicense.userId)
     }
 
     suspend fun getProfileById(
         profileId: Int,
-        fetchRemote: Boolean
     ): ProfileInfo = withContext(Dispatchers.IO) {
-            if (!fetchRemote || !connectionUtils.isNetworkAvailable()) {
+        if (!connectionUtils.isNetworkAvailable()) {
+            return@withContext localDataSource.getProfileById(profileId)
+        }
+        val result = remoteDataSource.getProfileById(profileId)
+        when{
+            result.isSuccessful -> {
+               result.body()?.let { body ->
+                   val profileInfo = body.user.toProfileInfo()
+                     localDataSource.updateProfile(profileInfo)
+                     return@withContext profileInfo
+               }?: return@withContext localDataSource.getProfileById(profileId)
+            }
+            else -> {
+                Log.e("ProfileRepository", "Failed to fetch profile")
                 return@withContext localDataSource.getProfileById(profileId)
             }
-            val result = remoteDataSource.getProfileById(profileId)
-            result.fold(
-                onSuccess = { profile ->
-                    localDataSource.insertProfile(profile)
-                    return@withContext profile
-                },
-                onFailure = { error ->
-                    throw error
-                }
-            )
-
-
-    }
-    suspend fun getAllProfiles(
-        fetchRemote: Boolean
-    ): List<ProfileInfo> = withContext(Dispatchers.IO) {
-        if (!fetchRemote || !connectionUtils.isNetworkAvailable()) {
-            return@withContext localDataSource.getAllProfiles()
         }
-        val result = remoteDataSource.getAllProfiles()
-        result.fold(
-            onSuccess = { profiles ->
-                localDataSource.upsertAllProfiles(profiles)
-                return@withContext profiles
-            },
-            onFailure = { error ->
-                throw error
+
+
+    }
+
+    suspend fun getAllProfiles(
+    ): List<ProfileInfo> = withContext(Dispatchers.IO) {
+        return@withContext localDataSource.getAllProfiles()
+    }
+
+
+    suspend fun updateProfile(profile: ProfileRequest) {
+        val response = remoteDataSource.updateProfile(profile)
+
+        when {
+            response.isSuccessful -> {
+                response.body()?.let { body ->
+                    Log.d("ProfileRepository", "updateProfile: $body")
+                    val updatedProfile = body.user.toProfileInfo()
+
+                    localDataSource.updateProfile(updatedProfile)
+                }
             }
-        )
+
+            else -> {
+                Log.e("ProfileRepository", "Failed to update profile")
+            }
+        }
     }
 
- suspend fun updateProfile(profile: ProfileInfo) {
-        TODO("Not yet implemented")
-    }
-
-   suspend fun deleteProfileById(profileId: Int) {
-        TODO("Not yet implemented")
-    }
 }
