@@ -58,12 +58,8 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-remoteConfig = { group = "com.google.firebase", name = "firebase-config-ktx" }
 google-material = { group = "com.google.android.material", name = "material", version.ref = "googleMaterial" }
 
-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
-room-runtime = {group = "androidx.room", name = "room-runtime", version.ref = "room"}
 room-compiler = {group = "androidx.room", name = "room-compiler", version.ref = "room"}
 room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
-room-paging = {group = "androidx.room", name = "room"}
-androidx-paging-common-android = { group = "androidx.paging", name = "paging-common-android", version.ref = "pagingCommonAndroid" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
@@ -74,5 +70,6 @@ jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "k
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-version" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
+parcelable = { id = "kotlin-parcelize", version.ref = "kotlin" }
 
 

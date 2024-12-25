@@ -1,5 +1,8 @@
 package com.polly.housecowork.compose.profile
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,10 +29,24 @@ fun ProfileScreen(
 
     val profileUiState by viewModel.profileUiState.collectAsStateWithLifecycle()
     val profileEditModeState by viewModel.profileEditModeState.collectAsStateWithLifecycle()
+    val errState by viewModel.errState.collectAsStateWithLifecycle()
+    val calendarState by viewModel.calendarState.collectAsStateWithLifecycle()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(
         rememberTopAppBarState()
     )
+
+    val pickImageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { imageUri ->
+            viewModel.uploadProfilePhoto(imageUri)
+        }
+    }
+
+
+
+
 
     ProfileContent(
         modifier = modifier
@@ -39,12 +56,16 @@ fun ProfileScreen(
         profileInfo = profileUiState.profileInfo,
         tasks = profileUiState.assignedTasks,
         isEditMode = profileEditModeState.isEditMode,
-        onBackClick = navigateOnClick,
-        calendarUiModel = profileUiState.calendarUiModel,
+        onBackMonthClick = { viewModel.getPreviousMonth() },
+        onNextMonthClick = { viewModel.getNextMonth() },
+        calendarUiModel = calendarState.monthData,
+        calendarMonthTitle = calendarState.monthTitle,
         onEditClick = { viewModel.changeEditMode() },
-        errState = profileEditModeState.errState,
+        errState = errState,
         onNameChange = { name -> viewModel.updateProfileName(name) },
         onBioChange = { bio -> viewModel.updateProfileBio(bio) },
+        onUploadPhotoClick = { pickImageLauncher.launch("image/*") },
+        chosenPhotoUri = profileEditModeState.imageUri
     )
 }
 

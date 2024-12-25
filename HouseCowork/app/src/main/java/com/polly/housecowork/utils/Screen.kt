@@ -1,69 +1,85 @@
 package com.polly.housecowork.utils
 
 import androidx.navigation.NamedNavArgument
-import com.polly.housecowork.utils.Step.Companion.ONBOARDING_STEP
-
-sealed class StepState(val step: String){
-    data object Onboarding : StepState(step = ONBOARDING_STEP)
-    data object Splash : StepState(step = Step.SPLASH_STEP)
-    data object Home : StepState(step = Step.HOME_STEP)
-    data object Profile : StepState(step = Step.PROFILE_STEP)
-    data object CreateTask : StepState(step = Step.CREATE_TASK_STEP)
-    data object Chat: StepState(step = Route.CHAT)
-    data object Money: StepState(step = Route.MONEY)
-    data class TaskDetail(val taskId: Int) : StepState(step = Route.TASK_DETAIL)
-
-    sealed class HouseStep: StepState(Step.HOUSE_STEP){
-        data object HouseList : StepState(step = Route.HOUSE_LIST)
-        data class HouseDetail(val houseId: Int) : StepState(step = Route.HOUSE_DETAIL)
-        data object CreateHouse : StepState(step = Route.CREATE_HOUSE)
-        data object JoinHouse : StepState(step = Route.JOIN_HOUSE)
-    }
-
-
-}
+import com.polly.housecowork.utils.Route.Companion.HOUSE_DETAIL_ROUTE
+import com.polly.housecowork.utils.Route.Companion.PROFILE_ROUTE
+import com.polly.housecowork.utils.Route.Companion.TASK_DETAIL_ROUTE
 
 sealed class Screen(
+    val title: String,
     val route: String,
     val navArgument: List<NamedNavArgument> = emptyList()
 ) {
-    data object HouseList : Screen(
-        route = Route.HOUSE_LIST
+    sealed class OnBoarding(title: String, route: String) : Screen(title, route) {
+        data object SignUp : OnBoarding(ScreenTitle.SIGN_UP, Route.SIGN_UP_ROUTE)
+//        data object Login : Auth(ScreenTitle.LOGIN, Route.LOGIN_ROUTE)
+        data object CompleteProfile : OnBoarding(ScreenTitle.COMPLETE_PROFILE, Route.COMPLETE_PROFILE_ROUTE)
+        companion object{
+            const val BASE_ROUTE = "house"
+        }
+    }
+
+    sealed class House(title: String, route: String) : Screen(title, route) {
+        data object List : House(ScreenTitle.HOUSE_LIST, Route.HOUSE_LIST_ROUTE)
+        data class Detail(val houseId: Int) : House(ScreenTitle.HOUSE_DETAIL, Route.HOUSE_DETAIL_ROUTE)
+        data object Create : House(ScreenTitle.CREATE_HOUSE, Route.CREATE_HOUSE_ROUTE)
+        data object Join : House(ScreenTitle.JOIN_HOUSE, Route.JOIN_HOUSE_ROUTE)
+
+        companion object{
+            const val BASE_ROUTE = "house"
+        }
+    }
+
+    sealed class Task(title: String, route: String) : Screen(title, route) {
+        data object Create : Task(ScreenTitle.CREATE_TASK, Route.CREATE_TASK_ROUTE)
+        data class Detail(val taskId: Int) : Task(ScreenTitle.TASK_DETAIL, Route.TASK_DETAIL_ROUTE)
+        companion object{
+            const val BASE_ROUTE = "house"
+        }
+    }
+
+    data object Splash : Screen(ScreenTitle.SPLASH, Route.SPLASH_ROUTE)
+    data object Home : Screen(ScreenTitle.HOME, Route.HOME_ROUTE)
+    data object Profile : Screen(ScreenTitle.PROFILE, Route.PROFILE_ROUTE)
+    data object Chat : Screen(ScreenTitle.CHAT, Route.CHAT_ROUTE)
+    data object Money : Screen(ScreenTitle.MONEY, Route.MONEY_ROUTE)
+
+companion object {
+    private val screens = listOf(
+        Home,
+        OnBoarding.SignUp,
+        OnBoarding.CompleteProfile,
+        House.List,
+        House.Create,
+        House.Join,
+        Task.Create,
+        Splash
     )
 
-    data object CreateHouse : Screen(
-        route = Route.CREATE_HOUSE
+    private val screenPatterns = mapOf(
+        HOUSE_DETAIL_ROUTE to { r: String ->
+            val id = r.substringAfterLast("/").toIntOrNull() ?: -1
+            House.Detail(id)
+        },
+        TASK_DETAIL_ROUTE to { r: String ->
+            val id = r.substringAfterLast("/").toIntOrNull() ?: -1
+            Task.Detail(id)
+        }
     )
 
-    data object JoinHouse : Screen(
-        route = Route.JOIN_HOUSE
-    )
+    fun fromRoute(route: String?): Screen {
+        if (route == null) return Home
 
-    data class HouseDetail(val houseId: Int) : Screen(
-        route = Route.HOUSE_DETAIL
-    )
+        screens.firstOrNull { it.route == route }?.let { return it }
 
-    data object Home : Screen(
-        route = Route.HOME
-    )
+        screenPatterns.entries
+            .firstOrNull { (pattern, _) -> route.startsWith(pattern) }
+            ?.value
+            ?.invoke(route)
+            ?.let { return it }
 
-    data object CreateTask : Screen(
-        route = Route.CREATE_TASK
-    )
+        return Home
+    }
+}
 
-    data object SignUp : Screen(
-        route = Route.SIGN_UP
-    )
-
-    data object Splash : Screen(
-        route = Route.SPLASH
-    )
-
-    data class Profile(val profileId: Int) : Screen(
-        route = Route.PROFILE
-    )
-
-    data class TaskDetail(val taskId: Int) : Screen(
-        route = Route.TASK_DETAIL
-    )
 }

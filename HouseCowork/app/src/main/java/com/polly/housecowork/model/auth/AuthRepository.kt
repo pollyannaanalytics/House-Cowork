@@ -12,7 +12,7 @@ class AuthRepository @Inject constructor(
     private val authStrategies: Map<AuthType, @JvmSuppressWildcards AuthStrategy>
 ) {
     fun checkAuthState(): AuthState {
-        return if (prefsLicense.token.isNotEmpty()) AuthState.Login else AuthState.LogOut
+        return if (prefsLicense.token.isNotEmpty()) AuthState.Login(prefsLicense.userId) else AuthState.LogOut
     }
 
     suspend fun signUp(authType: AuthType, signUpRequest: SignUpRequest): AuthState {
@@ -21,9 +21,11 @@ class AuthRepository @Inject constructor(
         Log.d("AuthRepository", "prefsLicense.token: ${prefsLicense.token}, accessToken: ${response?.body()?.accessToken}")
         response?.takeIf { it.isSuccessful }?.let {
             coroutineScope {
+                prefsLicense.userId = it.body()?.user?.id ?: 0
                 prefsLicense.token = it.body()?.accessToken ?: ""
+                Log.d("AuthRepository", "prefsLicense.token: ${prefsLicense.token}, userId: ${prefsLicense.userId}")
             }
-            return AuthState.Login
+            return AuthState.Login(prefsLicense.userId)
         } ?: return AuthState.UnAuthenticated
     }
 
@@ -33,7 +35,7 @@ class AuthRepository @Inject constructor(
             coroutineScope {
                 prefsLicense.token = it.body()?.accessToken ?: ""
             }
-            return AuthState.Login
+            return AuthState.Login(prefsLicense.userId)
         } ?: return AuthState.LogOut
     }
 

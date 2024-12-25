@@ -15,8 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.polly.housecowork.dataclass.ProfileInfo
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.utils.Screen
@@ -25,12 +23,11 @@ import com.polly.housecowork.utils.Screen
 @Composable
 fun HCWAppBar(
     modifier: Modifier = Modifier,
-    profileInfo: ProfileInfo,
     navigateToProfile: () -> Unit,
     title: () -> String
 ) {
     val isHome by remember {
-        mutableStateOf( title() == Screen.Home.route)
+        mutableStateOf( title() == Screen.Home.title)
     }
         CenterAlignedTopAppBar(
             modifier = modifier,
@@ -73,22 +70,3 @@ fun HCWAppBar(
         )
 
 }
-
-@Preview
-@Composable
-fun PreviewHCWAppBar() {
-    HCWAppBar(
-        profileInfo = ProfileInfo(
-            id = 0,
-            name = "John Doe",
-            nickName = "JD",
-            imageUrl = "",
-            email = "fasdf@g",
-            bankAccount = "1234567890",
-            updateTime = 2323232323,
-            bio = "I am a developer"
-            ),
-        navigateToProfile = {},
-        title = {"profile"}
-
-    )}

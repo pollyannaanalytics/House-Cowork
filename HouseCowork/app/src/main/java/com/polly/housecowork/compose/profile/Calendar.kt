@@ -35,11 +35,12 @@ import com.polly.housecowork.dataclass.AssignedTask
 import com.polly.housecowork.dataclass.CalendarUiModel
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
+import com.polly.housecowork.ui.utils.Header
 
 @Composable
 fun Calendar(
     modifier: Modifier = Modifier,
-    currentDateTitle: String,
+    currentMonthTitle: String,
     onBackClick: () -> Unit,
     onForwardClick: () -> Unit,
     dates: List<CalendarUiModel.Date>,
@@ -47,7 +48,7 @@ fun Calendar(
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Header(
-            currentDateTitle = currentDateTitle,
+            currentMonthTitle = currentMonthTitle,
             onBackClick = onBackClick,
             onForwardClick = onForwardClick
         )
@@ -56,36 +57,6 @@ fun Calendar(
     }
 }
 
-@Composable
-fun Header(
-    modifier: Modifier = Modifier,
-    currentDateTitle: String,
-    onBackClick: () -> Unit,
-    onForwardClick: () -> Unit
-) {
-    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-        IconButton(onBackClick) {
-            Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                contentDescription = "Previous"
-            )
-        }
-        Text(
-            text = currentDateTitle,
-            modifier = Modifier
-                .align(Alignment.CenterVertically),
-            style = LocalTypography.current.titleSmall,
-        )
-
-        IconButton(onForwardClick) {
-            Icon(
-                imageVector = Icons.Filled.ArrowForward,
-                contentDescription = "Next",
-            )
-        }
-
-    }
-}
 
 @Composable
 fun Content(dates: List<CalendarUiModel.Date>) {

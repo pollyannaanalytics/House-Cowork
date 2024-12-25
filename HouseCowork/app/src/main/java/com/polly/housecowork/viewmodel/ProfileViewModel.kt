@@ -1,18 +1,26 @@
 package com.polly.housecowork.viewmodel
 
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.polly.housecowork.calendar.CalendarDataSource
 import com.polly.housecowork.dataclass.AssignedTask
 import com.polly.housecowork.dataclass.CalendarUiModel
 import com.polly.housecowork.dataclass.ProfileInfo
+import com.polly.housecowork.dataclass.ProfileRequest
 import com.polly.housecowork.model.profile.DefaultProfileRepository
 import com.polly.housecowork.ui.utils.AssigneeStatusType
-import com.polly.housecowork.usecase.task.TaskUseCase
+import com.polly.housecowork.domain.task.TaskUseCase
+import com.polly.housecowork.model.calendar.CalendarRepository
+import com.polly.housecowork.model.calendar.CalendarState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,9 +36,13 @@ sealed interface ProfileUiState {
         val isEditMode: Boolean = false,
         val editName: String = "",
         val editBio: String = "",
-        val editProfileImage: String = "",
-        val errState: ErrState = ErrState(),
-    ) : ProfileUiState
+        val imageUri: Uri? = null,
+        val isNameValid: Boolean = true,
+        val isBioValid: Boolean = true,
+    ) {
+        val isValid: Boolean
+            get() = isNameValid && isBioValid
+    }
 }
 
 data class ErrState(
@@ -42,38 +54,59 @@ data class ErrState(
 class ProfileViewModel @Inject constructor(
     private val profileRepository: DefaultProfileRepository,
     private val taskUseCase: TaskUseCase,
-    private val calendarDataSource: CalendarDataSource
-): ViewModel() {
+    private val calendarRepository: CalendarRepository
+) : ViewModel() {
 
     private val _profileViewModeState = MutableStateFlow(ProfileUiState.ViewMode())
-    val profileUiState: StateFlow<ProfileUiState.ViewMode> = _profileViewModeState.asStateFlow()
+    val profileUiState = _profileViewModeState.asStateFlow()
 
     private val _profileEditModeState = MutableStateFlow(ProfileUiState.EditMode())
-    val profileEditModeState: StateFlow<ProfileUiState.EditMode> = _profileEditModeState.asStateFlow()
+    val profileEditModeState: StateFlow<ProfileUiState.EditMode> =
+        _profileEditModeState.asStateFlow()
+
+    private val _calendarState = MutableStateFlow(
+        CalendarState(
+            monthData = calendarRepository.getCurrentMonth(),
+            monthTitle = calendarRepository.getCurrentMonthTitle()
+        )
+    )
+    val calendarState = _calendarState.asStateFlow()
+
+    val errState = _profileEditModeState.map { state ->
+        ErrState(
+            nameErr = !state.isNameValid,
+            bioErr = !state.isBioValid
+        )
+
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        ErrState()
+    )
 
     init {
         fetchProfileInfo()
         getAssignedTasks()
-        getCalendarUiModel()
     }
 
 
-    fun updateProfileName(name: String){
+    fun updateProfileName(name: String) {
         _profileEditModeState.update {
             it.copy(editName = name)
         }
     }
 
-    fun updateProfileBio(bio: String){
+    fun updateProfileBio(bio: String) {
         _profileEditModeState.update {
             it.copy(editBio = bio)
         }
 
     }
 
-    private fun fetchProfileInfo(fetchRemote: Boolean = false)  {
+    private fun fetchProfileInfo() {
         viewModelScope.launch {
-            val profile = profileRepository.getUserProfile(fetchRemote)
+            val profile = profileRepository.getUserProfile()
+            Log.d("ProfileViewModel", "fetchProfileInfo: ${profile}")
             _profileViewModeState.update {
                 it.copy(profileInfo = profile)
             }
@@ -82,7 +115,7 @@ class ProfileViewModel @Inject constructor(
     }
 
 
-    fun getAssignedTasks(){
+    fun getAssignedTasks() {
         viewModelScope.launch {
             taskUseCase.transformTaskUseCase.invoke(
                 AssigneeStatusType.ACCEPTED,
@@ -97,32 +130,85 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun getCalendarUiModel(){
-        viewModelScope.launch {
-            _profileViewModeState.update {
-                it.copy(calendarUiModel = calendarDataSource.sundayToSaturdayWeek)
+    fun getPreviousMonth() {
+        _calendarState.update {
+            it.copy(
+                monthData = calendarRepository.previousMonth(),
+                monthTitle = calendarRepository.getCurrentMonthTitle()
+            )
+        }
+    }
+
+    fun getNextMonth() {
+        _calendarState.update {
+            it.copy(
+                monthData = calendarRepository.nextMonth(),
+                monthTitle = calendarRepository.getCurrentMonthTitle()
+            )
+        }
+    }
+
+    fun changeEditMode() {
+        if (_profileEditModeState.value.isEditMode) {
+            checkEditProfileInfo()
+            val state = _profileEditModeState.value
+            if (!state.isValid) return
+
+            updateProfileInfo()
+        } else {
+            _profileEditModeState.update {
+                it.copy(
+                    editName = profileUiState.value.profileInfo?.name ?: "",
+                    editBio = profileUiState.value.profileInfo?.bio ?: "",
+                    imageUri = Uri.parse(profileUiState.value.profileInfo?.avatar ?: "")
+                )
             }
         }
+        _profileEditModeState.update {
+            it.copy(isEditMode = !it.isEditMode)
+        }
     }
 
-    fun changeEditMode(){
+    private fun updateProfileInfo() {
+        viewModelScope.launch(Dispatchers.IO) {
+            checkEditProfileInfo()
+            val state = _profileEditModeState.value
+
+            val profileInfo = ProfileRequest(
+                name = state.editName,
+                nickName = state.editName,
+                avatar = state.imageUri.toString(),
+                // todo: add bio
+                bankAccount = "1234567890",
+            )
+            profileRepository.updateProfile(profileInfo)
+            fetchProfileInfo()
+        }
+    }
+
+
+    private fun String.isNameValid(): Boolean {
+        return length <= 20 && isNotEmpty()
+    }
+
+    private fun String.isBioValid(): Boolean {
+        return length <= 200
+    }
+
+    private fun checkEditProfileInfo() {
         _profileEditModeState.update {
             it.copy(
-               isEditMode = !it.isEditMode,
+                isNameValid = it.editName.isNameValid(),
+                isBioValid = it.editBio.isBioValid(),
             )
         }
     }
 
-    fun checkEditProfileInfo(){
-        if(_profileEditModeState.value.isEditMode) return
+    fun uploadProfilePhoto(imageUri: Uri) {
         _profileEditModeState.update {
             it.copy(
-                errState = ErrState(
-                    nameErr = it.editName.length > 20 || it.editName.isEmpty(),
-                    bioErr = it.editBio.length > 200 || it.editBio.isEmpty()
-                )
+                imageUri = imageUri
             )
         }
-
     }
 }

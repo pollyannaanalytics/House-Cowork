@@ -4,32 +4,37 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import androidx.navigation.compose.rememberNavController
-import com.polly.housecowork.compose.onboarding.register.RegisterScreen
+import com.polly.housecowork.compose.house.houseNavigation
+import com.polly.housecowork.compose.onboarding.register.CompleteProfileScreen
+import com.polly.housecowork.compose.onboarding.register.SignUpScreen
 
 import com.polly.housecowork.model.auth.AuthState
-import com.polly.housecowork.utils.Step
-import com.polly.housecowork.utils.Step.Companion.ONBOARDING_STEP
+import com.polly.housecowork.utils.Screen
 
-
-sealed class OnboardingStep {
-    sealed class Register(val step: String) : OnboardingStep() {
-        data object SignUp : Register(step = Step.SIGN_UP_STEP)
-    }
-
-}
 
 fun NavGraphBuilder.onboardingNavigation(
+    navController: NavController,
     authState: AuthState,
     onOnboardingComplete: () -> Unit
 ) {
+    // todo: should be login page when page is designed
     navigation(
-        route = ONBOARDING_STEP,
-        startDestination = Step.REGISTER_STEP
+        route = Screen.OnBoarding.BASE_ROUTE,
+        startDestination = Screen.OnBoarding.SignUp.route
     ) {
-        composable(Step.REGISTER_STEP) {
-            RegisterScreen(
-                onSignUpComplete = onOnboardingComplete
+        composable(Screen.OnBoarding.SignUp.route) {
+            SignUpScreen(
+                onSignUpComplete = {
+                    navController.navigate(Screen.OnBoarding.CompleteProfile.route)
+                }
+            )
+        }
+
+        composable(Screen.OnBoarding.CompleteProfile.route) {
+            CompleteProfileScreen(
+                onProfileComplete = {
+                    onOnboardingComplete()
+                }
             )
         }
     }

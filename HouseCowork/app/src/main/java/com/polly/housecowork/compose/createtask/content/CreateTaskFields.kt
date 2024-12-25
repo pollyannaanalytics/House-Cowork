@@ -1,6 +1,6 @@
 package com.polly.housecowork.compose.createtask.content
 
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.polly.housecowork.ui.utils.HCWTextField
@@ -8,16 +8,16 @@ import com.polly.housecowork.ui.utils.HCWTextField
 @Composable
 fun CreateTaskTextField(
     modifier: Modifier = Modifier,
-    defaultText: String = "",
-    onTextChange: (String) -> Unit,
+    value: String,
+    onValueChange: (String) -> Unit,
     isTaskEmptyError: Boolean
 ) {
     HCWTextField(
         modifier = modifier,
-        onTextChange = onTextChange,
-        defaultText = defaultText,
+        value = value,
+        onValueChange = onValueChange,
         hint = "Create a Task",
-        errorState = isTaskEmptyError
+        isError = isTaskEmptyError,
     )
 
 }

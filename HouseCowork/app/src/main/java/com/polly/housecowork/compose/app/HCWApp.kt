@@ -14,20 +14,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.polly.housecowork.dataclass.ProfileInfo
 import com.polly.housecowork.model.auth.AuthState
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.utils.Screen
-import com.polly.housecowork.utils.Step
-import com.polly.housecowork.utils.StepState
 import com.polly.housecowork.viewmodel.HCWAppViewModel
 
 @Composable
 fun HCWApp(viewModel: HCWAppViewModel = hiltViewModel()) {
-    val profileInfo by viewModel.profileInfo.collectAsState()
     val authState by viewModel.authState.collectAsState()
     val appState = rememberHCWAppState(
-        profileInfo = profileInfo,
         authState = authState,
     )
 
@@ -45,10 +40,9 @@ private fun HCWAppContent(
         topBar = {
             AppTopBar(
                 showTopBar = appState.showTopBar,
-                profileInfo = appState.profileInfo,
-                currentRoute = appState.currentRoute,
+                currentScreenTitle = appState.currentScreen.title,
                 onNavigateToProfile = {
-                    appState.navigateToProfile()
+                    appState.navigate(Screen.Profile)
                 }
             )
         },
@@ -62,85 +56,88 @@ private fun HCWAppContent(
         HCWNavHost(
             modifier = Modifier.padding(innerPadding),
             navController = appState.navController,
-            appState = appState
+            appState = appState,
+            userId = appState.userId
         )
     }
 }
 
 @Composable
 private fun rememberHCWAppState(
-    profileInfo: ProfileInfo?,
     authState: AuthState,
     navController: NavHostController = rememberNavController()
 ): HCWAppState {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
-
-    return remember(navController, profileInfo, authState, currentBackStackEntry) {
+    val currentScreen = remember(currentBackStackEntry){
+        Screen.fromRoute(currentBackStackEntry?.destination?.route)
+    }
+    return remember(navController, authState, currentBackStackEntry) {
         HCWAppState(
             navController = navController,
-            profileInfo = profileInfo,
             authState = authState,
-            currentRoute = currentBackStackEntry?.destination?.route
+            currentScreen = currentScreen
         )
     }
 }
 
 class HCWAppState(
     val navController: NavHostController,
-    val profileInfo: ProfileInfo?,
     val authState: AuthState,
-    val currentRoute: String?
+    val currentScreen: Screen
 ) {
+    val userId: Int
+        get() = when (authState) {
+            is AuthState.Login -> authState.userId
+            else -> -1
+        }
+
     val showTopBar: Boolean
-        get() = when (currentRoute) {
-            Step.REGISTER_STEP-> false
+        get() = when (currentScreen) {
+            is Screen.OnBoarding, Screen.Splash -> false
             else -> true
         }
 
     val showBottomBar: Boolean
-        get() = when (currentRoute) {
-            Step.REGISTER_STEP, Step.SPLASH_STEP, Screen.CreateTask.route -> false
+        get() = when (currentScreen) {
+            is Screen.OnBoarding, Screen.Splash, Screen.Task.Create -> false
+            is Screen.House -> false
             else -> true
         }
 
-    val startDestination: StepState
-        get() = if (authState is AuthState.Login) StepState.Splash else StepState.Onboarding
 
-    fun navigateToProfile() {
-        navController.navigate(StepState.Profile.step)
+    val startDestination: Screen
+        get() = if (authState is AuthState.Login) Screen.Splash else Screen.OnBoarding.SignUp
+
+
+    fun navigate(stepState: Screen) {
+        navController.navigate(stepState.route)
     }
 
-    fun navigate(stepState: StepState) {
-        navController.navigate(stepState.step)
-    }
 }
 
 
 @Composable
 private fun AppTopBar(
     showTopBar: Boolean,
-    profileInfo: ProfileInfo?,
-    currentRoute: String?,
+    currentScreenTitle: String?,
     onNavigateToProfile: () -> Unit
 ) {
-    profileInfo?.let {
-        if (showTopBar) {
-            HCWAppBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(LocalColorScheme.current.background),
-                profileInfo = it,
-                navigateToProfile = onNavigateToProfile,
-                title = { currentRoute ?: Screen.Home.route }
-            )
-        }
+    if (showTopBar) {
+        HCWAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(LocalColorScheme.current.background),
+            navigateToProfile = onNavigateToProfile,
+            title = { currentScreenTitle ?: Screen.Home.title }
+        )
     }
+
 }
 
 @Composable
 private fun AppBottomBar(
     showBottomBar: Boolean,
-    onNavigate: (StepState) -> Unit
+    onNavigate: (Screen) -> Unit
 ) {
     if (showBottomBar) {
         HCWBtmNavBar(

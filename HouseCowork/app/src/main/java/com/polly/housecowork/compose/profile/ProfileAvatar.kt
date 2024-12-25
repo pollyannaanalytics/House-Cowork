@@ -1,5 +1,7 @@
 package com.polly.housecowork.compose.profile
 
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.utils.compose.Linked_camera
@@ -26,14 +27,16 @@ sealed interface ProfileAvatarState {
 @Composable
 fun ProfileAvatarImage(
     modifier: Modifier = Modifier,
+    chosenPhotoUri: Uri?,
     avatarState: ProfileAvatarState,
-    onUploadPhotoClick: () -> Unit = {},
+    onUploadPhotoClick: () -> Unit,
 ) {
     when (avatarState) {
         is ProfileAvatarState.Edit -> {
             EditAvatar(
                 modifier = modifier,
                 onUploadPhotoClick = onUploadPhotoClick,
+                chosenPhotoUri = chosenPhotoUri,
             )
         }
         is ProfileAvatarState.View -> {
@@ -50,6 +53,7 @@ fun ProfileAvatarImage(
 @Composable
 fun EditAvatar(
     modifier: Modifier = Modifier,
+    chosenPhotoUri: Uri?,
     onUploadPhotoClick: () -> Unit = {},
 ) {
     Box(
@@ -60,7 +64,13 @@ fun EditAvatar(
             .aspectRatio(1f),
         contentAlignment = androidx.compose.ui.Alignment.Center,
     ) {
-        Icon(
+        chosenPhotoUri?.let {
+            ImageAvatar(
+                imageUrl = it.toString(),
+                contentDescription = "profile image chosen to update ",
+            )
+        }
+            ?: Icon(
             imageVector = Linked_camera,
             contentDescription = "edit profile button",
             tint = Color.White,
@@ -75,6 +85,7 @@ fun ImageAvatar(
     imageUrl: String,
     contentDescription: String? = null,
 ) {
+    Log.d("image", imageUrl)
     AsyncImage(
         model = imageUrl,
         contentDescription = contentDescription,
@@ -85,15 +96,4 @@ fun ImageAvatar(
     )
 }
 
-@Composable
-@Preview
-fun EditAvatarPreview() {
-    EditAvatar()
-    ProfileAvatarName(
-        name = "John Doe",
-        photoUrl = "https://www.w3schools.com/w3images/avatar2.png",
-        isEditMode = true,
-        onEditClick = {},
-    )
-}
 

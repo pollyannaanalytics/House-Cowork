@@ -1,4 +1,4 @@
-package com.polly.housecowork.usecase.task
+package com.polly.housecowork.domain.task
 
 import com.polly.housecowork.dataclass.AssignedTask
 import com.polly.housecowork.ui.utils.DinosaurType

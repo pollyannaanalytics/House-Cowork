@@ -9,9 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.polly.housecowork.ui.theme.LocalColorScheme
-import com.polly.housecowork.ui.utils.AccessLevel
+import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.utils.ComposeUtils
 
 @Composable
@@ -23,7 +22,7 @@ fun PublicSwitch(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically) {
-        Text("Public")
+        Text("Public", style = LocalTypography.current.bodySmall)
         Switch(
             modifier = Modifier.padding(start = ComposeUtils.Padding),
             checked = isPublic,

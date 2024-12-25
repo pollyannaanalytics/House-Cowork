@@ -2,9 +2,12 @@ package com.polly.housecowork.data.network
 
 import com.polly.housecowork.dataclass.TaskDto
 import com.polly.housecowork.dataclass.TaskInput
+import retrofit2.http.POST
 import kotlin.random.Random
 
 interface TaskApiService {
+
+    @POST("tasks/house/{houseId}")
     suspend fun createTask(
        taskInput: TaskInput
     ): Result<TaskDto>

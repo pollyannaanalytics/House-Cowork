@@ -1,7 +1,7 @@
 package com.polly.housecowork.model.auth
 
 sealed class AuthState {
-    data object Login : AuthState()
+    data class Login(val userId: Int) : AuthState()
     data object LogOut : AuthState()
     data object UnAuthenticated : AuthState()
 }

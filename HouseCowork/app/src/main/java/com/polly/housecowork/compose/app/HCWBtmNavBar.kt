@@ -1,6 +1,5 @@
 package com.polly.housecowork.compose.app
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -37,12 +36,12 @@ import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.ui.utils.compose.BadgeDollarSign
 import com.polly.housecowork.ui.utils.compose.Chat
-import com.polly.housecowork.utils.StepState
+import com.polly.housecowork.utils.Screen
 
 
 @Composable
 fun HCWBtmNavBar(
-    onNavigateClick: (StepState) -> Unit = {}
+    onNavigateClick: (Screen) -> Unit = {}
 ) {
     Box(modifier = Modifier.fillMaxWidth()){
         Card (
@@ -66,7 +65,7 @@ fun HCWBtmNavBar(
                         imageVector = Chat,
                         selected = true,
                         onClick = {
-                            onNavigateClick(StepState.Chat)
+                            onNavigateClick(Screen.Chat)
                         },
                         label = "Chat"
                     )
@@ -76,7 +75,7 @@ fun HCWBtmNavBar(
                         imageVector = BadgeDollarSign,
                         selected = false,
                         onClick = {
-                            onNavigateClick(StepState.Money)
+                            onNavigateClick(Screen.Money)
                         },
                         label = "Money"
                     )
@@ -89,7 +88,7 @@ fun HCWBtmNavBar(
                         imageVector = Icons.Filled.Home,
                         selected = false,
                         onClick = {
-                            onNavigateClick(StepState.Home)
+                            onNavigateClick(Screen.Home)
                         },
                         label = "Home"
                     )
@@ -99,7 +98,7 @@ fun HCWBtmNavBar(
                         imageVector = Icons.Filled.AccountCircle,
                         selected = false,
                         onClick = {
-                            onNavigateClick(StepState.Profile)
+                            onNavigateClick(Screen.Profile)
                         },
                         label = "Profile"
                     )
@@ -116,7 +115,7 @@ fun HCWBtmNavBar(
                 .padding(vertical = 4.dp)
                 .border(width = 8.dp, shape = CircleShape, color = LocalColorScheme.current.onPrimary)
             ,
-            onClick = { onNavigateClick(StepState.CreateTask) },
+            onClick = { onNavigateClick(Screen.Task.Create) },
             shape = CircleShape,
             containerColor = Color.White,
             contentColor = LocalColorScheme.current.onPrimary

@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Entity
 data class Calendar(
@@ -25,21 +24,29 @@ data class Calendar(
     val guestsCanSeeGuests: Boolean
 )
 
-data class CalendarUiModel(
-    val selectedDate: Date, // the date selected by the User. by default is Today.
-    val visibleDates: List<Date>, // the dates shown on the screen,
-) {
-    val startDate: Date by lazy { visibleDates.firstOrNull() ?: selectedDate }
-    val endDate: Date by lazy { visibleDates.lastOrNull() ?: selectedDate }
-    val month: String get() = selectedDate.month
 
+data class CalendarDate(
+    val date: LocalDate,
+    val isSelected: Boolean,
+    val isToday: Boolean
+)
+
+data class CalendarMonth(
+    val selectedDate: CalendarDate,
+    val visibleDates: List<CalendarDate>
+)
+
+data class CalendarUiModel(
+    val selectedDate: Date,
+    val visibleDates: List<Date>
+) {
     data class Date(
         val date: LocalDate,
         val isSelected: Boolean = false,
         val isToday: Boolean
     ) {
         companion object {
-            private val DAY_MAPPING = mapOf(
+            val DAY_MAPPING = mapOf(
                 DayOfWeek.SUNDAY to "S",
                 DayOfWeek.MONDAY to "M",
                 DayOfWeek.TUESDAY to "T",
@@ -48,13 +55,6 @@ data class CalendarUiModel(
                 DayOfWeek.FRIDAY to "F",
                 DayOfWeek.SATURDAY to "S"
             )
-        }
-
-        val day: String by lazy { DAY_MAPPING[date.dayOfWeek] ?: "" }
-        val month: String by lazy { date.month.toString() }
-
-        fun formatDate(pattern: String = "yyyy-MM-dd"): String {
-            return date.format(DateTimeFormatter.ofPattern(pattern))
         }
     }
 }

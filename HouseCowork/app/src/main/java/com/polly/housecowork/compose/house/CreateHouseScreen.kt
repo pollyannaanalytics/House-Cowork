@@ -53,14 +53,14 @@ fun CreateHouseScreen(
             imageUrl = {""},
             choosePhoto = {}
         )
-        HCWTextField(
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            onTextChange = {it -> houseName = it},
-            hint = "House Name",
-            errorState = isHouseNameError,
-        )
+//        HCWTextField(
+//            modifier = Modifier
+//                .fillMaxWidth(0.8f)
+//                .padding(horizontal = 16.dp, vertical = 8.dp),
+//            onTextChange = {it -> houseName = it},
+//            hint = "House Name",
+//            errorState = isHouseNameError,
+//        )
         if(isHouseNameError){
             Text(
                 modifier = Modifier
@@ -72,21 +72,21 @@ fun CreateHouseScreen(
                 textAlign = TextAlign.Start
             )
         }
-        HCWTextField(
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            onTextChange = {houseDescription = it},
-            hint = "Description(Optional)",
-        )
-        HCWTextField(
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            onTextChange = {houseRules = it},
-            hint = "House Rules(Optional)",
-        )
+//        HCWTextField(
+//            modifier = Modifier
+//                .fillMaxWidth(0.8f)
+//                .padding(horizontal = 16.dp, vertical = 8.dp),
+//            onTextChange = {houseDescription = it},
+//            hint = "Description(Optional)",
+//        )
+//        HCWTextField(
+//            modifier = Modifier
+//                .fillMaxWidth(0.8f)
+//
+//                .padding(horizontal = 16.dp, vertical = 8.dp),
+//            onTextChange = {houseRules = it},
+//            hint = "House Rules(Optional)",
+//        )
 
         PositiveButton(
             modifier = Modifier.padding(top = 16.dp),

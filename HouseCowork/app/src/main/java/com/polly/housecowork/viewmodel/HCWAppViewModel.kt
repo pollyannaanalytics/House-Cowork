@@ -16,29 +16,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HCWAppViewModel @Inject constructor(
-    private val profileRepository: DefaultProfileRepository,
     private val authRepository: AuthRepository,
-    private val license: PrefsLicense
 
 ) : ViewModel(){
-
-    private val _profileInfo = MutableStateFlow<ProfileInfo?>(null)
-    val profileInfo = _profileInfo.asStateFlow()
 
     private val _authState = MutableStateFlow(checkAuthState())
     val authState = _authState.asStateFlow()
 
-    init {
-        getUserProfileInfo()
-    }
-
-    private fun getUserProfileInfo() {
-        viewModelScope.launch {
-            _profileInfo.value = profileRepository.getProfileById(
-                license.userId, true
-            )
-        }
-    }
 
     private fun checkAuthState(): AuthState {
         val state = authRepository.checkAuthState()

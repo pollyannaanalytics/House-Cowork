@@ -1,5 +1,6 @@
 package com.polly.housecowork.compose.profile
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,11 +42,15 @@ fun ProfileContent(
     modifier: Modifier = Modifier,
     profileInfo: ProfileInfo?,
     tasks: List<AssignedTask>,
-    calendarUiModel: CalendarUiModel,
+    calendarMonthTitle: String,
+    calendarUiModel: CalendarUiModel?,
     onBioChange: (String) -> Unit,
-    onBackClick: () -> Unit = {},
+    onBackMonthClick: () -> Unit = {},
+    onNextMonthClick: () -> Unit = {},
     isEditMode: Boolean = false,
     onEditClick: () -> Unit,
+    chosenPhotoUri: Uri?,
+    onUploadPhotoClick: () -> Unit,
     errState: ErrState,
     onNameChange: (String) -> Unit,
 ) {
@@ -56,31 +61,32 @@ fun ProfileContent(
                 .padding(contentPadding)
                 .background(LocalColorScheme.current.background)
         ) {
-            profileInfo?.let {
                 ProfileAvatarName(
-                    name = it.name,
-                    photoUrl = it.imageUrl,
+                    name = profileInfo?.name ?: "",
+                    photoUrl = profileInfo?.avatar ?: "",
                     isEditMode = isEditMode,
                     onEditClick = onEditClick,
                     errState = errState.nameErr,
-                    onProfileNameChange = onNameChange
+                    onProfileNameChange = onNameChange,
+                    onUploadPhotoClick = onUploadPhotoClick,
+                    chosenPhotoUri = chosenPhotoUri
                 )
                 ProfileBio(
-                    bio = it.bio,
+                    bio = profileInfo?.bio ?: "",
                     isEditMode = isEditMode,
                     onBioChange = onBioChange,
                     errState = errState.bioErr
                 )
+
+            calendarUiModel?.let {
+                Calendar(
+                    currentMonthTitle = calendarMonthTitle,
+                    onBackClick = onBackMonthClick,
+                    onForwardClick = onNextMonthClick,
+                    dates = calendarUiModel.visibleDates,
+                    tasks = tasks
+                )
             }
-            Calendar(
-                currentDateTitle = calendarUiModel.month,
-                onBackClick = {},
-                onForwardClick = {},
-                dates = calendarUiModel.visibleDates,
-                tasks = tasks
-            )
-
-
         }
 
     }
@@ -91,8 +97,10 @@ fun ProfileAvatarName(
     modifier: Modifier = Modifier,
     name: String,
     photoUrl: String,
+    chosenPhotoUri: Uri?,
     isEditMode: Boolean = false,
     onProfileNameChange: (String) -> Unit,
+    onUploadPhotoClick: () -> Unit,
     onEditClick: () -> Unit,
     errState: Boolean
 ) {
@@ -105,7 +113,9 @@ fun ProfileAvatarName(
                 .padding(16.dp)
                 .fillMaxWidth(0.3f),
             avatarState = if (isEditMode)
-                ProfileAvatarState.Edit else ProfileAvatarState.View(photoUrl)
+                ProfileAvatarState.Edit else ProfileAvatarState.View(photoUrl),
+            onUploadPhotoClick = onUploadPhotoClick,
+            chosenPhotoUri = chosenPhotoUri
         )
         ProfileName(
             name = name,
@@ -139,12 +149,11 @@ fun ProfileName(
             onNameChange = onNameChange,
             errState = errState
         )
-        if (!errState) {
             EditButton(
                 onClick = onEditClick,
                 isEditMode = isEditMode
             )
-        }
+
     }
 }
 

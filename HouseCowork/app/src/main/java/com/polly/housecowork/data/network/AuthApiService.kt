@@ -5,6 +5,7 @@ import retrofit2.http.POST
 import com.polly.housecowork.dataclass.SignUpRequest
 import com.polly.housecowork.dataclass.AuthData
 import com.polly.housecowork.dataclass.SignInRequest
+import okhttp3.Interceptor
 import retrofit2.Response
 
 interface AuthApiService {

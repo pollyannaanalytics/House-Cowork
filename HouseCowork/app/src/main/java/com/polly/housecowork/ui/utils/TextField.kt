@@ -2,6 +2,7 @@ package com.polly.housecowork.ui.utils
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -29,17 +30,23 @@ import com.polly.housecowork.ui.theme.LocalTypography
 @Composable
 fun HCWTextField(
     modifier: Modifier = Modifier,
-    defaultText: String = "",
-    onTextChange: (String) -> Unit, hint: String,
-    errorState: Boolean = false,
-    keyboardOptions: () -> KeyboardOptions = { KeyboardOptions(keyboardType = KeyboardType.Text) },
-    keyboardActions: KeyboardActions = KeyboardActions.Default
-) {
-    val borderColor =
-        if (errorState) LocalColorScheme.current.error else LocalColorScheme.current.secondary
-    var textState by remember {
-        mutableStateOf(TextFieldValue(defaultText))
+    value: String,
+    onValueChange: (String) -> Unit,
+    hint: String,
+    isError: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    visualTransformation: VisualTransformation = when (keyboardOptions.keyboardType) {
+        KeyboardType.Password -> PasswordVisualTransformation()
+        else -> VisualTransformation.None
     }
+) {
+    val borderColor = if (isError) {
+        LocalColorScheme.current.error
+    } else {
+        LocalColorScheme.current.secondary
+    }
+
     BasicTextField(
         modifier = modifier
             .fillMaxWidth()
@@ -48,32 +55,30 @@ fun HCWTextField(
             .background(LocalColorScheme.current.surface)
             .border(1.dp, borderColor, RoundedCornerShape(16.dp))
             .padding(12.dp),
-        value = textState,
-        onValueChange = {
-            textState = it
-            onTextChange(it.text)
-        },
-        keyboardOptions = keyboardOptions(),
-        visualTransformation = if (keyboardOptions().keyboardType == KeyboardType.Password) PasswordVisualTransformation() else VisualTransformation.None,
+        value = value,
+        onValueChange = onValueChange,
+        keyboardOptions = keyboardOptions,
+        visualTransformation = visualTransformation,
         maxLines = 1,
         textStyle = LocalTypography.current.bodyMedium,
         decorationBox = { innerTextField ->
-            if (textState.text.isEmpty()) {
-                Text(
-                    text = hint,
-                    color = LocalColorScheme.current.secondary,
-                    style = LocalTypography.current.bodyMedium,
-                )
+            Box {
+                if (value.isEmpty()) {
+                    Text(
+                        text = hint,
+                        color = LocalColorScheme.current.secondary,
+                        style = LocalTypography.current.bodyMedium,
+                    )
+                }
+                innerTextField()
             }
-            innerTextField()
         }
     )
-
 }
 
 
 @Preview
 @Composable
 fun HCWTextFieldPreview() {
-    HCWTextField(onTextChange = {}, hint = "Create a Task", errorState = false)
+    HCWTextField(value = "", onValueChange = {}, hint = "Create a Task", isError = false)
 }

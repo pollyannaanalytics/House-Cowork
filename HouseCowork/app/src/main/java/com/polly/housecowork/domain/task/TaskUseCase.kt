@@ -1,4 +1,4 @@
-package com.polly.housecowork.usecase.task
+package com.polly.housecowork.domain.task
 
 
 data class TaskUseCase (

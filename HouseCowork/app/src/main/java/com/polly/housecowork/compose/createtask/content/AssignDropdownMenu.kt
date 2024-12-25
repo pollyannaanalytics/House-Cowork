@@ -6,12 +6,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -35,7 +39,7 @@ import com.polly.housecowork.ui.theme.LocalTypography
 @Composable
 fun AssignDrawer(
     modifier: Modifier,
-    itemList: () -> List<String>,
+    itemList: List<String>,
     onAssigneeClick: (String) -> Unit
 ) {
     var shouldExpanded by remember { mutableStateOf(false) }
@@ -52,13 +56,14 @@ fun AssignDrawer(
         Text(
             modifier = Modifier
                 .wrapContentWidth(), text = "Assign to",
-            style = LocalTypography.current.titleMedium
+            style = LocalTypography.current.bodySmall
         )
         ExposedDropdownMenuBox(
             modifier = Modifier
                 .padding(start = 16.dp)
                 .border(1.dp, LocalColorScheme.current.secondary, RoundedCornerShape(8.dp))
-                .background(LocalColorScheme.current.surface, RoundedCornerShape(8.dp)),
+                .background(LocalColorScheme.current.surface, RoundedCornerShape(8.dp))
+            ,
             expanded = shouldExpanded,
             onExpandedChange = {
                 shouldExpanded = !shouldExpanded
@@ -77,7 +82,7 @@ fun AssignDrawer(
                     .background(LocalColorScheme.current.surface),
                 expanded = shouldExpanded,
                 onDismissRequest = { shouldExpanded = false }) {
-                itemList().forEachIndexed { index, userName ->
+                itemList.forEachIndexed { index, userName ->
                     DropdownMenuItem(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -85,8 +90,8 @@ fun AssignDrawer(
                         text = { Text(text = userName) },
                         leadingIcon = {
                             Icon(
-                                Icons.Default.AccountCircle,
-                                contentDescription = "User Icon"
+                                Icons.Default.Done,
+                                contentDescription = "Check"
                             )
                         },
                         onClick = {

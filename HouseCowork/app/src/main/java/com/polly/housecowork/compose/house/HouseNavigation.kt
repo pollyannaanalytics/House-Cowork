@@ -4,33 +4,32 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.polly.housecowork.utils.Route
-import com.polly.housecowork.utils.Step
-import com.polly.housecowork.utils.StepState
+import com.polly.housecowork.utils.ScreenTitle
+import com.polly.housecowork.utils.Screen
 
 fun NavGraphBuilder.houseNavigation(
     navController: NavController,
 ) {
     navigation(
-        route = Step.HOUSE_STEP,
-        startDestination = StepState.HouseStep.HouseList.step
+        route = Screen.House.BASE_ROUTE,
+        startDestination = Screen.House.List.route
     ){
-        composable(Route.HOUSE_LIST){
+        composable(Screen.House.List.route){
             HouseListScreen(
                 navigateToJoinHouse = {
-                    navController.navigate(Route.JOIN_HOUSE)
+                    navController.navigate(ScreenTitle.JOIN_HOUSE)
                 },
                 navigateToCreateHouse = {
-                    navController.navigate(Route.CREATE_HOUSE)
+                    navController.navigate(ScreenTitle.CREATE_HOUSE)
                 }
             )
         }
 
-        composable(Route.JOIN_HOUSE){
+        composable(Screen.House.Join.route){
 
         }
 
-        composable(Route.CREATE_HOUSE){
+        composable(Screen.House.Create.route){
             CreateHouseScreen(
                 navigateOnClick = {
                     navController.popBackStack()

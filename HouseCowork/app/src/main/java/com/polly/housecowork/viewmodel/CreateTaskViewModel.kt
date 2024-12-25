@@ -4,8 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polly.housecowork.compose.createtask.dataclass.ErrorState
 import com.polly.housecowork.compose.createtask.dataclass.TaskState
+import com.polly.housecowork.dataclass.CalendarUiModel
 import com.polly.housecowork.dataclass.ProfileInfo
 import com.polly.housecowork.dataclass.TaskInput
+import com.polly.housecowork.model.calendar.CalendarRepository
+import com.polly.housecowork.model.calendar.CalendarState
 import com.polly.housecowork.model.profile.DefaultProfileRepository
 import com.polly.housecowork.model.task.DefaultTaskRepository
 import com.polly.housecowork.ui.utils.AccessLevel
@@ -21,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateTaskViewModel @Inject constructor(
     private val taskRepository: DefaultTaskRepository,
+    private val calendarRepository: CalendarRepository,
     private val profileRepository: DefaultProfileRepository
 ) : ViewModel() {
 
@@ -34,18 +38,44 @@ class CreateTaskViewModel @Inject constructor(
 
     private val _isPublic = MutableStateFlow(true)
     val isPublic = _isPublic.asStateFlow()
+
+    private val _calendarState = MutableStateFlow(
+        CalendarState(
+            monthData = calendarRepository.getCurrentMonth(),
+            monthTitle = calendarRepository.getCurrentMonthTitle()
+        )
+    )
+    val calendarState = _calendarState.asStateFlow()
     init {
         getAllUsers()
     }
 
-    private fun getAllUsers(fetchRemote: Boolean = false) {
+    private fun getAllUsers() {
         viewModelScope.launch {
-            allUsers = profileRepository.getAllProfiles(fetchRemote)
+            allUsers = profileRepository.getAllProfiles()
             val selectableUsers = listOf("everyone") + allUsers.map { it.name }
             _taskUiState.update {
                 it.copy(assignedUser = allUsers.toMutableList())
                 it.copy(selectableUsers = selectableUsers)
             }
+        }
+    }
+
+    fun getPreviousMonth() {
+        _calendarState.update {
+            it.copy(
+                monthData = calendarRepository.previousMonth(),
+                monthTitle = calendarRepository.getCurrentMonthTitle()
+            )
+        }
+    }
+
+    fun getNextMonth() {
+        _calendarState.update {
+            it.copy(
+                monthData = calendarRepository.nextMonth(),
+                monthTitle = calendarRepository.getCurrentMonthTitle()
+            )
         }
     }
 
@@ -126,6 +156,4 @@ class CreateTaskViewModel @Inject constructor(
     fun clearDueTimeError() {
         _errorState.value.dueTimeError = false
     }
-
-
 }

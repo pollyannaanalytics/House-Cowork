@@ -6,10 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.polly.housecowork.compose.home.ToDoType
 import com.polly.housecowork.dataclass.AssignedTask
 import com.polly.housecowork.ui.utils.DinosaurType
-import com.polly.housecowork.prefs.PrefsLicense
 import com.polly.housecowork.ui.utils.AssigneeStatusType
 import com.polly.housecowork.ui.utils.TaskStatus
-import com.polly.housecowork.usecase.task.TaskUseCase
+import com.polly.housecowork.domain.task.TaskUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +28,6 @@ private val initProgressTasksMap: Map<ToDoType, List<AssignedTask>> = mapOf(
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val taskUseCase: TaskUseCase,
-    private val prefsLicense: PrefsLicense
 ) : ViewModel() {
 
     private val _dinosaurType = MutableStateFlow<DinosaurType>(DinosaurType.Egg)
@@ -45,13 +43,12 @@ class HomeViewModel @Inject constructor(
     val shouldSeeMore: StateFlow<Boolean> = _shouldSeeMore.asStateFlow()
 
     init {
-        getAssignedTasks()
+//        getAssignedTasks()
     }
 
     private fun getAssignedTasks(isRefresh: Boolean = true) {
         viewModelScope.launch {
             taskUseCase.transformTaskUseCase.invoke(
-                prefsLicense.userId,
                 AssigneeStatusType.ACCEPTED,
                 isRefresh
             ).collect { result ->
