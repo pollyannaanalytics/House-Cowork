@@ -18,24 +18,23 @@ import com.polly.housecowork.utils.Screen
 @Composable
 fun HCWNavHost(
     modifier: Modifier,
-    userId: Int,
     navController: NavHostController,
     appState: HCWAppState
 ) {
     val graphStartDestination = appState.startDestination
-    Log.d("HCWNavHost", "graphStartDestination: ${graphStartDestination.route}")
+    Log.d("HCWNavHost", "graphStartDestination: ${graphStartDestination}")
 
 
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = graphStartDestination.route
+        startDestination = graphStartDestination
     ) {
         onboardingNavigation(
             navController = navController,
-            authState = appState.authState,
+            startDestination = appState.userNextRoute,
             onOnboardingComplete = {
-                navController.navigate(Screen.Splash.route)
+                navController.navigate(Screen.House.BASE_ROUTE)
             }
         )
         composable(Screen.Splash.route) {
@@ -74,7 +73,10 @@ fun HCWNavHost(
         }
 
         houseNavigation(
-            navController = navController
+            navController = navController,
+            onCompleted = {
+                navController.navigate(Screen.Home.route)
+            }
         )
     }
 }

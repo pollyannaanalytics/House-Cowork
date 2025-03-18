@@ -2,11 +2,11 @@ package com.polly.housecowork.di
 
 import android.content.Context
 import android.util.Log
-import com.polly.housecowork.data.network.AuthApiService
-import com.polly.housecowork.data.network.ConnectionUtils
-import com.polly.housecowork.data.network.MockTaskApiService
-import com.polly.housecowork.data.network.ProfileApiService
-import com.polly.housecowork.data.network.TaskApiService
+import com.polly.housecowork.network.AuthApiService
+import com.polly.housecowork.network.ConnectionUtils
+import com.polly.housecowork.network.HouseApiService
+import com.polly.housecowork.network.ProfileApiService
+import com.polly.housecowork.network.TaskApiService
 import com.polly.housecowork.prefs.PrefsLicense
 import com.polly.housecowork.utils.Constant
 import dagger.Module
@@ -55,13 +55,19 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideTaskService(retrofit: Retrofit): TaskApiService {
-        return MockTaskApiService()
+        return retrofit.create(TaskApiService::class.java)
     }
 
     @Provides
     @Singleton
     fun provideProfileService(retrofit: Retrofit): ProfileApiService {
         return retrofit.create(ProfileApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHouseService(retrofit: Retrofit): HouseApiService {
+        return retrofit.create(HouseApiService::class.java)
     }
 
     @Provides

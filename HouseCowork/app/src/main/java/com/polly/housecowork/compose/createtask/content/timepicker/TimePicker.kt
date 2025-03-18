@@ -32,12 +32,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.polly.housecowork.dataclass.SelectorOptions
-import com.polly.housecowork.dataclass.Time
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.utils.DateUtils
 import com.polly.housecowork.utils.ComposeUtils.Companion.lightPallet
+
+data class Time(
+    val hour: Int,
+    val minute: Int,
+    val format: String? = null
+)
 
 
 @OptIn(ExperimentalMaterial3Api::class)

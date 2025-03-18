@@ -1,6 +1,7 @@
-package com.polly.housecowork.data.network
+package com.polly.housecowork.network
 
-import com.polly.housecowork.dataclass.Calendar
+import com.polly.housecowork.local.model.Calendar
+
 
 interface CalendarApiService {
 

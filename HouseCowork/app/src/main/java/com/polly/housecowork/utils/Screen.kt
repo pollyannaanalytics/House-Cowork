@@ -2,7 +2,6 @@ package com.polly.housecowork.utils
 
 import androidx.navigation.NamedNavArgument
 import com.polly.housecowork.utils.Route.Companion.HOUSE_DETAIL_ROUTE
-import com.polly.housecowork.utils.Route.Companion.PROFILE_ROUTE
 import com.polly.housecowork.utils.Route.Companion.TASK_DETAIL_ROUTE
 
 sealed class Screen(
@@ -11,19 +10,19 @@ sealed class Screen(
     val navArgument: List<NamedNavArgument> = emptyList()
 ) {
     sealed class OnBoarding(title: String, route: String) : Screen(title, route) {
-        data object SignUp : OnBoarding(ScreenTitle.SIGN_UP, Route.SIGN_UP_ROUTE)
-//        data object Login : Auth(ScreenTitle.LOGIN, Route.LOGIN_ROUTE)
-        data object CompleteProfile : OnBoarding(ScreenTitle.COMPLETE_PROFILE, Route.COMPLETE_PROFILE_ROUTE)
+        data object SignUp : OnBoarding(ScreenTitle.SIGN_UP,"$BASE_ROUTE/${Route.SIGN_UP_ROUTE}")
+        data object Login : OnBoarding(ScreenTitle.LOGIN,"$BASE_ROUTE/${Route.LOGIN_ROUTE}")
+        data object CompleteProfile : OnBoarding(ScreenTitle.COMPLETE_PROFILE,"$BASE_ROUTE/${Route.COMPLETE_PROFILE_ROUTE}")
         companion object{
-            const val BASE_ROUTE = "house"
+            const val BASE_ROUTE = "onboarding"
         }
     }
 
     sealed class House(title: String, route: String) : Screen(title, route) {
-        data object List : House(ScreenTitle.HOUSE_LIST, Route.HOUSE_LIST_ROUTE)
-        data class Detail(val houseId: Int) : House(ScreenTitle.HOUSE_DETAIL, Route.HOUSE_DETAIL_ROUTE)
-        data object Create : House(ScreenTitle.CREATE_HOUSE, Route.CREATE_HOUSE_ROUTE)
-        data object Join : House(ScreenTitle.JOIN_HOUSE, Route.JOIN_HOUSE_ROUTE)
+        data object Base : House(ScreenTitle.HOUSE, "$BASE_ROUTE/${Route.HOUSE_LIST_ROUTE}")
+        data class Detail(val houseId: Int) : House(ScreenTitle.HOUSE_DETAIL, "$BASE_ROUTE/${Route.HOUSE_DETAIL_ROUTE}")
+        data object Create : House(ScreenTitle.CREATE_HOUSE, "$BASE_ROUTE/${Route.CREATE_HOUSE_ROUTE}")
+        data object Join : House(ScreenTitle.JOIN_HOUSE,"$BASE_ROUTE/${Route.JOIN_HOUSE_ROUTE}")
 
         companion object{
             const val BASE_ROUTE = "house"
@@ -31,10 +30,10 @@ sealed class Screen(
     }
 
     sealed class Task(title: String, route: String) : Screen(title, route) {
-        data object Create : Task(ScreenTitle.CREATE_TASK, Route.CREATE_TASK_ROUTE)
-        data class Detail(val taskId: Int) : Task(ScreenTitle.TASK_DETAIL, Route.TASK_DETAIL_ROUTE)
+        data object Create : Task(ScreenTitle.CREATE_TASK, "$BASE_ROUTE/${Route.CREATE_TASK_ROUTE}")
+        data class Detail(val taskId: Int) : Task(ScreenTitle.TASK_DETAIL,"${House.BASE_ROUTE}/${Route.TASK_DETAIL_ROUTE}/${taskId}")
         companion object{
-            const val BASE_ROUTE = "house"
+            const val BASE_ROUTE = "task"
         }
     }
 
@@ -49,7 +48,7 @@ companion object {
         Home,
         OnBoarding.SignUp,
         OnBoarding.CompleteProfile,
-        House.List,
+        House.Base,
         House.Create,
         House.Join,
         Task.Create,

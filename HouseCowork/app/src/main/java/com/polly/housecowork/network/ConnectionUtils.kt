@@ -1,4 +1,4 @@
-package com.polly.housecowork.data.network
+package com.polly.housecowork.network
 
 import android.content.Context
 import android.net.ConnectivityManager

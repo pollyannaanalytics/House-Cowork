@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polly.housecowork.compose.home.ToDoType
-import com.polly.housecowork.dataclass.AssignedTask
+import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.ui.utils.DinosaurType
 import com.polly.housecowork.ui.utils.AssigneeStatusType
 import com.polly.housecowork.ui.utils.TaskStatus
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
-private val initProgressTasksMap: Map<ToDoType, List<AssignedTask>> = mapOf(
+private val initProgressTasksMap: Map<ToDoType, List<Task>> = mapOf(
     ToDoType.EXPIRED to emptyList(),
     ToDoType.TODAY to emptyList(),
     ToDoType.TOMORROW to emptyList(),
@@ -34,10 +34,10 @@ class HomeViewModel @Inject constructor(
     val dinosaurType: StateFlow<DinosaurType> = _dinosaurType
 
     private val _progressTasks = MutableStateFlow(initProgressTasksMap)
-    val progressTasks: StateFlow<Map<ToDoType, List<AssignedTask>>> = _progressTasks
+    val progressTasks: StateFlow<Map<ToDoType, List<Task>>> = _progressTasks
 
-    private val _doneTasks = MutableStateFlow(emptyList<AssignedTask>())
-    val doneTasks: StateFlow<List<AssignedTask>> = _doneTasks
+    private val _doneTasks = MutableStateFlow(emptyList<Task>())
+    val doneTasks: StateFlow<List<Task>> = _doneTasks
 
     private val _shouldSeeMore = MutableStateFlow(false)
     val shouldSeeMore: StateFlow<Boolean> = _shouldSeeMore.asStateFlow()
@@ -63,7 +63,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun groupTasksByDueDate(tasks: List<AssignedTask>): Map<ToDoType, List<AssignedTask>> {
+    private fun groupTasksByDueDate(tasks: List<Task>): Map<ToDoType, List<Task>> {
         val groupedTasks = tasks.groupBy { getToDoType(it.dueDate) }
 
         return initProgressTasksMap.mapValues { (todoType, _) ->
@@ -75,9 +75,9 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    private fun processTasks(tasks: List<AssignedTask>) {
-        val doneTasks = mutableListOf<AssignedTask>()
-        val progressTasks = mutableListOf<AssignedTask>()
+    private fun processTasks(tasks: List<Task>) {
+        val doneTasks = mutableListOf<Task>()
+        val progressTasks = mutableListOf<Task>()
 
         tasks.forEach { task ->
             when (task.taskStatus) {

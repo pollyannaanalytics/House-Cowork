@@ -18,20 +18,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.polly.housecowork.dataclass.AssignedTask
+import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.dataclass.CalendarUiModel
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
@@ -44,7 +39,7 @@ fun Calendar(
     onBackClick: () -> Unit,
     onForwardClick: () -> Unit,
     dates: List<CalendarUiModel.Date>,
-    tasks: List<AssignedTask>
+    tasks: List<Task>
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Header(
@@ -111,7 +106,7 @@ fun ContentItem(date: CalendarUiModel.Date) {
 
                 Text(
                     modifier = Modifier.padding(start = 4.dp),
-                    text = date.day, // day "Mon", "Tue"
+                    text = date.date.dayOfWeek.name.take(3), // day "Mon", "Tue"
                     style = LocalTypography.current.labelSmall,
                     color = LocalColorScheme.current.onPrimary
                 )
@@ -128,7 +123,7 @@ fun ContentItem(date: CalendarUiModel.Date) {
 }
 
 @Composable
-fun TaskContent(modifier: Modifier = Modifier, tasks: List<AssignedTask>) {
+fun TaskContent(modifier: Modifier = Modifier, tasks: List<Task>) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -159,7 +154,7 @@ fun TaskContent(modifier: Modifier = Modifier, tasks: List<AssignedTask>) {
 }
 
 @Composable
-fun TaskContentItem(modifier: Modifier = Modifier, task: AssignedTask) {
+fun TaskContentItem(modifier: Modifier = Modifier, task: Task) {
     Row(
         modifier = modifier,
     ) {

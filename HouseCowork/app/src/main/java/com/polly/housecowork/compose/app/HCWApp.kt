@@ -14,16 +14,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.polly.housecowork.model.auth.AuthState
+import com.polly.housecowork.model.auth.OnboardingState
+import com.polly.housecowork.model.auth.OnboardingState.Companion.toRoute
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.utils.Screen
 import com.polly.housecowork.viewmodel.HCWAppViewModel
 
 @Composable
 fun HCWApp(viewModel: HCWAppViewModel = hiltViewModel()) {
-    val authState by viewModel.authState.collectAsState()
+    val userState by viewModel.userNextState.collectAsState()
     val appState = rememberHCWAppState(
-        authState = authState,
+      onboardingState = userState,
     )
 
     HCWAppContent(
@@ -33,7 +34,7 @@ fun HCWApp(viewModel: HCWAppViewModel = hiltViewModel()) {
 
 @Composable
 private fun HCWAppContent(
-    appState: HCWAppState
+    appState: HCWAppState,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -57,24 +58,23 @@ private fun HCWAppContent(
             modifier = Modifier.padding(innerPadding),
             navController = appState.navController,
             appState = appState,
-            userId = appState.userId
         )
     }
 }
 
 @Composable
 private fun rememberHCWAppState(
-    authState: AuthState,
+    onboardingState: OnboardingState,
     navController: NavHostController = rememberNavController()
 ): HCWAppState {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = remember(currentBackStackEntry){
         Screen.fromRoute(currentBackStackEntry?.destination?.route)
     }
-    return remember(navController, authState, currentBackStackEntry) {
+    return remember(navController, onboardingState, currentBackStackEntry) {
         HCWAppState(
             navController = navController,
-            authState = authState,
+            onboardingState = onboardingState,
             currentScreen = currentScreen
         )
     }
@@ -82,14 +82,9 @@ private fun rememberHCWAppState(
 
 class HCWAppState(
     val navController: NavHostController,
-    val authState: AuthState,
-    val currentScreen: Screen
+    val onboardingState: OnboardingState,
+    val currentScreen: Screen,
 ) {
-    val userId: Int
-        get() = when (authState) {
-            is AuthState.Login -> authState.userId
-            else -> -1
-        }
 
     val showTopBar: Boolean
         get() = when (currentScreen) {
@@ -105,8 +100,15 @@ class HCWAppState(
         }
 
 
-    val startDestination: Screen
-        get() = if (authState is AuthState.Login) Screen.Splash else Screen.OnBoarding.SignUp
+    val startDestination: String
+        get() = when (onboardingState) {
+            OnboardingState.Auth.Complete -> Screen.Splash.route
+            else -> Screen.OnBoarding.BASE_ROUTE
+        }
+
+    val userNextRoute: String
+        get() = onboardingState.toRoute()
+
 
 
     fun navigate(stepState: Screen) {
@@ -128,7 +130,7 @@ private fun AppTopBar(
                 .fillMaxWidth()
                 .background(LocalColorScheme.current.background),
             navigateToProfile = onNavigateToProfile,
-            title = { currentScreenTitle ?: Screen.Home.title }
+            title =  currentScreenTitle ?: Screen.Home.title
         )
     }
 

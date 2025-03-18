@@ -1,7 +1,7 @@
 package com.polly.housecowork.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.polly.housecowork.dataclass.House
+import com.polly.housecowork.local.model.House
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

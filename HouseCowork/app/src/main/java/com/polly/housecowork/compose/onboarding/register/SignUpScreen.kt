@@ -20,9 +20,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.polly.housecowork.dataclass.FinishSignUpState
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
+import com.polly.housecowork.viewmodel.FinishSignUpState
 import com.polly.housecowork.viewmodel.SignUpViewModel
 
 @Composable

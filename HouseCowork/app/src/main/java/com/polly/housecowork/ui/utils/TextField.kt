@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
@@ -33,6 +34,7 @@ fun HCWTextField(
     value: String,
     onValueChange: (String) -> Unit,
     hint: String,
+    hintStyle: androidx.compose.ui.text.TextStyle = LocalTypography.current.bodyMedium,
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -62,12 +64,12 @@ fun HCWTextField(
         maxLines = 1,
         textStyle = LocalTypography.current.bodyMedium,
         decorationBox = { innerTextField ->
-            Box {
+            Box(contentAlignment = CenterStart,){
                 if (value.isEmpty()) {
                     Text(
                         text = hint,
                         color = LocalColorScheme.current.secondary,
-                        style = LocalTypography.current.bodyMedium,
+                        style = hintStyle,
                     )
                 }
                 innerTextField()

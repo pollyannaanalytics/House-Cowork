@@ -22,10 +22,15 @@ class PrefsLicense @Inject constructor(
         get() = pref.getInt(PREF_KEY_HOUSE_ID, 0)
         set(value) = pref.edit().putInt(PREF_KEY_HOUSE_ID, value).apply()
 
+    var onboardingState: String
+        get() = pref.getString(PREF_KEY_ONBOARDING_STATE, "") ?: ""
+        set(value) = pref.edit().putString(PREF_KEY_ONBOARDING_STATE, value).apply()
+
     companion object {
         private const val PREF_KEY_AUTH_USER_ID = "auth_user_id"
         private const val PREF_KEY_AUTH_ACCESS_TOEKN = "auth_access_token"
         private const val PREF_KEY_HOUSE_ID = "house_id"
+        private const val PREF_KEY_ONBOARDING_STATE = "onboarding_state"
 
     }
 }

@@ -1,87 +1,34 @@
 package com.polly.housecowork.model.task
 
-import android.util.Log
-import com.polly.housecowork.dataclass.TaskDto
-import com.polly.housecowork.dataclass.TaskInput
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
+import com.polly.housecowork.network.ConnectionUtils
+import com.polly.housecowork.network.model.TaskResponse
+import com.polly.housecowork.prefs.PrefsLicense
+import com.polly.housecowork.ui.utils.AssigneeStatusType
 import javax.inject.Inject
 
 class DefaultTaskRepository @Inject constructor(
-    private val taskLocalDataSource: TaskLocalDataSource,
-    private val taskRemoteDataSource: TaskRemoteDataSource
+    private val localDataSource: TaskLocalDataSource,
+    private val remoteDataSource: TaskRemoteDataSource,
+    private val connectionUtils: ConnectionUtils,
+    private val prefLicense: PrefsLicense
 ) {
-
-    suspend fun getAssignedTasks(
-        assigneeStatusId: Int,
-        assigneeStatusType: Int,
-        fetchRemote: Boolean
-    ): Flow<Result<List<TaskDto>>> = flow {
-        if (!fetchRemote) {
-            emit(taskLocalDataSource.getTasksByAssigneeId(assigneeStatusId, assigneeStatusType))
-            return@flow
-        }
-        val fetchResult = taskRemoteDataSource.getTasksByAssigneeId(assigneeStatusId, assigneeStatusType)
-        fetchResult.fold(
-            onSuccess = { tasks ->
-                emit(Result.success(tasks))
-                tasks.forEach { taskLocalDataSource.updateTask(it) }
-            },
-            onFailure = { error ->
-                Log.e("DefaultTaskRepository", "getAssignedTasks: $error")
-                emit(Result.failure(error))
-                coroutineScope {
-                    emit(taskLocalDataSource.getTasksByAssigneeId(assigneeStatusId, assigneeStatusType))
-                }
-            }
-        )
-    }.flowOn(Dispatchers.IO)
-
-    suspend fun createTask(
-        taskInput: TaskInput
-    ) {
-        withContext(Dispatchers.IO) {
-            val fetchResult = taskRemoteDataSource.createTask(taskInput)
-            fetchResult.fold(
-                onSuccess = { taskDto ->
-                    taskLocalDataSource.insertCreatedTask(taskDto)
-                },
-                onFailure = { error ->
-                    return@withContext Result.failure(error)
-                }
+    suspend fun getHomeTasks(): Result<List<TaskResponse>> {
+        if (!connectionUtils.isNetworkAvailable()) {
+            return localDataSource.getTasksByAssigneeId(
+                prefLicense.userId,
+                AssigneeStatusType.ACCEPTED.level
             )
-            return@withContext fetchResult
+        }
+
+        val response = remoteDataSource.getHomeTasks(prefLicense.houseId)
+
+        if (response.isSuccessful) {
+            val tasks = response.body() ?: emptyList()
+            localDataSource.updateTask(tasks)
+            return Result.success(tasks)
+        } else {
+            return Result.failure(Exception("Failed to get tasks"))
         }
     }
 
-    suspend fun reviseTask(task: TaskDto) = withContext(Dispatchers.IO) {
-        val fetchResult = taskRemoteDataSource.updateTask(task)
-        fetchResult.fold(
-            onSuccess = { taskDto ->
-                taskLocalDataSource.updateTask(taskDto)
-            },
-            onFailure = { error ->
-                return@withContext Result.failure(error)
-            }
-        )
-        return@withContext fetchResult
-
-    }
-
-    suspend fun deleteTaskById(taskId: Int) = withContext(Dispatchers.IO) {
-        val fetchResult = taskRemoteDataSource.deleteTask(taskId)
-        fetchResult.fold(
-            onSuccess = {
-                taskLocalDataSource.deleteTask(taskId)
-            },
-            onFailure = { error ->
-                return@withContext Result.failure(error)
-            }
-        )
-        return@withContext fetchResult
-    }
 }

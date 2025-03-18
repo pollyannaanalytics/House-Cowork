@@ -1,4 +1,4 @@
-package com.polly.housecowork.compose.profile
+package com.polly.housecowork.ui.utils.compose
 
 import android.net.Uri
 import android.util.Log
@@ -15,31 +15,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import com.polly.housecowork.ui.theme.LocalColorScheme
-import com.polly.housecowork.ui.utils.compose.Linked_camera
 
 
-sealed interface ProfileAvatarState {
-    data object Edit : ProfileAvatarState
-    data class View(val url: String) : ProfileAvatarState
+sealed interface AvatarState {
+    data object Edit : AvatarState
+    data class View(val url: String) : AvatarState
 }
 
 
 @Composable
-fun ProfileAvatarImage(
+fun AvatarImage(
     modifier: Modifier = Modifier,
     chosenPhotoUri: Uri?,
-    avatarState: ProfileAvatarState,
+    avatarState: AvatarState,
     onUploadPhotoClick: () -> Unit,
 ) {
+
     when (avatarState) {
-        is ProfileAvatarState.Edit -> {
+        is AvatarState.Edit -> {
             EditAvatar(
                 modifier = modifier,
                 onUploadPhotoClick = onUploadPhotoClick,
                 chosenPhotoUri = chosenPhotoUri,
             )
         }
-        is ProfileAvatarState.View -> {
+        is AvatarState.View -> {
             ImageAvatar(
                 modifier = modifier,
                 imageUrl = avatarState.url,

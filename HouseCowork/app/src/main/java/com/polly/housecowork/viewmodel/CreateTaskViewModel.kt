@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polly.housecowork.compose.createtask.dataclass.ErrorState
 import com.polly.housecowork.compose.createtask.dataclass.TaskState
-import com.polly.housecowork.dataclass.CalendarUiModel
-import com.polly.housecowork.dataclass.ProfileInfo
+import com.polly.housecowork.local.model.Profile
 import com.polly.housecowork.dataclass.TaskInput
 import com.polly.housecowork.model.calendar.CalendarRepository
 import com.polly.housecowork.model.calendar.CalendarState
@@ -28,7 +27,7 @@ class CreateTaskViewModel @Inject constructor(
     private val profileRepository: DefaultProfileRepository
 ) : ViewModel() {
 
-    private var allUsers: List<ProfileInfo> = emptyList()
+    private var allUsers: List<Profile> = emptyList()
 
     private var _errorState = MutableStateFlow(ErrorState())
     val errorState = _errorState.asStateFlow()

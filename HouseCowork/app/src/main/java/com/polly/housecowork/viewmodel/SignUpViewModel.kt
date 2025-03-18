@@ -3,11 +3,10 @@ package com.polly.housecowork.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.polly.housecowork.dataclass.FinishSignUpState
-import com.polly.housecowork.dataclass.SignUpRequest
+import com.polly.housecowork.network.model.SignUpRequest
 import com.polly.housecowork.model.auth.AuthRepository
-import com.polly.housecowork.model.auth.AuthState
 import com.polly.housecowork.model.auth.AuthType
+import com.polly.housecowork.model.auth.OnboardingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -134,14 +133,15 @@ class SignUpViewModel @Inject constructor(
                     passwordConfirm = state.repeatPassword
                 )
 
-                val authState = authRepository.signUp(AuthType.HOUSE_COWORK, request)
-                when (authState) {
-                    is AuthState.Login -> {
+                val userState = authRepository.signUp(AuthType.HOUSE_COWORK, request)
+                when (userState) {
+                    is OnboardingState.Auth.Complete -> {
                         _finishState.emit(FinishSignUpState.Success)
                     }
+
                     else -> {
                         _finishState.emit(FinishSignUpState.Fail)
-                }
+                    }
                 }
             } catch (e: Exception) {
                 _finishState.emit(FinishSignUpState.Fail)
@@ -149,5 +149,9 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+}
 
+sealed class FinishSignUpState {
+    data object Success : FinishSignUpState()
+    data object Fail : FinishSignUpState()
 }

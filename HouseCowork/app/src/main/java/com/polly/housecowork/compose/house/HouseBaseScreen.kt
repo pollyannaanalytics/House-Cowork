@@ -36,14 +36,14 @@ import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.viewmodel.HouseListViewModel
 
 @Composable
-fun HouseListScreen (
+fun HouseBaseScreen(
     modifier: Modifier = Modifier,
     viewModel: HouseListViewModel = hiltViewModel(),
     navigateToJoinHouse: () -> Unit = {},
     navigateToCreateHouse: () -> Unit = {}
-){
+) {
     val houseList by viewModel.houseList.collectAsState()
-    var isAddHouseClick by remember{ mutableStateOf(false) }
+    var isAddHouseClick by remember { mutableStateOf(false) }
     Scaffold(
         floatingActionButton = {
             Column(
@@ -52,18 +52,17 @@ fun HouseListScreen (
             ) {
                 if (isAddHouseClick) {
                     AddHouseOption(
-                        text = "Create a new House",
+                        text = "Create a House",
                         optionOnClick = {
                             isAddHouseClick = !isAddHouseClick
-                            navigateToJoinHouse()
+                            navigateToCreateHouse()
                         }
                     )
                     AddHouseOption(
                         text = "Join a House",
                         optionOnClick = {
                             isAddHouseClick = !isAddHouseClick
-                            navigateToCreateHouse()
-
+                            navigateToJoinHouse()
                         }
                     )
 
@@ -81,8 +80,23 @@ fun HouseListScreen (
             }
         },
 
-    ) { contentPadding ->
-        Column(modifier.fillMaxSize()) {
+        ) { contentPadding ->
+        Column(modifier.fillMaxSize(),
+            verticalArrangement = if(houseList.isEmpty()) Arrangement.Center else Arrangement.Top,
+            ) {
+            if (houseList.isEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    text = "You don't have any house yet",
+                    style = LocalTypography.current.titleMedium,
+                    textAlign = TextAlign.Center
+                )
+                return@Column
+            }
+
+
             Text(
                 modifier = Modifier
                     .padding(16.dp)
@@ -90,8 +104,8 @@ fun HouseListScreen (
                 text = "My House List", style = LocalTypography.current.titleMedium
             )
             LazyColumn(
-                verticalArrangement =  Arrangement.Center
-            )      {
+                verticalArrangement = Arrangement.Center
+            ) {
                 items(houseList.size) { index ->
                     Card(
                         modifier = Modifier
@@ -99,57 +113,61 @@ fun HouseListScreen (
                             .padding(top = 8.dp, start = 16.dp, end = 16.dp)
                             .fillMaxWidth(),
                         colors = CardDefaults.cardColors(
-                            containerColor = LocalColorScheme.current.primary)
+                            containerColor = LocalColorScheme.current.primary
+                        )
                     ) {
-                        Row(modifier = Modifier.padding(16.dp),
+                        Row(
+                            modifier = Modifier.padding(16.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
-                        ){
+                        ) {
                             Text(
                                 modifier = Modifier.padding(16.dp),
-                                text = houseList[index].name, style = LocalTypography.current.headlineMedium
+                                text = houseList[index].name,
+                                style = LocalTypography.current.headlineMedium
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            Text(
-                                modifier = Modifier.padding(16.dp),
-                                text = houseList[index].members.toString(), style = LocalTypography.current.titleSmall
-                            )
+
                         }
 
                     }
                 }
 
             }
-
         }
     }
 
 }
 
 @Composable
-fun AddHouseOption(modifier: Modifier = Modifier,
-                   text: String = "",
-                   optionOnClick: () -> Unit = {}
-                   ) {
+fun AddHouseOption(
+    modifier: Modifier = Modifier,
+    text: String = "",
+    optionOnClick: () -> Unit = {}
+) {
     Card(
-        modifier = modifier.fillMaxWidth(0.5f)
+        modifier = modifier
+            .fillMaxWidth(0.6f)
             .padding(top = 8.dp, bottom = 8.dp)
             .clickable { optionOnClick() },
         colors = CardDefaults.cardColors(
             containerColor = LocalColorScheme.current.onSurfaceVariant
         ),
         elevation = CardDefaults.cardElevation(4.dp)
-    ){
+    ) {
         Text(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             style = LocalTypography.current.titleMedium,
             textAlign = TextAlign.Center,
-            text = text)
+            text = text
+        )
     }
 }
 
 @Preview
 @Composable
 fun HouseScreenPreview() {
-    HouseListScreen()
+    HouseBaseScreen()
 }

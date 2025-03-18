@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.polly.housecowork.dataclass.SelectorOptions
 import kotlinx.coroutines.launch
 
 @Composable

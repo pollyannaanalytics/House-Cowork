@@ -4,11 +4,10 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.polly.housecowork.dataclass.AssignedTask
+import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.dataclass.CalendarUiModel
-import com.polly.housecowork.dataclass.ProfileInfo
-import com.polly.housecowork.dataclass.ProfileRequest
-import com.polly.housecowork.model.profile.DefaultProfileRepository
+import com.polly.housecowork.local.model.Profile
+import com.polly.housecowork.domain.profile.ProfileUseCase
 import com.polly.housecowork.ui.utils.AssigneeStatusType
 import com.polly.housecowork.domain.task.TaskUseCase
 import com.polly.housecowork.model.calendar.CalendarRepository
@@ -27,9 +26,9 @@ import javax.inject.Inject
 
 sealed interface ProfileUiState {
     data class ViewMode(
-        val profileInfo: ProfileInfo? = null,
+        val profile: Profile? = null,
         val calendarUiModel: CalendarUiModel? = null,
-        val assignedTasks: List<AssignedTask> = emptyList()
+        val tasks: List<Task> = emptyList()
     ) : ProfileUiState
 
     data class EditMode(
@@ -52,9 +51,9 @@ data class ErrState(
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileRepository: DefaultProfileRepository,
     private val taskUseCase: TaskUseCase,
-    private val calendarRepository: CalendarRepository
+    private val calendarRepository: CalendarRepository,
+    private val profileUseCase: ProfileUseCase
 ) : ViewModel() {
 
     private val _profileViewModeState = MutableStateFlow(ProfileUiState.ViewMode())
@@ -105,10 +104,10 @@ class ProfileViewModel @Inject constructor(
 
     private fun fetchProfileInfo() {
         viewModelScope.launch {
-            val profile = profileRepository.getUserProfile()
+            val profile = profileUseCase.getProfileUseCase.invoke()
             Log.d("ProfileViewModel", "fetchProfileInfo: ${profile}")
             _profileViewModeState.update {
-                it.copy(profileInfo = profile)
+                it.copy(profile = profile)
             }
         }
 
@@ -123,7 +122,7 @@ class ProfileViewModel @Inject constructor(
             ).collect { tasksResult ->
                 val tasks = tasksResult.getOrNull() ?: emptyList()
                 _profileViewModeState.update { state ->
-                    state.copy(assignedTasks = tasks)
+                    state.copy(tasks = tasks)
                 }
             }
 
@@ -158,9 +157,9 @@ class ProfileViewModel @Inject constructor(
         } else {
             _profileEditModeState.update {
                 it.copy(
-                    editName = profileUiState.value.profileInfo?.name ?: "",
-                    editBio = profileUiState.value.profileInfo?.bio ?: "",
-                    imageUri = Uri.parse(profileUiState.value.profileInfo?.avatar ?: "")
+                    editName = profileUiState.value.profile?.name ?: "",
+                    editBio = profileUiState.value.profile?.bio ?: "",
+                    imageUri = Uri.parse(profileUiState.value.profile?.avatar ?: "")
                 )
             }
         }
@@ -174,14 +173,14 @@ class ProfileViewModel @Inject constructor(
             checkEditProfileInfo()
             val state = _profileEditModeState.value
 
-            val profileInfo = ProfileRequest(
+            profileUseCase.updateProfileUseCase.invoke(
                 name = state.editName,
-                nickName = state.editName,
-                avatar = state.imageUri.toString(),
-                // todo: add bio
+                nickname = state.editName,
+                bio = state.editBio,
                 bankAccount = "1234567890",
+                imageUri = state.imageUri.toString()
             )
-            profileRepository.updateProfile(profileInfo)
+
             fetchProfileInfo()
         }
     }

@@ -1,4 +1,4 @@
-package com.polly.housecowork.dataclass
+package com.polly.housecowork.network.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -13,7 +13,6 @@ data class SignUpRequest(
     val nickName: String
 ): Parcelable
 
-
 @Parcelize
 data class SignInRequest(
     val email: String,
@@ -21,7 +20,7 @@ data class SignInRequest(
 ): Parcelable
 
 @Parcelize
-data class AuthData(
+data class AuthResponse(
     val user: User,
     val accessToken: String
 ) : Parcelable
@@ -35,16 +34,7 @@ data class User(
     val avatar: String = ""
 ) : Parcelable
 
-fun User.toProfileInfo(): ProfileInfo {
-    return ProfileInfo(
-        id = id,
-        name = name,
-        email = email,
-        nickName = nickName,
-        avatar = avatar?:"",
-        bankAccount = "",
-        bio = ""
-    )
-}
+
+
 
 

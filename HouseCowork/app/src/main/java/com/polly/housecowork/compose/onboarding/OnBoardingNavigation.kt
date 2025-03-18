@@ -7,20 +7,20 @@ import androidx.navigation.compose.navigation
 import com.polly.housecowork.compose.house.houseNavigation
 import com.polly.housecowork.compose.onboarding.register.CompleteProfileScreen
 import com.polly.housecowork.compose.onboarding.register.SignUpScreen
-
-import com.polly.housecowork.model.auth.AuthState
 import com.polly.housecowork.utils.Screen
 
 
 fun NavGraphBuilder.onboardingNavigation(
     navController: NavController,
-    authState: AuthState,
+    startDestination: String,
     onOnboardingComplete: () -> Unit
 ) {
     // todo: should be login page when page is designed
+
+
     navigation(
         route = Screen.OnBoarding.BASE_ROUTE,
-        startDestination = Screen.OnBoarding.SignUp.route
+        startDestination = startDestination
     ) {
         composable(Screen.OnBoarding.SignUp.route) {
             SignUpScreen(
@@ -33,9 +33,12 @@ fun NavGraphBuilder.onboardingNavigation(
         composable(Screen.OnBoarding.CompleteProfile.route) {
             CompleteProfileScreen(
                 onProfileComplete = {
-                    onOnboardingComplete()
+                    navController.navigate(Screen.House.BASE_ROUTE)
                 }
             )
         }
+
+        houseNavigation(navController, onOnboardingComplete)
+
     }
 }

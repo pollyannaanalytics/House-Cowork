@@ -1,7 +1,7 @@
-package com.polly.housecowork.data.network
+package com.polly.housecowork.network
 
-import com.polly.housecowork.dataclass.ProfileInfoResponse
-import com.polly.housecowork.dataclass.ProfileRequest
+import com.polly.housecowork.network.model.ProfileInfoResponse
+import com.polly.housecowork.network.model.ProfileRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

@@ -1,10 +1,16 @@
 package com.polly.housecowork.model.task
 
-import com.polly.housecowork.data.local.TaskDao
+import com.polly.housecowork.dataclass.AssigneeStatus
+import com.polly.housecowork.local.TaskDao
 import com.polly.housecowork.dataclass.TaskDto
+import com.polly.housecowork.prefs.PrefsLicense
+import com.polly.housecowork.ui.utils.AssigneeStatusType
 import javax.inject.Inject
 
-class TaskLocalDataSource @Inject constructor(private val taskDao: TaskDao) {
+class TaskLocalDataSource @Inject constructor(
+    private val taskDao: TaskDao) {
+
+
     suspend fun getTasksByAssigneeId(
         assigneeId: Int,
         assigneeStatusType: Int

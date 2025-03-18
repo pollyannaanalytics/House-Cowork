@@ -1,11 +1,11 @@
 package com.polly.housecowork.domain.task
 
-import com.polly.housecowork.dataclass.AssignedTask
+import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.ui.utils.DinosaurType
 import javax.inject.Inject
 
 class GenerateDinosaurGrowthUseCase @Inject constructor() {
-    fun invoke(tasks: List<AssignedTask>) : DinosaurType {
+    fun invoke(tasks: List<Task>) : DinosaurType {
         val completedCount = tasks.size
         return when(completedCount) {
             in 0..20 -> DinosaurType.Egg

@@ -1,7 +1,7 @@
 package com.polly.housecowork.di
 
 import android.content.Context
-import com.polly.housecowork.data.local.HCWDatabase
+import com.polly.housecowork.local.HCWDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

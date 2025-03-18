@@ -17,8 +17,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.viewmodel.ProfileViewModel
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -44,17 +42,13 @@ fun ProfileScreen(
         }
     }
 
-
-
-
-
     ProfileContent(
         modifier = modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .fillMaxSize()
             .background(LocalColorScheme.current.background),
-        profileInfo = profileUiState.profileInfo,
-        tasks = profileUiState.assignedTasks,
+        profile = profileUiState.profile,
+        tasks = profileUiState.tasks,
         isEditMode = profileEditModeState.isEditMode,
         onBackMonthClick = { viewModel.getPreviousMonth() },
         onNextMonthClick = { viewModel.getNextMonth() },

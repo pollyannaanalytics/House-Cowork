@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,7 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.polly.housecowork.R
-import com.polly.housecowork.dataclass.AssignedTask
+import com.polly.housecowork.dataclass.Task
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.utils.ComposeUtils
@@ -56,7 +55,7 @@ private val TextPadding = 4.dp
 fun SingleTaskCard(
     modifier: Modifier = Modifier,
     toDoTitle: String,
-    tasks: List<AssignedTask>,
+    tasks: List<Task>,
     isExpired: Boolean,
 ) {
 

@@ -1,9 +1,9 @@
 package com.polly.housecowork.model.profile
 
 import android.util.Log
-import com.polly.housecowork.data.network.ProfileApiService
-import com.polly.housecowork.dataclass.ProfileInfoResponse
-import com.polly.housecowork.dataclass.ProfileRequest
+import com.polly.housecowork.network.ProfileApiService
+import com.polly.housecowork.network.model.ProfileInfoResponse
+import com.polly.housecowork.network.model.ProfileRequest
 import retrofit2.Response
 import javax.inject.Inject
 

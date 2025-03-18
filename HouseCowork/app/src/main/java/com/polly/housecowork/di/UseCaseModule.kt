@@ -1,8 +1,13 @@
 package com.polly.housecowork.di
 
+import com.polly.housecowork.domain.onboarding.UpdateOnboardingUseCase
+import com.polly.housecowork.domain.profile.GetProfileUseCase
+import com.polly.housecowork.domain.profile.ProfileUseCase
+import com.polly.housecowork.domain.profile.UpdateProfileUseCase
 import com.polly.housecowork.domain.task.GenerateDinosaurGrowthUseCase
 import com.polly.housecowork.domain.task.TaskUseCase
 import com.polly.housecowork.domain.task.TransformTaskUseCase
+import com.polly.housecowork.prefs.PrefsLicense
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,5 +23,20 @@ object UseCaseModule {
         transformTaskUseCase: TransformTaskUseCase
     ): TaskUseCase {
         return TaskUseCase(generateDinosaurGrowthUseCase, transformTaskUseCase)
+    }
+
+    @Provides
+    fun provideProfileUseCase(
+        updateProfileUseCase: UpdateProfileUseCase,
+        getProfileUseCase: GetProfileUseCase
+    ): ProfileUseCase {
+        return ProfileUseCase(updateProfileUseCase, getProfileUseCase)
+    }
+
+    @Provides
+    fun provideOnboardingUseCase(
+        prefsLicense: PrefsLicense
+    ): UpdateOnboardingUseCase{
+        return UpdateOnboardingUseCase(prefsLicense)
     }
 }

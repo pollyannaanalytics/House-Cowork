@@ -11,6 +11,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,11 +25,9 @@ import com.polly.housecowork.utils.Screen
 fun HCWAppBar(
     modifier: Modifier = Modifier,
     navigateToProfile: () -> Unit,
-    title: () -> String
+    title: String
 ) {
-    val isHome by remember {
-        mutableStateOf( title() == Screen.Home.title)
-    }
+    val isHome = title == Screen.Home.title
         CenterAlignedTopAppBar(
             modifier = modifier,
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -36,8 +35,8 @@ fun HCWAppBar(
                 titleContentColor = LocalColorScheme.current.onBackground
             ),
             title = {
-                if (isHome) {
-                    Text(text = title(), style = LocalTypography.current.titleMedium)
+                if (!isHome) {
+                    Text(text = title, style = LocalTypography.current.titleMedium)
                 }
             },
             navigationIcon = {
@@ -60,11 +59,13 @@ fun HCWAppBar(
 
             actions = {
                 IconButton(onClick = { navigateToProfile() }) {
-                    Icon(
-                        imageVector = Icons.Rounded.AccountCircle ,
-                        contentDescription = "profile",
-                        tint = LocalColorScheme.current.onBackground,
-                    )
+                    if (isHome) {
+                        Icon(
+                            imageVector = Icons.Rounded.AccountCircle,
+                            contentDescription = "profile",
+                            tint = LocalColorScheme.current.onBackground,
+                        )
+                    }
                 }
             }
         )

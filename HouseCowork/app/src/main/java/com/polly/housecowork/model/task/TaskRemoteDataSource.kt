@@ -1,38 +1,60 @@
 package com.polly.housecowork.model.task
 
-import com.polly.housecowork.data.network.TaskApiService
-import com.polly.housecowork.dataclass.TaskDto
-import com.polly.housecowork.dataclass.TaskInput
+import com.polly.housecowork.dataclass.Task
+import com.polly.housecowork.network.TaskApiService
+import com.polly.housecowork.network.model.TaskCreateRequest
+
+import retrofit2.Response
 import javax.inject.Inject
 
 class TaskRemoteDataSource @Inject constructor(
     private val apiService: TaskApiService
-){
+) {
+    suspend fun getHomeTasks(houseId: Int): Response<List<Task>> {
+        return apiService.getTasksBy(
+            houseId = houseId
+        )
+    }
 
-  suspend fun getTasksByAssigneeId(
+    suspend fun getTasksByAssigneeId(
+        houseId: Int,
         assigneeId: Int,
         assigneeStatusType: Int
-    ): Result<List<TaskDto>> {
-        return apiService.getTasksBy(assignId = assigneeId, assigneeStatus = assigneeStatusType)
+    ): Response<List<Task>> {
+        return apiService.getTasksBy(
+            assignId = assigneeId,
+            houseId = houseId,
+            assigneeStatus = assigneeStatusType
+        )
     }
 
-     suspend fun createTask(taskInput: TaskInput): Result<TaskDto> {
-        return apiService.createTask(taskInput)
+    suspend fun createTask(
+        houseId: Int,
+        taskRequest: TaskCreateRequest
+    ): Response<Task> {
+        return apiService.createTask(
+            houseId,
+            taskRequest
+        )
     }
 
-    suspend fun updateTask(task: TaskDto): Result<TaskDto> {
-        return apiService.updateTask(task.title, task.description, task.accessLevel)
+    suspend fun updateTask(
+        taskId: Int,
+        title: String,
+        description: String,
+        accessLevel: Int,
+        dueTime: String
+    ): Response<Task> {
+        return apiService.updateTask(
+            taskId,
+            title,
+            description,
+            accessLevel,
+            dueTime
+        )
     }
 
-    suspend fun deleteTask(taskId: Int): Result<Unit> {
-       return apiService.deleteTask(taskId)
+    suspend fun deleteTask(taskId: Int): Response<Unit> {
+        return apiService.deleteTask(taskId)
     }
-
-
-    companion object {
-        private const val TAG = "TaskRemoteDataSource"
-        private const val INVALID_TASK_ID = -1
-        private const val INVALID_TASK_TIME = 0L
-    }
-
 }

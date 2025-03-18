@@ -64,6 +64,7 @@ dependencies {
 
     // network
     ksp(libs.moshi)
+    implementation(libs.moshi)
     implementation(libs.retrofit)
     implementation(libs.retrofit2.converter.gson)
 

@@ -1,32 +1,44 @@
 package com.polly.housecowork.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.polly.housecowork.dataclass.ProfileInfo
-import com.polly.housecowork.model.auth.AuthRepository
-import com.polly.housecowork.model.auth.AuthState
-import com.polly.housecowork.model.profile.DefaultProfileRepository
+import com.polly.housecowork.model.auth.OnboardingState
+import com.polly.housecowork.model.auth.OnboardingState.Companion.toPrefKey
 import com.polly.housecowork.prefs.PrefsLicense
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HCWAppViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
+    private val prefsLicense: PrefsLicense
+) : ViewModel() {
 
-) : ViewModel(){
+    private val _userNextState = MutableStateFlow<OnboardingState>(OnboardingState.Auth.Incomplete)
+    val userNextState = _userNextState.asStateFlow()
 
-    private val _authState = MutableStateFlow(checkAuthState())
-    val authState = _authState.asStateFlow()
-
-
-    private fun checkAuthState(): AuthState {
-        val state = authRepository.checkAuthState()
-        Log.d("HCWAppViewModel", "checkAuthState: $state")
-        return authRepository.checkAuthState()
+    init {
+        checkUserState()
     }
+
+    private fun checkUserState() {
+        val token = prefsLicense.token
+        val userId = prefsLicense.userId
+
+        val onBoardingStatus = prefsLicense.onboardingState
+
+        _userNextState.value = when {
+            token.isEmpty() -> OnboardingState.Auth.Incomplete
+            token.isNotEmpty() && userId == 0 -> OnboardingState.Auth.Incomplete
+            else -> when (onBoardingStatus) {
+                OnboardingState.Onboarding.SignUp.prefName -> OnboardingState.Onboarding.CompleteProfile
+                OnboardingState.Onboarding.CompleteProfile.prefName -> OnboardingState.Onboarding.CreateHouse
+                OnboardingState.Onboarding.CreateHouse.prefName -> OnboardingState.Auth.Complete
+                OnboardingState.Auth.Complete.toPrefKey()-> OnboardingState.Auth.Complete
+                OnboardingState.Auth.Incomplete.toPrefKey() -> OnboardingState.Onboarding.Login
+                else -> OnboardingState.Onboarding.Login
+            }
+        }
+    }
+
 }

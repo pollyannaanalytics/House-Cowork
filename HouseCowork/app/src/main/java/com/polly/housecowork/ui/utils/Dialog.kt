@@ -9,8 +9,6 @@ import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 
 
-
-
 @Composable
 fun HCWAlertDialog(
     modifier: Modifier = Modifier,
@@ -26,7 +24,8 @@ fun HCWAlertDialog(
                 onClick = onDismissRequest
             ) {
                 Text(
-                    text = "Confirm", color = LocalColorScheme.current.onPrimary)
+                    text = "Confirm", color = LocalColorScheme.current.onPrimary
+                )
             }
         },
         title = {
@@ -37,8 +36,13 @@ fun HCWAlertDialog(
             )
         },
         text = {
-            Text(text = contentText, style = LocalTypography.current.bodyLarge)
-        }
+            Text(
+                text = contentText,
+                style = LocalTypography.current.bodySmall,
+                color = LocalColorScheme.current.onBackground
+            )
+        },
+        containerColor = LocalColorScheme.current.background,
     )
 }
 
