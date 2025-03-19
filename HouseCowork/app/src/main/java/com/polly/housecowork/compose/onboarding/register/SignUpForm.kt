@@ -23,11 +23,9 @@ import com.polly.housecowork.ui.utils.PositiveButton
 fun SignUpForm(
     modifier: Modifier = Modifier,
     name: String,
-    nickName: String,
     email: String,
     password: String,
     repeatPassword: String,
-    onNickNameChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
@@ -39,7 +37,6 @@ fun SignUpForm(
     isRepeatPasswordError: Boolean,
     onJoinClick: () -> Unit
 ) {
-    val nickNameFocus = remember { FocusRequester() }
     val emailFocus = remember { FocusRequester() }
     val passwordFocus = remember { FocusRequester() }
     val repeatPasswordFocus = remember { FocusRequester() }
@@ -53,12 +50,9 @@ fun SignUpForm(
             text = "*All blanks need to be filled",
             style = LocalTypography.current.bodySmall
         )
-        BasicInfoFields(
+        NameInfoFields(
             name = name,
-            nickName = nickName,
             onNameChange = onNameChange,
-            onNickNameChange = onNickNameChange,
-            nickNameFocus = nickNameFocus,
             emailFocus = emailFocus
         )
 
@@ -99,12 +93,9 @@ fun SignUpForm(
 }
 
 @Composable
-fun BasicInfoFields(
+fun NameInfoFields(
     name: String,
-    nickName: String,
     onNameChange: (String) -> Unit,
-    onNickNameChange: (String) -> Unit,
-    nickNameFocus: FocusRequester,
     emailFocus: FocusRequester
 ){
     HCWTextField(
@@ -114,18 +105,8 @@ fun BasicInfoFields(
         hint = "Name  ( ex. Pollyanna Wu )",
         keyboardOptions = regularKeyboardOptions,
         keyboardActions = KeyboardActions(
-            onNext = { nickNameFocus.requestFocus() }
-        ))
-    HCWTextField(
-        modifier = commonTextFieldModifier.focusRequester(nickNameFocus),
-        value = nickName,
-        onValueChange = { onNickNameChange(it) },
-        hint = "Nickname  ( ex. Polly )",
-        keyboardOptions = regularKeyboardOptions,
-        keyboardActions = KeyboardActions(
             onNext = { emailFocus.requestFocus() }
-        )
-    )
+        ))
 
 }
 

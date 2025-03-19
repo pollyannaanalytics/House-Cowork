@@ -63,14 +63,12 @@ fun SignUpScreen(
         SignUpTitle(modifier = Modifier.padding(8.dp))
         SignUpForm(
             name = formState.name,
-            nickName = formState.nickName,
             email = formState.email,
             password = formState.password,
             repeatPassword = formState.repeatPassword,
             isPasswordShown = isChecked,
             onCheckedChange = { isChecked = !isChecked },
             onNameChange = { viewModel.setUsername(it) },
-            onNickNameChange = { viewModel.setNickName(it) },
             onEmailChange = { viewModel.setEmail(it) },
             onPasswordChange = { viewModel.setPassword(it) },
             onRepeatPasswordChange = { viewModel.confirmSamePassword(it) },
