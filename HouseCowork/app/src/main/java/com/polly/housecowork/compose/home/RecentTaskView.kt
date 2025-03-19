@@ -21,15 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.polly.housecowork.dataclass.Task
+import com.polly.housecowork.dataclass.TaskState
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import kotlin.math.absoluteValue
 
 @Composable
 fun RecentTaskView(
     modifier: Modifier = Modifier,
-    onTaskClick: (Task) -> Unit = {},
-    tasksMap: Map<ToDoType, List<Task>>,
+    onTaskClick: (TaskState) -> Unit = {},
+    tasksMap: Map<ToDoType, List<TaskState>>,
 ) {
     val pagerState = rememberPagerState(pageCount = { tasksMap.size })
     val pageOrder by remember {

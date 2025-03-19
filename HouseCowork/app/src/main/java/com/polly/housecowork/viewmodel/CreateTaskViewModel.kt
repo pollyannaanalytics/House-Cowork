@@ -2,10 +2,10 @@ package com.polly.housecowork.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.polly.housecowork.compose.createtask.dataclass.CreateTaskInput
 import com.polly.housecowork.compose.createtask.dataclass.ErrorState
-import com.polly.housecowork.compose.createtask.dataclass.TaskState
+import com.polly.housecowork.dataclass.CreateTaskState
 import com.polly.housecowork.local.model.Profile
-import com.polly.housecowork.dataclass.TaskInput
 import com.polly.housecowork.model.calendar.CalendarRepository
 import com.polly.housecowork.model.calendar.CalendarState
 import com.polly.housecowork.model.profile.DefaultProfileRepository
@@ -32,7 +32,7 @@ class CreateTaskViewModel @Inject constructor(
     private var _errorState = MutableStateFlow(ErrorState())
     val errorState = _errorState.asStateFlow()
 
-    private var _taskUiState = MutableStateFlow(TaskState())
+    private var _taskUiState = MutableStateFlow(CreateTaskState())
     val taskUiState = _taskUiState.asStateFlow()
 
     private val _isPublic = MutableStateFlow(true)
@@ -119,7 +119,7 @@ class CreateTaskViewModel @Inject constructor(
     fun checkFinish() {
         if (!validateTask(_taskUiState.value)) return
 
-        val taskInput = TaskInput(
+        val createTaskInput = CreateTaskInput(
             taskTitle = _taskUiState.value.title,
             taskDescription = _taskUiState.value.description,
             taskAccessLevel = _taskUiState.value.accessLevel.level,
@@ -128,11 +128,11 @@ class CreateTaskViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            taskRepository.createTask(taskInput)
+            taskRepository.createTask(createTaskInput)
         }
     }
 
-    fun validateTask(state: TaskState): Boolean {
+    fun validateTask(state: CreateTaskState): Boolean {
         val titleError = state.title.isEmpty()
         val dueTimeError = state.dueTime < System.currentTimeMillis()
         _taskUiState.update {

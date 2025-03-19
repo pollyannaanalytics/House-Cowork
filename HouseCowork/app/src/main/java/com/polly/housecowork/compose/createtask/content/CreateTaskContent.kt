@@ -21,8 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.polly.housecowork.compose.createtask.content.timepicker.TimePickerBottomSheet
 import com.polly.housecowork.compose.createtask.dataclass.ErrorState
-import com.polly.housecowork.compose.createtask.dataclass.TaskState
 import com.polly.housecowork.dataclass.CalendarUiModel
+import com.polly.housecowork.dataclass.CreateTaskState
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
 import com.polly.housecowork.ui.utils.HCWAlertDialog
@@ -44,7 +44,7 @@ fun CreateTaskContent(
     onNextClick: () -> Unit,
     currentMonthTitle: String,
     dates: List<CalendarUiModel.Date>,
-    taskUiState: TaskState,
+    taskUiState: CreateTaskState,
     errorState: ErrorState,
     onTitleChange: (String) -> Unit,
     onDueTimeChange: (Int, Int) -> Unit,

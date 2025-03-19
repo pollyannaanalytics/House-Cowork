@@ -1,10 +1,12 @@
 package com.polly.housecowork.network.model
 
 import android.os.Parcelable
+import com.polly.housecowork.dataclass.Assignee
+import com.polly.housecowork.dataclass.TaskDomain
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class TaskCreateRequest(
+data class CreateTaskRequest(
     val title: String,
     val description: String,
     val accessLevel: Int,
@@ -25,8 +27,16 @@ data class TaskResponse(
     val assignees: List<Assignee>
 ) : Parcelable
 
-@Parcelize
-data class Assignee(
-    val id: Int,
-    val status: Int
-) : Parcelable
+fun TaskResponse.toDomain(): TaskDomain {
+    return TaskDomain(
+        id = id,
+        ownerId = ownerId,
+        title = title,
+        description = description,
+        accessLevel = accessLevel,
+        status = status,
+        dueTime = dueTime,
+        assignees = assignees
+    )
+}
+

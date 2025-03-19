@@ -1,7 +1,7 @@
 package com.polly.housecowork.network
 
-import com.polly.housecowork.dataclass.TaskDto
-import com.polly.housecowork.network.model.TaskCreateRequest
+import com.polly.housecowork.network.model.CreateTaskRequest
+import com.polly.housecowork.network.model.TaskResponse
 import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -14,8 +14,8 @@ interface TaskApiService {
     @POST("tasks/house/{houseId}")
     suspend fun createTask(
         @Path("houseId") houseId: Int,
-        taskRequest: TaskCreateRequest
-    ): Response<TaskDto>
+        taskRequest: CreateTaskRequest
+    ): Response<TaskResponse>
 
     @GET("tasks/house/{houseId}")
     suspend fun getTasksBy(
@@ -25,18 +25,18 @@ interface TaskApiService {
         startTime: Long? = null,
         taskStatus: Int? = null,
         assigneeStatus: Int? = null
-    ): Response<List<TaskDto>>
+    ): Response<List<TaskResponse>>
 
 
     @GET("tasks/house/{houseId}/assigned")
     suspend fun getAssignedTasks(
         @Path("houseId") houseId: Int,
-    ): Response<List<TaskDto>>
+    ): Response<List<TaskResponse>>
 
     @GET("tasks/house/{houseId}/home")
     suspend fun getHomeTasks(
         @Path("houseId") houseId: Int,
-    ): Response<List<TaskDto>>
+    ): Response<List<TaskResponse>>
 
     @PATCH("tasks/{taskId}")
     suspend fun updateTask(
@@ -45,7 +45,7 @@ interface TaskApiService {
         description: String,
         accessLevel: Int,
         dueTime: String
-    ): Response<TaskDto>
+    ): Response<TaskResponse>
 
     @DELETE("tasks/{taskId}")
     suspend fun deleteTask(@Path("taskId") taskId: Int): Response<Unit>

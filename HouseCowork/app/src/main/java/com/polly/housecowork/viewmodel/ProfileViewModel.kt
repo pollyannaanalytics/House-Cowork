@@ -4,14 +4,8 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.polly.housecowork.dataclass.Task
-import com.polly.housecowork.dataclass.CalendarUiModel
 import com.polly.housecowork.local.model.Profile
 import com.polly.housecowork.domain.profile.ProfileUseCase
-import com.polly.housecowork.ui.utils.AssigneeStatusType
-import com.polly.housecowork.domain.task.TaskUseCase
-import com.polly.housecowork.model.calendar.CalendarRepository
-import com.polly.housecowork.model.calendar.CalendarState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,8 +21,6 @@ import javax.inject.Inject
 sealed interface ProfileUiState {
     data class ViewMode(
         val profile: Profile? = null,
-        val calendarUiModel: CalendarUiModel? = null,
-        val tasks: List<Task> = emptyList()
     ) : ProfileUiState
 
     data class EditMode(
@@ -51,8 +43,6 @@ data class ErrState(
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val taskUseCase: TaskUseCase,
-    private val calendarRepository: CalendarRepository,
     private val profileUseCase: ProfileUseCase
 ) : ViewModel() {
 
@@ -63,13 +53,6 @@ class ProfileViewModel @Inject constructor(
     val profileEditModeState: StateFlow<ProfileUiState.EditMode> =
         _profileEditModeState.asStateFlow()
 
-    private val _calendarState = MutableStateFlow(
-        CalendarState(
-            monthData = calendarRepository.getCurrentMonth(),
-            monthTitle = calendarRepository.getCurrentMonthTitle()
-        )
-    )
-    val calendarState = _calendarState.asStateFlow()
 
     val errState = _profileEditModeState.map { state ->
         ErrState(
@@ -85,7 +68,6 @@ class ProfileViewModel @Inject constructor(
 
     init {
         fetchProfileInfo()
-        getAssignedTasks()
     }
 
 
@@ -113,39 +95,6 @@ class ProfileViewModel @Inject constructor(
 
     }
 
-
-    fun getAssignedTasks() {
-        viewModelScope.launch {
-            taskUseCase.transformTaskUseCase.invoke(
-                AssigneeStatusType.ACCEPTED,
-                fetchRemote = false
-            ).collect { tasksResult ->
-                val tasks = tasksResult.getOrNull() ?: emptyList()
-                _profileViewModeState.update { state ->
-                    state.copy(tasks = tasks)
-                }
-            }
-
-        }
-    }
-
-    fun getPreviousMonth() {
-        _calendarState.update {
-            it.copy(
-                monthData = calendarRepository.previousMonth(),
-                monthTitle = calendarRepository.getCurrentMonthTitle()
-            )
-        }
-    }
-
-    fun getNextMonth() {
-        _calendarState.update {
-            it.copy(
-                monthData = calendarRepository.nextMonth(),
-                monthTitle = calendarRepository.getCurrentMonthTitle()
-            )
-        }
-    }
 
     fun changeEditMode() {
         if (_profileEditModeState.value.isEditMode) {

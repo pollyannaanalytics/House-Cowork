@@ -26,5 +26,8 @@ class DatabaseModule {
     @Provides
     fun provideTaskDao(database: HCWDatabase) = database.taskDao()
 
+    @Provides
+    fun provideHouseDao(database: HCWDatabase) = database.houseDao()
+
 
 }

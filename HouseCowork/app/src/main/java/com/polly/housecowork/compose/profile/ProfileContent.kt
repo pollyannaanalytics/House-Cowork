@@ -27,8 +27,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.polly.housecowork.dataclass.Task
-import com.polly.housecowork.dataclass.CalendarUiModel
 import com.polly.housecowork.local.model.Profile
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalShapes
@@ -42,12 +40,7 @@ import com.polly.housecowork.viewmodel.ErrState
 fun ProfileContent(
     modifier: Modifier = Modifier,
     profile: Profile?,
-    tasks: List<Task>,
-    calendarMonthTitle: String,
-    calendarUiModel: CalendarUiModel?,
     onBioChange: (String) -> Unit,
-    onBackMonthClick: () -> Unit = {},
-    onNextMonthClick: () -> Unit = {},
     isEditMode: Boolean = false,
     onEditClick: () -> Unit,
     chosenPhotoUri: Uri?,
@@ -78,16 +71,6 @@ fun ProfileContent(
                     onBioChange = onBioChange,
                     errState = errState.bioErr
                 )
-
-            calendarUiModel?.let {
-                Calendar(
-                    currentMonthTitle = calendarMonthTitle,
-                    onBackClick = onBackMonthClick,
-                    onForwardClick = onNextMonthClick,
-                    dates = calendarUiModel.visibleDates,
-                    tasks = tasks
-                )
-            }
         }
 
     }

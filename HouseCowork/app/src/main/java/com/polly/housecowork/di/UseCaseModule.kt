@@ -5,8 +5,9 @@ import com.polly.housecowork.domain.profile.GetProfileUseCase
 import com.polly.housecowork.domain.profile.ProfileUseCase
 import com.polly.housecowork.domain.profile.UpdateProfileUseCase
 import com.polly.housecowork.domain.task.GenerateDinosaurGrowthUseCase
+import com.polly.housecowork.domain.task.GetHomeTasksUseCase
+import com.polly.housecowork.domain.task.MapTaskDetailUseCase
 import com.polly.housecowork.domain.task.TaskUseCase
-import com.polly.housecowork.domain.task.TransformTaskUseCase
 import com.polly.housecowork.prefs.PrefsLicense
 import dagger.Module
 import dagger.Provides
@@ -20,9 +21,10 @@ object UseCaseModule {
     @Provides
     fun provideTaskUseCase(
         generateDinosaurGrowthUseCase: GenerateDinosaurGrowthUseCase,
-        transformTaskUseCase: TransformTaskUseCase
+        mapTaskDetailUseCase: MapTaskDetailUseCase,
+        getHomeTasksUseCase: GetHomeTasksUseCase
     ): TaskUseCase {
-        return TaskUseCase(generateDinosaurGrowthUseCase, transformTaskUseCase)
+        return TaskUseCase(generateDinosaurGrowthUseCase, mapTaskDetailUseCase, getHomeTasksUseCase)
     }
 
     @Provides
@@ -36,7 +38,7 @@ object UseCaseModule {
     @Provides
     fun provideOnboardingUseCase(
         prefsLicense: PrefsLicense
-    ): UpdateOnboardingUseCase{
+    ): UpdateOnboardingUseCase {
         return UpdateOnboardingUseCase(prefsLicense)
     }
 }

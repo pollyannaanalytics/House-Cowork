@@ -28,7 +28,6 @@ fun ProfileScreen(
     val profileUiState by viewModel.profileUiState.collectAsStateWithLifecycle()
     val profileEditModeState by viewModel.profileEditModeState.collectAsStateWithLifecycle()
     val errState by viewModel.errState.collectAsStateWithLifecycle()
-    val calendarState by viewModel.calendarState.collectAsStateWithLifecycle()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(
         rememberTopAppBarState()
@@ -48,12 +47,7 @@ fun ProfileScreen(
             .fillMaxSize()
             .background(LocalColorScheme.current.background),
         profile = profileUiState.profile,
-        tasks = profileUiState.tasks,
         isEditMode = profileEditModeState.isEditMode,
-        onBackMonthClick = { viewModel.getPreviousMonth() },
-        onNextMonthClick = { viewModel.getNextMonth() },
-        calendarUiModel = calendarState.monthData,
-        calendarMonthTitle = calendarState.monthTitle,
         onEditClick = { viewModel.changeEditMode() },
         errState = errState,
         onNameChange = { name -> viewModel.updateProfileName(name) },

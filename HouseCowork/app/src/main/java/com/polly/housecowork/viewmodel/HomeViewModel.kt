@@ -4,9 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polly.housecowork.compose.home.ToDoType
-import com.polly.housecowork.dataclass.Task
+import com.polly.housecowork.dataclass.TaskState
 import com.polly.housecowork.ui.utils.DinosaurType
-import com.polly.housecowork.ui.utils.AssigneeStatusType
 import com.polly.housecowork.ui.utils.TaskStatus
 import com.polly.housecowork.domain.task.TaskUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +16,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
-private val initProgressTasksMap: Map<ToDoType, List<Task>> = mapOf(
+private val initProgressTasksMap: Map<ToDoType, List<TaskState>> = mapOf(
     ToDoType.EXPIRED to emptyList(),
     ToDoType.TODAY to emptyList(),
     ToDoType.TOMORROW to emptyList(),
@@ -27,43 +26,34 @@ private val initProgressTasksMap: Map<ToDoType, List<Task>> = mapOf(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val taskUseCase: TaskUseCase,
+    private val taskUseCase: TaskUseCase
 ) : ViewModel() {
 
     private val _dinosaurType = MutableStateFlow<DinosaurType>(DinosaurType.Egg)
     val dinosaurType: StateFlow<DinosaurType> = _dinosaurType
 
     private val _progressTasks = MutableStateFlow(initProgressTasksMap)
-    val progressTasks: StateFlow<Map<ToDoType, List<Task>>> = _progressTasks
+    val progressTasks: StateFlow<Map<ToDoType, List<TaskState>>> = _progressTasks
 
-    private val _doneTasks = MutableStateFlow(emptyList<Task>())
-    val doneTasks: StateFlow<List<Task>> = _doneTasks
+    private val _doneTasks = MutableStateFlow(emptyList<TaskState>())
+    val doneTasks: StateFlow<List<TaskState>> = _doneTasks
 
     private val _shouldSeeMore = MutableStateFlow(false)
     val shouldSeeMore: StateFlow<Boolean> = _shouldSeeMore.asStateFlow()
 
     init {
-//        getAssignedTasks()
+        getAssignedTasks()
     }
 
-    private fun getAssignedTasks(isRefresh: Boolean = true) {
+    private fun getAssignedTasks() {
         viewModelScope.launch {
-            taskUseCase.transformTaskUseCase.invoke(
-                AssigneeStatusType.ACCEPTED,
-                isRefresh
-            ).collect { result ->
-                result.onSuccess { tasks ->
-                    Log.d("HomeViewModel", "getAssignedTasks: $tasks")
-                    processTasks(tasks)
-                }
-                    .onFailure { error ->
-                        Log.e("HomeViewModel", "getAssignedTasks: $error")
-                    }
-            }
+            val tasks = taskUseCase.getHomeTasksUseCase.invoke()
+            val tasksWithDetails = taskUseCase.mapTaskDetailUseCase.invoke(tasks)
+            processTasks(tasksWithDetails)
         }
     }
 
-    private fun groupTasksByDueDate(tasks: List<Task>): Map<ToDoType, List<Task>> {
+    private fun groupTasksByDueDate(tasks: List<TaskState>): Map<ToDoType, List<TaskState>> {
         val groupedTasks = tasks.groupBy { getToDoType(it.dueDate) }
 
         return initProgressTasksMap.mapValues { (todoType, _) ->
@@ -75,12 +65,12 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    private fun processTasks(tasks: List<Task>) {
-        val doneTasks = mutableListOf<Task>()
-        val progressTasks = mutableListOf<Task>()
+    private fun processTasks(tasks: List<TaskState>) {
+        val doneTasks = mutableListOf<TaskState>()
+        val progressTasks = mutableListOf<TaskState>()
 
         tasks.forEach { task ->
-            when (task.taskStatus) {
+            when (task.status) {
                 TaskStatus.DONE -> doneTasks.add(task)
                 TaskStatus.IN_PROGRESS -> progressTasks.add(task)
                 TaskStatus.OPEN, TaskStatus.CANCELLED -> {}
