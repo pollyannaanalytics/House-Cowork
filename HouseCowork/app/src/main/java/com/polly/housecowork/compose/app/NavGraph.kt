@@ -1,6 +1,5 @@
 package com.polly.housecowork.compose.app
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,8 +21,6 @@ fun HCWNavHost(
     appState: HCWAppState
 ) {
     val graphStartDestination = appState.startDestination
-    Log.d("HCWNavHost", "graphStartDestination: ${graphStartDestination}")
-
 
     NavHost(
         modifier = modifier,

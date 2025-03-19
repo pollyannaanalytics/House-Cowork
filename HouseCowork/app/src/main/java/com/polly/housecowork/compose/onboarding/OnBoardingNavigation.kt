@@ -16,8 +16,6 @@ fun NavGraphBuilder.onboardingNavigation(
     onOnboardingComplete: () -> Unit
 ) {
     // todo: should be login page when page is designed
-
-
     navigation(
         route = Screen.OnBoarding.BASE_ROUTE,
         startDestination = startDestination
@@ -28,6 +26,10 @@ fun NavGraphBuilder.onboardingNavigation(
                     navController.navigate(Screen.OnBoarding.CompleteProfile.route)
                 }
             )
+        }
+
+        composable(Screen.OnBoarding.Login.route) {
+            LoginScreen()
         }
 
         composable(Screen.OnBoarding.CompleteProfile.route) {

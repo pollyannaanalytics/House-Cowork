@@ -1,5 +1,6 @@
 package com.polly.housecowork.model.task
 
+import android.util.Log
 import com.polly.housecowork.dataclass.TaskDomain
 import com.polly.housecowork.network.TaskApiService
 import com.polly.housecowork.network.model.CreateTaskRequest
@@ -43,6 +44,7 @@ class DefaultTaskRemoteDataSource @Inject constructor(
         val response = apiService.getHomeTasks(
             houseId = houseId
         )
+        Log.d("DefaultTaskRemoteDataSource", "getHomeTasks: $response")
         return handleResponses(response)
     }
 

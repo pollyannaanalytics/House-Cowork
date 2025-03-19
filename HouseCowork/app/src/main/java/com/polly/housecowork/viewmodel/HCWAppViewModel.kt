@@ -28,16 +28,9 @@ class HCWAppViewModel @Inject constructor(
         val onBoardingStatus = prefsLicense.onboardingState
 
         _userNextState.value = when {
-            token.isEmpty() -> OnboardingState.Auth.Incomplete
-            token.isNotEmpty() && userId == 0 -> OnboardingState.Auth.Incomplete
-            else -> when (onBoardingStatus) {
-                OnboardingState.Onboarding.SignUp.prefName -> OnboardingState.Onboarding.CompleteProfile
-                OnboardingState.Onboarding.CompleteProfile.prefName -> OnboardingState.Onboarding.CreateHouse
-                OnboardingState.Onboarding.CreateHouse.prefName -> OnboardingState.Auth.Complete
-                OnboardingState.Auth.Complete.toPrefKey()-> OnboardingState.Auth.Complete
-                OnboardingState.Auth.Incomplete.toPrefKey() -> OnboardingState.Onboarding.Login
-                else -> OnboardingState.Onboarding.Login
-            }
+            // todo: need to discuss about how to check if user has signed up but not completed profile
+            token.isEmpty() || userId == 0 -> OnboardingState.Onboarding.SignUp
+            else -> OnboardingState.Onboarding.CompleteProfile
         }
     }
 
