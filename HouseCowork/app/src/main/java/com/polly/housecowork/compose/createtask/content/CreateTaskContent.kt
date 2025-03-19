@@ -39,6 +39,7 @@ fun CreateTaskContent(
     scrollBehavior: TopAppBarScrollBehavior,
     scrollState: androidx.compose.foundation.ScrollState,
     showTimePickerSheet: Boolean,
+    onTimePickerClick: () -> Unit,
     onTimePickerDismiss: () -> Unit,
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
@@ -92,7 +93,7 @@ fun CreateTaskContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(ComposeUtils.ContentPadding),
-                onTimePickerClick = {  },
+                onTimePickerClick = onTimePickerClick,
                 dueHour = taskUiState.dueHour,
                 dueMinute = taskUiState.dueMinute,
                 currentMonthTitle = currentMonthTitle,

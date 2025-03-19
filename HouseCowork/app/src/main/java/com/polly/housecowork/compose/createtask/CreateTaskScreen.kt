@@ -34,7 +34,7 @@ fun CreateTaskScreen(
     val errorState by viewModel.errorState.collectAsState()
     val isPublic by viewModel.isPublic.collectAsState()
     val calendarState by viewModel.calendarState.collectAsState()
-    var showTimePickerSheet by remember { mutableStateOf(false) }
+    val isTimePickerSheetVisible by viewModel.isTimePickerSheetVisible.collectAsState()
 
     val context = LocalContext.current
     val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -73,13 +73,14 @@ fun CreateTaskScreen(
         allUserNames = taskUiState.selectableUsers,
         onCancelClick = { navigateOnClick() },
         onDoneClick = { viewModel.checkFinish() },
+        onTimePickerClick = { viewModel.showTimePickerSheet() },
         errorState = errorState,
         onDismissTimeError = { viewModel.clearDueTimeError() },
         currentMonthTitle = calendarState.monthTitle,
         dates = calendarState.monthData.visibleDates,
         onBackClick = { viewModel.getPreviousMonth() },
         onNextClick = { viewModel.getNextMonth() },
-        showTimePickerSheet = showTimePickerSheet,
-        onTimePickerDismiss = { showTimePickerSheet = true },
+        showTimePickerSheet = isTimePickerSheetVisible,
+        onTimePickerDismiss = { viewModel.hideTimePickerSheet() }
     )
 }

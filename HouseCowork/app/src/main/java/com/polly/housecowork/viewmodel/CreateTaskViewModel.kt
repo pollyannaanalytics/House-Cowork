@@ -38,6 +38,9 @@ class CreateTaskViewModel @Inject constructor(
     private val _isPublic = MutableStateFlow(true)
     val isPublic = _isPublic.asStateFlow()
 
+    private val _isTimePickerSheetVisible = MutableStateFlow(false)
+    val isTimePickerSheetVisible = _isTimePickerSheetVisible.asStateFlow()
+
     private val _calendarState = MutableStateFlow(
         CalendarState(
             monthData = calendarRepository.getCurrentMonth(),
@@ -47,6 +50,14 @@ class CreateTaskViewModel @Inject constructor(
     val calendarState = _calendarState.asStateFlow()
     init {
         getAllUsers()
+    }
+
+    fun showTimePickerSheet() {
+        _isTimePickerSheetVisible.update { true }
+    }
+
+    fun hideTimePickerSheet() {
+        _isTimePickerSheetVisible.update { false }
     }
 
     private fun getAllUsers() {
