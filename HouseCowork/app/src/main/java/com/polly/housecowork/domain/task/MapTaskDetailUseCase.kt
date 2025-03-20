@@ -1,6 +1,5 @@
 package com.polly.housecowork.domain.task
 
-import com.polly.housecowork.dataclass.AssigneeState
 import com.polly.housecowork.dataclass.TaskDomain
 import com.polly.housecowork.dataclass.TaskState
 import com.polly.housecowork.model.profile.DefaultProfileRepository
@@ -29,13 +28,7 @@ class MapTaskDetailUseCase @Inject constructor(
         owner = profileRepository.getProfileById(ownerId),
         dueTime = formatTime(dueTime),
         dueDate = formatDate(dueTime),
-        assignees = assignees.map { assignee ->
-            val profile = profileRepository.getProfileById(assignee.id)
-            AssigneeState(
-                assignee = profile,
-                status = assignee.status,
-            )
-        },
+        assignees = assignees,
         status = TaskStatus.from(status)
     )
 
