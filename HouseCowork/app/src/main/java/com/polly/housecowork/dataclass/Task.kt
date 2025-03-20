@@ -28,7 +28,7 @@ data class TaskState(
     val status: TaskStatus,
     val dueTime: String,
     val dueDate: String,
-    val assignees: List<AssigneeState>
+    val assignees: List<Assignee>
 )
 
 
