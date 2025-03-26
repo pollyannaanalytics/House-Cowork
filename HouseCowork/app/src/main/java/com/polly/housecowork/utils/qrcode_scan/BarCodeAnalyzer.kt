@@ -1,6 +1,7 @@
 package com.polly.housecowork.utils.qrcode_scan
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -10,8 +11,7 @@ import com.google.mlkit.vision.common.InputImage
 import javax.inject.Inject
 
 class BarcodeAnalyzer @Inject constructor(
-    private val onQrCodeScanned: (List<Barcode>) -> Unit,
-    private val onError: (Exception) -> Unit,
+    private val onQrCodeScanned: (List<Barcode>) -> Unit
 ): ImageAnalysis.Analyzer {
     private val scanner = BarcodeScanning.getClient(
         BarcodeScannerOptions.Builder()
@@ -35,7 +35,7 @@ class BarcodeAnalyzer @Inject constructor(
                     onQrCodeScanned(barcodes)
                 }
                 .addOnFailureListener { exception ->
-                    onError(exception)
+                   Log.e("BarcodeAnalyzer", "Error: $exception")
                 }
                 .addOnCompleteListener {
                     imageProxy.close()
