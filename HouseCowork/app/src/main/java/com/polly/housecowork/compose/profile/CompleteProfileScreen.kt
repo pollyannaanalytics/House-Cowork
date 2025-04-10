@@ -1,4 +1,4 @@
-package com.polly.housecowork.compose.onboarding.register
+package com.polly.housecowork.compose.profile
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -56,11 +56,7 @@ fun CompleteProfileScreen(
 
     CompleteProfileContent(
         modifier = modifier,
-        nickname = uiState.nickname,
         bio = uiState.bio,
-        onNicknameChange = {
-            viewModel.onNicknameChanged(it)
-        },
         onBioChange = {
             viewModel.onBioChanged(it)
         },
@@ -101,9 +97,7 @@ fun CompleteProfileScreen(
 @Composable
 fun CompleteProfileContent(
     modifier: Modifier = Modifier,
-    nickname: String,
     bio: String,
-    onNicknameChange: (String) -> Unit,
     onBioChange: (String) -> Unit,
     chosenPhotoUri: Uri?,
     avatarState: AvatarState,
@@ -138,13 +132,6 @@ fun CompleteProfileContent(
             chosenPhotoUri = chosenPhotoUri,
             avatarState = avatarState,
             onUploadPhotoClick = onUploadPhotoClick,
-        )
-
-        HCWTextField(
-            modifier = Modifier.padding(16.dp),
-            value = nickname,
-            onValueChange = onNicknameChange,
-            hint = "Your nick name",
         )
 
         BankAccountTextField(

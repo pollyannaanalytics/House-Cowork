@@ -9,8 +9,7 @@ data class SignUpRequest(
     val email: String,
     val password: String,
     val passwordConfirm: String,
-    val name: String,
-    val nickName: String
+    val name: String
 ): Parcelable
 
 @Parcelize

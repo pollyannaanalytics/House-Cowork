@@ -23,10 +23,6 @@ class CompleteProfileViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CompleteProfileUiState())
     val uiState: StateFlow<CompleteProfileUiState> = _uiState.asStateFlow()
 
-    fun onNicknameChanged(nickname: String) {
-        _uiState.value = _uiState.value.copy(nickname = nickname)
-    }
-
     fun onBankAccountChanged(bankAccount: String) {
         _uiState.value = _uiState.value.copy(bankAccount = bankAccount)
     }
@@ -64,20 +60,19 @@ class CompleteProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val uiState = _uiState.value
             val result = updateProfileUseCase(
-                nickname = uiState.nickname,
                 bio = uiState.bio,
                 bankAccount = uiState.bankAccount,
                 imageUri = uiState.imageUri.toString()
             )
 
             if (result.isSuccess) {
-                updateOnboardingUseCase(OnboardingState.Onboarding.CompleteProfile)
+//                updateOnboardingUseCase(OnboardingState.Onboarding.CompleteProfile)
             }
         }
     }
 
     fun onProfileSkip() {
-        updateOnboardingUseCase(OnboardingState.Onboarding.CompleteProfile)
+//        updateOnboardingUseCase(OnboardingState.Onboarding.CompleteProfile)
     }
 
     private fun String.isBioValid(): Boolean {
@@ -87,7 +82,6 @@ class CompleteProfileViewModel @Inject constructor(
 }
 
 data class CompleteProfileUiState(
-    val nickname: String = "",
     val bankAccount: String = "",
     val bankCode: String = "",
     val avatarState: AvatarState = AvatarState.Edit,

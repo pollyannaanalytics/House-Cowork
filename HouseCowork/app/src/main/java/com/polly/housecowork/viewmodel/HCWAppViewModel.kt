@@ -30,7 +30,7 @@ class HCWAppViewModel @Inject constructor(
         _userNextState.value = when {
             // todo: need to discuss about how to check if user has signed up but not completed profile
             token.isEmpty() || userId == 0 -> OnboardingState.Onboarding.SignUp
-            else -> OnboardingState.Onboarding.CompleteProfile
+            else -> OnboardingState.Onboarding.CreateHouse
         }
     }
 

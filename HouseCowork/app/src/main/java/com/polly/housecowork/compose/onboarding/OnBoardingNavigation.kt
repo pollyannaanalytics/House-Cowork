@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.polly.housecowork.compose.house.houseNavigation
-import com.polly.housecowork.compose.onboarding.register.CompleteProfileScreen
 import com.polly.housecowork.compose.onboarding.register.SignUpScreen
 import com.polly.housecowork.utils.Screen
 
@@ -23,21 +22,13 @@ fun NavGraphBuilder.onboardingNavigation(
         composable(Screen.OnBoarding.SignUp.route) {
             SignUpScreen(
                 onSignUpComplete = {
-                    navController.navigate(Screen.OnBoarding.CompleteProfile.route)
+                    navController.navigate(Screen.House.BASE_ROUTE)
                 }
             )
         }
 
         composable(Screen.OnBoarding.Login.route) {
             LoginScreen()
-        }
-
-        composable(Screen.OnBoarding.CompleteProfile.route) {
-            CompleteProfileScreen(
-                onProfileComplete = {
-                    navController.navigate(Screen.House.BASE_ROUTE)
-                }
-            )
         }
 
         houseNavigation(navController, onOnboardingComplete)

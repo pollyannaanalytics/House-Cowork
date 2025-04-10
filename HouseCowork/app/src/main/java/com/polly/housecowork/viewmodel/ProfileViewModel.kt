@@ -124,7 +124,6 @@ class ProfileViewModel @Inject constructor(
 
             profileUseCase.updateProfileUseCase.invoke(
                 name = state.editName,
-                nickname = state.editName,
                 bio = state.editBio,
                 bankAccount = "1234567890",
                 imageUri = state.imageUri.toString()

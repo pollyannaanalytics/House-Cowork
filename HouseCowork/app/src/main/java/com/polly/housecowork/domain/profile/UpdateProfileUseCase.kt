@@ -14,14 +14,12 @@ class UpdateProfileUseCase @Inject constructor(
 
     suspend operator fun invoke(
         name: String = "",
-        nickname: String,
         bio: String,
         bankAccount: String = "",
         imageUri: String
     ): Result<Unit> = withContext(Dispatchers.IO) {
         getUserProfile()
         val userName = name.ifBlank { userProfile?.name ?: "" }
-        val userNickname = nickname
         val userBio = bio
         val userBankAccount = bankAccount.ifBlank { userProfile?.bankAccount ?: "" }
 
@@ -30,7 +28,6 @@ class UpdateProfileUseCase @Inject constructor(
 
         val profileRequest = ProfileRequest(
             name = userName,
-            nickName = userNickname,
             avatar = userImageUri,
             //todo: bio?
             bankAccount = userBankAccount
