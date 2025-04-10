@@ -33,7 +33,6 @@ class SignUpViewModel @Inject constructor(
 
     data class SignUpFormState(
         val name: String = "",
-        val nickName: String = "",
         val email: String = "",
         val password: String = "",
         val repeatPassword: String = "",
@@ -43,7 +42,7 @@ class SignUpViewModel @Inject constructor(
     ) {
         val isValid: Boolean
             get() = isEmailValid && isPasswordValid && isPasswordMatched &&
-                    name.isNotBlank() && nickName.isNotBlank() &&
+                    name.isNotBlank() &&
                     email.isNotBlank() && password.isNotBlank()
     }
 
@@ -71,12 +70,6 @@ class SignUpViewModel @Inject constructor(
     fun setUsername(username: String) {
         _formState.update {
             it.copy(name = username)
-        }
-    }
-
-    fun setNickName(nickName: String) {
-        _formState.update {
-            it.copy(nickName = nickName)
         }
     }
 
@@ -127,7 +120,6 @@ class SignUpViewModel @Inject constructor(
 
                 val request = SignUpRequest(
                     name = state.name,
-                    nickName = state.nickName,
                     email = state.email,
                     password = state.password,
                     passwordConfirm = state.repeatPassword

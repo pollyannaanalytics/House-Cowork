@@ -79,8 +79,7 @@ class DefaultProfileRepository @Inject constructor(
             id = id,
             name = name,
             email = email,
-            avatar = avatar,
-            nickName = nickName
+            avatar = avatar
         )
     }
 

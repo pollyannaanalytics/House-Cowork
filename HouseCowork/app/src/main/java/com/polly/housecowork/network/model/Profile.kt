@@ -6,7 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ProfileRequest(
     val name: String,
-    val nickName: String,
     val avatar: String,
     val bankAccount: String
 ): Parcelable

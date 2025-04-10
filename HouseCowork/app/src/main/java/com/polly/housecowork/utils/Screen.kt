@@ -12,7 +12,7 @@ sealed class Screen(
     sealed class OnBoarding(title: String, route: String) : Screen(title, route) {
         data object SignUp : OnBoarding(ScreenTitle.SIGN_UP,"$BASE_ROUTE/${Route.SIGN_UP_ROUTE}")
         data object Login : OnBoarding(ScreenTitle.LOGIN,"$BASE_ROUTE/${Route.LOGIN_ROUTE}")
-        data object CompleteProfile : OnBoarding(ScreenTitle.COMPLETE_PROFILE,"$BASE_ROUTE/${Route.COMPLETE_PROFILE_ROUTE}")
+//        data object CompleteProfile : OnBoarding(ScreenTitle.COMPLETE_PROFILE,"$BASE_ROUTE/${Route.COMPLETE_PROFILE_ROUTE}")
         companion object{
             const val BASE_ROUTE = "onboarding"
         }
@@ -47,7 +47,7 @@ companion object {
     private val screens = listOf(
         Home,
         OnBoarding.SignUp,
-        OnBoarding.CompleteProfile,
+//        OnBoarding.CompleteProfile,
         House.Base,
         House.Create,
         House.Join,

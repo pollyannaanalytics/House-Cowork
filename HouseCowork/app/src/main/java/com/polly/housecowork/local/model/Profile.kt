@@ -15,8 +15,6 @@ data class Profile(
     val name: String,
     val email: String,
     val bio: String = "",
-    @ColumnInfo(name = "nick_name")
-    val nickName: String,
     val avatar: String,
     @ColumnInfo(name = "bank_account")
     val bankAccount: String = ""
