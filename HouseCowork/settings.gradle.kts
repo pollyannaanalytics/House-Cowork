@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "House Cowork"
 include(":app")
- 
+include(":qr_scan")
+include(":feature")
+include(":feature:qrscan")
