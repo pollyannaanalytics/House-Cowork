@@ -13,15 +13,15 @@ data class HouseRequest(
 
 @Parcelize
 data class HouseCreateResponse(
-    val houseResponse: HouseResponse
+    val house: House
 ): Parcelable
 
 
 @Parcelize
-data class HouseResponse(
+data class House(
     val id: Int,
     val name: String,
     val description: String,
-    val rules: String,
+    val rules: List<String>,
     val memberIds: List<Int>
 ): Parcelable

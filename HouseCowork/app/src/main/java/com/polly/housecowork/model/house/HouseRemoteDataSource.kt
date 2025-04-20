@@ -14,5 +14,8 @@ class HouseRemoteDataSource @Inject constructor(
         return houseApiService.createHouse(request)
     }
 
+    suspend fun getHouse(houseId: Int): Response<HouseCreateResponse> {
+        return houseApiService.getHouseInfo(houseId)
+    }
 
 }

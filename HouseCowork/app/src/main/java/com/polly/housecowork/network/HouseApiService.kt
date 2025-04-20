@@ -7,6 +7,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface HouseApiService {
     @POST("houses")
@@ -23,5 +24,8 @@ interface HouseApiService {
         @Body request: HouseRequest
     ): Response<HouseCreateResponse>
 
-
+    @GET("/v1/houses/{houseId}")
+    suspend fun getHouseInfo(
+        @Path("houseId") houseId: Int
+    ): Response<HouseCreateResponse>
 }
