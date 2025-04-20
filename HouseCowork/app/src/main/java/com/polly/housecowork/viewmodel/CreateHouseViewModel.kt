@@ -7,6 +7,7 @@ import com.polly.housecowork.domain.onboarding.UpdateOnboardingUseCase
 import com.polly.housecowork.model.auth.OnboardingState
 import com.polly.housecowork.model.house.DefaultHouseRepository
 import com.polly.housecowork.network.model.HouseRequest
+import com.polly.housecowork.network.model.House
 import com.polly.housecowork.ui.utils.compose.AvatarState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,6 +43,17 @@ class CreateHouseViewModel @Inject constructor(
     )
     val houseInfo = _houseInfo.asStateFlow()
 
+    private val _houseDetail: MutableStateFlow<House> = MutableStateFlow(
+        House(
+            id = -1,
+            name = "",
+            description = "",
+            rules = emptyList(),
+            memberIds = emptyList()
+        )
+    )
+    val houseDetail = _houseDetail.asStateFlow()
+
     fun onNameChanged(name: String) {
         _houseInfo .update {
             it.copy(name = name)
@@ -66,7 +78,7 @@ class CreateHouseViewModel @Inject constructor(
     }
 
 
-    fun createHouse() {
+    fun createHouse(onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             _houseInfo.value.let {
                 if (!it.name.checkNameIsValid()) return@launch
@@ -80,13 +92,14 @@ class CreateHouseViewModel @Inject constructor(
 
                 val result = createHouseRepository.createHouse(request)
                 if (result.isSuccess) {
+                    _houseDetail.update { result.getOrNull() ?: it }
                     onboardingUseCase.invoke(OnboardingState.Onboarding.CreateHouse)
+                    onSuccess()
                 }
             }
         }
     }
 
     private fun String.checkNameIsValid() = this.isNotEmpty() && this.length <= 20
-
 
 }

@@ -37,7 +37,7 @@ fun CreateHouseScreen(
     modifier: Modifier = Modifier,
     createHouseViewModel: CreateHouseViewModel = hiltViewModel(),
     navigateOnClick: () -> Unit = {},
-    onCompleteClick: () -> Unit = {},
+    onCompleteClick: (Int) -> Unit = {},
 ) {
     val houseInfo by createHouseViewModel.houseInfo.collectAsStateWithLifecycle()
 
@@ -104,8 +104,9 @@ fun CreateHouseScreen(
             modifier = Modifier.padding(top = 16.dp),
             text = "Done", textStyle = LocalTypography.current.titleMedium,
             onClick = {
-                createHouseViewModel.createHouse()
-                onCompleteClick()
+                createHouseViewModel.createHouse {
+                    onCompleteClick(createHouseViewModel.houseDetail.value.id)
+                }
             }
         )
 
