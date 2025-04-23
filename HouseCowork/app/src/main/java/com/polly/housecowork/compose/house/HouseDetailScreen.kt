@@ -28,11 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.polly.housecowork.dataclass.HouseMember
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.polly.housecowork.network.model.User
 import com.polly.housecowork.ui.theme.DeepYellow
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
@@ -48,6 +52,7 @@ fun HouseDetailScreen(
 ) {
     viewModel.fetchHouseDetail(houseId)
     val houseDetail by viewModel.houseDetail.collectAsStateWithLifecycle()
+    val members by viewModel.members.collectAsStateWithLifecycle()
 
     LazyColumn(
         modifier
@@ -63,9 +68,7 @@ fun HouseDetailScreen(
         }
 
         item {
-            MemberSection(
-                memberIds = houseDetail.memberIds
-            )
+            MemberSection(members = members)
         }
         item {
             AddMemberButton()
@@ -103,7 +106,7 @@ fun HouseIntroSection(
         ) {
             Text(
                 modifier = Modifier.padding(16.dp),
-                text = description,
+                text = "Description: $description",
                 style = LocalTypography.current.bodyMedium,
                 color = Color.Black,
                 textAlign = TextAlign.Start
@@ -112,7 +115,7 @@ fun HouseIntroSection(
             rules.forEach { rule ->
                 Text(
                     modifier = Modifier.padding(16.dp),
-                    text = rule,
+                    text = "Rule: $rule",
                     style = LocalTypography.current.bodyMedium,
                     color = Color.Black,
                     textAlign = TextAlign.Start
@@ -125,24 +128,18 @@ fun HouseIntroSection(
 @Composable
 fun MemberSection(
     modifier: Modifier = Modifier,
-    memberIds: List<Int>
+    members: List<User>
 ) {
     Column(modifier.fillMaxWidth()) {
         Text(
-            text = "Members (${memberIds.size})",
+            text = "Members (${members.size})",
             style = LocalTypography.current.titleMedium,
             color = Color.Black,
             textAlign = TextAlign.Start
         )
 
         Spacer(Modifier.height(16.dp))
-        val mockMembers = listOf(
-            HouseMember(0, "Jumbo", ""),
-            HouseMember(1, "Polly", ""),
-            HouseMember(2, "Chloe", ""),
-            HouseMember(3, "Rol", ""),
-        )
-        mockMembers.forEach { member ->
+        members.forEach { member ->
             MemberCard(member)
         }
     }
@@ -150,7 +147,7 @@ fun MemberSection(
 
 @Composable
 fun MemberCard(
-    member: HouseMember
+    member: User
 ) {
     Row(
         modifier = Modifier
@@ -161,7 +158,7 @@ fun MemberCard(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        MemberAvatar(avatarUrl = member.avatarUrl)
+        MemberAvatar(avatarUrl = member.avatar)
         Spacer(Modifier.width(24.dp))
         Text(
             text = member.name,
@@ -175,7 +172,7 @@ fun MemberCard(
 @Composable
 fun MemberAvatar(
     modifier: Modifier = Modifier,
-    avatarUrl: String
+    avatarUrl: String?
 ) {
     Card(
         modifier
@@ -195,14 +192,21 @@ fun MemberAvatar(
             contentAlignment = Alignment.Center
 
         ) {
-            if (avatarUrl.isEmpty()) {
+            if (avatarUrl?.isEmpty() == true) {
                 Icon(
                     modifier = Modifier
                         .fillMaxSize(0.6f),
                     imageVector = Linked_camera,
                     contentDescription = "Camera",
                 )
-
+            } else {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(avatarUrl)
+                        .build(),
+                    contentDescription = "member avatar",
+                    contentScale = ContentScale.Crop,
+                )
             }
         }
 
