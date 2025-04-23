@@ -7,6 +7,7 @@ import com.polly.housecowork.network.ConnectionUtils
 import com.polly.housecowork.network.HouseApiService
 import com.polly.housecowork.network.ProfileApiService
 import com.polly.housecowork.network.TaskApiService
+import com.polly.housecowork.network.model.UserApiService
 import com.polly.housecowork.prefs.PrefsLicense
 import com.polly.housecowork.utils.Constant
 import dagger.Module
@@ -77,6 +78,12 @@ class NetworkModule {
     @Singleton
     fun provideHouseService(retrofit: Retrofit): HouseApiService {
         return retrofit.create(HouseApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserService(retrofit: Retrofit): UserApiService {
+        return retrofit.create(UserApiService::class.java)
     }
 
     @Provides
