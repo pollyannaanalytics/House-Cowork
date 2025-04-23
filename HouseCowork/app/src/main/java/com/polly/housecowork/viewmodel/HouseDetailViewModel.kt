@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polly.housecowork.model.house.DefaultHouseRepository
 import com.polly.housecowork.network.model.House
+import com.polly.housecowork.network.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,6 +29,12 @@ class HouseDetailViewModel @Inject constructor(
 
     val houseDetail = _houseDetail.asStateFlow()
 
+    private val _members: MutableStateFlow<List<User>> = MutableStateFlow(
+        emptyList()
+    )
+
+    val members = _members.asStateFlow()
+
     fun fetchHouseDetail(id: Int) {
         viewModelScope.launch {
             houseRepository.getHouseInfo(id).onSuccess { result ->
@@ -41,6 +48,12 @@ class HouseDetailViewModel @Inject constructor(
                             memberIds = houseInfo.memberIds
                         )
                     }
+                    val memberList = mutableListOf<User>()
+                    houseInfo.memberIds.forEach { memberId ->
+                        val user = houseRepository.getUserInfo(memberId)
+                        user?.let { memberList.add(it) }
+                    }
+                    _members.update { memberList }
                 }
             }
         }

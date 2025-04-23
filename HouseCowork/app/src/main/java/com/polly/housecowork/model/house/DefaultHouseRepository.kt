@@ -4,6 +4,7 @@ import android.util.Log
 import com.polly.housecowork.local.HouseDao
 import com.polly.housecowork.network.model.House
 import com.polly.housecowork.network.model.HouseRequest
+import com.polly.housecowork.network.model.User
 import com.polly.housecowork.prefs.PrefsLicense
 import javax.inject.Inject
 
@@ -42,6 +43,16 @@ class DefaultHouseRepository @Inject constructor(
             Log.d("HouseRepository", "Get House Info failed")
             Log.d("HouseRepository", "Response Body: ${response.errorBody()?.string()}")
             Result.failure(Exception("Get House Info failed"))
+        }
+    }
+
+    suspend fun getUserInfo(memberId: Int): User? {
+        val response = houseRemoteDataSource.getUser(memberId)
+        return if (response.isSuccessful) {
+            Log.d("HouseRepository", "Get User Info successfully")
+            return response.body()?.user
+        } else {
+            null
         }
     }
 }
