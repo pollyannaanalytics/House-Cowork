@@ -37,7 +37,7 @@ fun NavGraphBuilder.houseNavigation(
                 navigateOnClick = {
                     navController.popBackStack()
                 },
-                onCompleteClick = { houseId ->
+                onSuccess = { houseId ->
                     onCompleted(houseId)
                 }
             )
