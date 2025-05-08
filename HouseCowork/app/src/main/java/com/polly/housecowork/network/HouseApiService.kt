@@ -1,5 +1,6 @@
 package com.polly.housecowork.network
 
+import com.polly.housecowork.network.model.GetOwnHousesResponse
 import com.polly.housecowork.network.model.HouseRequest
 import com.polly.housecowork.network.model.HouseCreateResponse
 import retrofit2.Response
@@ -16,7 +17,7 @@ interface HouseApiService {
     ): Response<HouseCreateResponse>
 
     @GET("houses/own")
-    suspend fun getOwnHouse(): Response<HouseCreateResponse>
+    suspend fun getHouses(): Response<GetOwnHousesResponse>
 
     @PUT("houses/{houseId}")
     suspend fun updateHouse(

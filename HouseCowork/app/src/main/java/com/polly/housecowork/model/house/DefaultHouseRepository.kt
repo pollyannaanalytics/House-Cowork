@@ -29,6 +29,24 @@ class DefaultHouseRepository @Inject constructor(
 
     }
 
+    suspend fun getHouses(): Result<List<House>>? {
+        val response = houseRemoteDataSource.getHouses()
+        return if (response.isSuccessful) {
+            Log.d("HouseRepository", "Get Houses successfully")
+            val body = response.body()
+            if (body != null) {
+                Result.success(body.houses)
+            } else {
+                Result.failure(Exception("House List Empty"))
+            }
+        } else {
+            Log.d("HouseRepository", "Get House Info failed")
+            Log.d("HouseRepository", "Response Body: ${response.errorBody()?.string()}")
+            Result.failure(Exception("Get House Info failed"))
+        }
+
+    }
+
     suspend fun getHouseInfo(houseId: Int): Result<House?> {
         val response = houseRemoteDataSource.getHouse(houseId)
         return if (response.isSuccessful) {
@@ -52,6 +70,7 @@ class DefaultHouseRepository @Inject constructor(
             Log.d("HouseRepository", "Get User Info successfully")
             return response.body()?.user
         } else {
+            Log.d("HouseRepository", "Get User Info null")
             null
         }
     }

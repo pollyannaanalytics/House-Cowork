@@ -16,6 +16,10 @@ data class HouseCreateResponse(
     val house: House
 ): Parcelable
 
+@Parcelize
+data class GetOwnHousesResponse(
+    val houses: List<House>
+): Parcelable
 
 @Parcelize
 data class House(
