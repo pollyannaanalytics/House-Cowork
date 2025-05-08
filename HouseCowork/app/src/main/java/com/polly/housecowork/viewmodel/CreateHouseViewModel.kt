@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 data class HouseInfo(
     val name: String,
     val description: String,
@@ -43,15 +42,7 @@ class CreateHouseViewModel @Inject constructor(
     )
     val houseInfo = _houseInfo.asStateFlow()
 
-    private val _houseDetail: MutableStateFlow<House> = MutableStateFlow(
-        House(
-            id = -1,
-            name = "",
-            description = "",
-            rules = emptyList(),
-            memberIds = emptyList()
-        )
-    )
+    private val _houseDetail: MutableStateFlow<House?> = MutableStateFlow(null)
     val houseDetail = _houseDetail.asStateFlow()
 
     fun onNameChanged(name: String) {

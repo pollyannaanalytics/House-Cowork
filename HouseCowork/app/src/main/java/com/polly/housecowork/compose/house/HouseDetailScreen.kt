@@ -20,7 +20,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,7 +42,6 @@ import com.polly.housecowork.network.model.User
 import com.polly.housecowork.ui.theme.DeepYellow
 import com.polly.housecowork.ui.theme.LocalColorScheme
 import com.polly.housecowork.ui.theme.LocalTypography
-import com.polly.housecowork.ui.utils.StandardButton
 import com.polly.housecowork.ui.utils.compose.Linked_camera
 import com.polly.housecowork.viewmodel.HouseDetailViewModel
 
@@ -54,24 +55,28 @@ fun HouseDetailScreen(
     val houseDetail by viewModel.houseDetail.collectAsStateWithLifecycle()
     val members by viewModel.members.collectAsStateWithLifecycle()
 
-    LazyColumn(
-        modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        item {
-            HouseIntroSection(
-                description = houseDetail.description,
-                rules = houseDetail.rules
-            )
-        }
+    houseDetail?.let { detail ->
+        Scaffold(
+            modifier = modifier.fillMaxSize(),
+            floatingActionButton = { AddMemberButton() }
+        ) { paddingValues ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
+                    HouseIntroSection(
+                        description = detail.description,
+                        rules = detail.rules
+                    )
+                }
 
-        item {
-            MemberSection(members = members)
-        }
-        item {
-            AddMemberButton()
+                item {
+                    MemberSection(members = members)
+                }
+            }
         }
     }
 }
@@ -181,7 +186,7 @@ fun MemberAvatar(
             .aspectRatio(1f)
             .clip(shape = CircleShape),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFD9D9D9),
+            containerColor = LocalColorScheme.current.surfaceTint,
             contentColor = Color.White
         ),
     ) {
@@ -215,17 +220,18 @@ fun MemberAvatar(
 
 @Composable
 fun AddMemberButton() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End
-    ) {
-        StandardButton(
-            buttonColor = DeepYellow,
-            text = "+ Member",
-            textColor = Color.White,
-            textStyle = LocalTypography.current.bodyMedium
-        ) {
+    FloatingActionButton(
+        onClick = {
             // TODO add member onclick
-        }
+        },
+        containerColor = DeepYellow,
+        contentColor = Color.White,
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Text(
+            text = "+ Member",
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            style = LocalTypography.current.bodyMedium
+        )
     }
 }

@@ -17,15 +17,7 @@ class HouseDetailViewModel @Inject constructor(
     private val houseRepository: DefaultHouseRepository
 ) : ViewModel() {
 
-    private val _houseDetail: MutableStateFlow<House> = MutableStateFlow(
-        House(
-            id = -1,
-            name = "",
-            description = "",
-            rules = emptyList(),
-            memberIds = emptyList()
-        )
-    )
+    private val _houseDetail: MutableStateFlow<House?> = MutableStateFlow(null)
 
     val houseDetail = _houseDetail.asStateFlow()
 
@@ -35,8 +27,12 @@ class HouseDetailViewModel @Inject constructor(
 
     val members = _members.asStateFlow()
 
+    private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
     fun fetchHouseDetail(id: Int) {
         viewModelScope.launch {
+            _isLoading.update { true }
             houseRepository.getHouseInfo(id).onSuccess { result ->
                 result?.let { houseInfo ->
                     _houseDetail.update {
@@ -56,6 +52,7 @@ class HouseDetailViewModel @Inject constructor(
                     _members.update { memberList }
                 }
             }
+            _isLoading.update { false }
         }
     }
 }
