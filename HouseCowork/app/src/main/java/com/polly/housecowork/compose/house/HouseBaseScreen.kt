@@ -42,6 +42,7 @@ fun HouseBaseScreen(
     navigateToJoinHouse: () -> Unit = {},
     navigateToCreateHouse: () -> Unit = {}
 ) {
+    viewModel.getHouseList()
     val houseList by viewModel.houseList.collectAsState()
     var isAddHouseClick by remember { mutableStateOf(false) }
     Scaffold(
@@ -78,9 +79,7 @@ fun HouseBaseScreen(
                     )
                 }
             }
-        },
-
-        ) { contentPadding ->
+        }) { contentPadding ->
         Column(modifier.fillMaxSize(),
             verticalArrangement = if(houseList.isEmpty()) Arrangement.Center else Arrangement.Top,
             ) {
@@ -95,7 +94,6 @@ fun HouseBaseScreen(
                 )
                 return@Column
             }
-
 
             Text(
                 modifier = Modifier

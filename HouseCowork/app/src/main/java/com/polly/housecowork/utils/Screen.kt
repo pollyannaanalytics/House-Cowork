@@ -20,7 +20,7 @@ sealed class Screen(
 
     sealed class House(title: String, route: String) : Screen(title, route) {
         data object Base : House(ScreenTitle.HOUSE, "$BASE_ROUTE/${Route.HOUSE_LIST_ROUTE}")
-        data class Detail(val houseId: Int) : House(ScreenTitle.HOUSE_DETAIL, "$BASE_ROUTE/${Route.HOUSE_DETAIL_ROUTE}")
+        data class Detail(val houseId: Int) : House(ScreenTitle.HOUSE_DETAIL, "$BASE_ROUTE/${HOUSE_DETAIL_ROUTE}/$houseId")
         data object Create : House(ScreenTitle.CREATE_HOUSE, "$BASE_ROUTE/${Route.CREATE_HOUSE_ROUTE}")
         data object Join : House(ScreenTitle.JOIN_HOUSE,"$BASE_ROUTE/${Route.JOIN_HOUSE_ROUTE}")
 

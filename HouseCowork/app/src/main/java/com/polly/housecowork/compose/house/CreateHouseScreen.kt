@@ -37,7 +37,7 @@ fun CreateHouseScreen(
     modifier: Modifier = Modifier,
     createHouseViewModel: CreateHouseViewModel = hiltViewModel(),
     navigateOnClick: () -> Unit = {},
-    onCompleteClick: () -> Unit = {},
+    onSuccess: (Int) -> Unit = {},
 ) {
     val houseInfo by createHouseViewModel.houseInfo.collectAsStateWithLifecycle()
 
@@ -48,7 +48,6 @@ fun CreateHouseScreen(
             createHouseViewModel.uploadImage(imageUri)
         }
     }
-
 
     Column(
         modifier.fillMaxSize(),
@@ -104,8 +103,11 @@ fun CreateHouseScreen(
             modifier = Modifier.padding(top = 16.dp),
             text = "Done", textStyle = LocalTypography.current.titleMedium,
             onClick = {
-                createHouseViewModel.createHouse()
-                onCompleteClick()
+                createHouseViewModel.houseDetail.value?.id?.let {
+                    createHouseViewModel.createHouse {
+                        onSuccess(it)
+                    }
+                }
             }
         )
 

@@ -2,13 +2,16 @@ package com.polly.housecowork.compose.house
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.polly.housecowork.utils.Route
 import com.polly.housecowork.utils.Screen
 
 fun NavGraphBuilder.houseNavigation(
     navController: NavController,
-    onCompleted: () -> Unit
+    onCompleted: (Int) -> Unit
 ) {
     navigation(
         route = Screen.House.BASE_ROUTE,
@@ -34,10 +37,18 @@ fun NavGraphBuilder.houseNavigation(
                 navigateOnClick = {
                     navController.popBackStack()
                 },
-                onCompleteClick = {
-                    onCompleted()
+                onSuccess = { houseId ->
+                    onCompleted(houseId)
                 }
             )
+        }
+
+        composable(
+            route = "${Screen.House.BASE_ROUTE}/${Route.HOUSE_DETAIL_ROUTE}/{houseId}",
+            arguments = listOf(navArgument("houseId") { type = NavType.IntType })
+        ) { navBackStackEntry ->
+            val houseId = navBackStackEntry.arguments?.getInt("houseId") ?: -1
+            HouseDetailScreen(houseId = houseId)
         }
     }
 }

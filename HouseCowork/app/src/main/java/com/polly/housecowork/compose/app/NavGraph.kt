@@ -71,8 +71,8 @@ fun HCWNavHost(
 
         houseNavigation(
             navController = navController,
-            onCompleted = {
-                navController.navigate(Screen.Home.route)
+            onCompleted = { houseId ->
+                navController.navigate(Screen.House.Detail(houseId).route)
             }
         )
     }

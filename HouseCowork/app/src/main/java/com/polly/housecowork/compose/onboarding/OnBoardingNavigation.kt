@@ -8,11 +8,10 @@ import com.polly.housecowork.compose.house.houseNavigation
 import com.polly.housecowork.compose.onboarding.register.SignUpScreen
 import com.polly.housecowork.utils.Screen
 
-
 fun NavGraphBuilder.onboardingNavigation(
     navController: NavController,
     startDestination: String,
-    onOnboardingComplete: () -> Unit
+    onOnboardingComplete: (Int) -> Unit
 ) {
     // todo: should be login page when page is designed
     navigation(
@@ -32,6 +31,5 @@ fun NavGraphBuilder.onboardingNavigation(
         }
 
         houseNavigation(navController, onOnboardingComplete)
-
     }
 }
